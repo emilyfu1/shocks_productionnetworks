@@ -65,3 +65,126 @@ def inputoutput_clean(df):
     df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
 
     return df_long
+
+''' function for filtering data in BEA data tables (2.4.3U and 2.4.4U)
+example:
+- first level: goods
+- second level: durable goods
+- third level: motor vehicles and parts
+- fourth level: new motor vehicles
+- fifth level: new autos
+- sixth level: new domestic autos
+output: products of specified granularity and of lower granularity if no further granularity available'''
+
+def filter_by_granularity(df, target_granularity):
+    if target_granularity not in [1, 2, 3, 4, 5, 6]:
+        raise Exception("Select an appropriate level of granularity")
+    
+    # collection of rows
+    filtered_rows = []
+
+    # loop through every row in the passed dataframe
+    for index, row in df.iterrows():
+        # find how many spaces are in front of the product name in that ropw
+        current_indent = len(row['product']) - len(row['product'].lstrip())
+        
+        # find out how many indents are in front of the product name (4 spaces per indent)
+        # each indent represents products that fall under the previous one
+        current_granularity = current_indent // 4
+        # append the row with the product if it's the correct granularity
+        if current_granularity == target_granularity:
+            filtered_rows.append(index)
+            # print(current_indent)
+            # print(row)
+        # if theres a less granular product in that row, investigate it further
+        elif current_granularity < target_granularity:
+            # check the rows below
+            for i in range(index + 1, len(df)):
+                # find how many spaces are in front of the product name in that ropw
+                below_indent = len(df.loc[i, 'product']) - len(df.loc[i, 'product'].lstrip())
+                # find out how many indents are in front of the product name (4 spaces per indent)
+                below_granularity = below_indent // 4
+                # if the row below is less granular, add the current row
+                if below_granularity <= current_granularity:
+                    filtered_rows.append(index)
+                    break
+                else:
+                    break
+        # ignore the products that are too granular
+        else:
+            pass
+
+    result_df = df.loc[filtered_rows]
+    return result_df
+
+def merge_IO_BEA(inputoutput, bea):
+    # all the products included in these versions
+    products_bea = list(set(bea['product']))
+    # all the NAICS descriptions (you can use either input or output sides i think)
+    naicsdescriptions = list(set(inputoutput['desc_I']))
+
+    # load the NLP model
+    bert = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+
+    # create the crosswalk
+    crosswalk = pd.DataFrame(columns=['product', 'NAICS_desc', 'similarity'])
+    for product in products_bea:
+        print(product)
+
+        # get embeddings for the product category and NAICS sectors
+        category_embedding = bert.encode(product, convert_to_tensor=True).reshape(1, -1)
+        sector_embeddings = [bert.encode(sector, convert_to_tensor=True).reshape(1, -1) for sector in naicsdescriptions]
+
+        # calculate cosine similarity
+        similarities = [cosine_similarity(category_embedding, sector_embedding).item() for sector_embedding in sector_embeddings]
+
+        # filter matches based on the similarity threshold
+        # im taking anything with above 0.7 cosine similarity or the highest 3 matches if none above 70 exist
+        matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7]
+        if not matching_indices:
+            matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
+
+        # append the new matches to the dataframe
+        rows = pd.DataFrame({'product': [product] * len(matching_indices),
+                            'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
+                            'similarity': [similarities[i] for i in matching_indices]})
+        crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
+    
+    # merging with NAICS I-O table 
+
+    # merging with crosswalk
+    crosswalk_I = crosswalk[['product', 'NAICS_desc']].rename(columns={'product': 'product_I', 'NAICS_desc': 'desc_I'})
+    crosswalk_O = crosswalk[['product', 'NAICS_desc']].rename(columns={'product': 'product_O', 'NAICS_desc': 'desc_O'})
+
+    # merge each side together
+    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='left')
+    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='left')
+    IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O', 'value'], how='inner')
+
+    # sum all values in the value column of the I-O matrix with the same product_I and product_O
+    IO_naics = IO_naics.sort_values(by=['product_I', 'product_O'])
+    IO_naics = IO_naics[['product_I', 'product_O', 'value']]
+    IO_naics['value'] = pd.to_numeric(IO_naics['value'])
+    IO_naics_grouped = IO_naics.groupby(['product_I', 'product_O'], as_index=False)['value'].sum(min_count=1)
+
+    # merge with BEA table (I)
+    IO_naics_I = pd.merge(left=IO_naics_grouped, right=bea, left_on='product_I', right_on='product', how='inner')
+    IO_naics_I.drop(columns=['product'], inplace=True)
+    IO_naics_I.rename(columns={
+        'value': 'IO_value',
+        'quantityindex': 'quantityindex_I',
+        'priceindex': 'priceindex_I'
+    }, inplace=True)
+
+    # merge with BEA table (O)
+    IO_naics_O = pd.merge(left=IO_naics_grouped, right=bea, left_on='product_O', right_on='product', how='inner')
+    IO_naics_O.drop(columns=['product'], inplace=True)
+    IO_naics_O.rename(columns={
+        'value': 'IO_value',
+        'quantityindex': 'quantityindex_O',
+        'priceindex': 'priceindex_O'
+    }, inplace=True)
+
+    IO_naics = pd.merge(left=IO_naics_I, right=IO_naics_O, on=['product_I', 'product_O', 'IO_value', 'date'], how='inner')
+
+    return IO_naics
