@@ -26,6 +26,12 @@ def pce_tables_clean(df):
     
     # wide to long
     df_long = pd.melt(df, id_vars=['product'], var_name='date', value_name='index')
+
+    # convert to numeric
+    df_long['index'] = pd.to_numeric(df_long['index'], errors='coerce')
+
+    # remove the giant total
+    df_long = df_long[~df_long['product'].str.contains('Personal consumption expenditures')]
     
     # convert to datetime
     df_long['date'] = pd.to_datetime(df_long['date'], format='mixed')
@@ -173,7 +179,8 @@ def merge_IO_BEA(inputoutput, bea):
     IO_naics_I.rename(columns={
         'value': 'IO_value',
         'quantityindex': 'quantityindex_I',
-        'priceindex': 'priceindex_I'
+        'priceindex': 'priceindex_I',
+        'expenditures': 'expenditures_I'
     }, inplace=True)
 
     # merge with BEA table (O)
@@ -182,7 +189,8 @@ def merge_IO_BEA(inputoutput, bea):
     IO_naics_O.rename(columns={
         'value': 'IO_value',
         'quantityindex': 'quantityindex_O',
-        'priceindex': 'priceindex_O'
+        'priceindex': 'priceindex_O',
+        'expenditures': 'expenditures_O'
     }, inplace=True)
 
     IO_naics = pd.merge(left=IO_naics_I, right=IO_naics_O, on=['product_I', 'product_O', 'IO_value', 'date'], how='inner')
