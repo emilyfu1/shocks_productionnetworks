@@ -29,9 +29,6 @@ def pce_tables_clean(df):
 
     # convert to numeric
     df_long['index'] = pd.to_numeric(df_long['index'], errors='coerce')
-
-    # remove the giant total
-    df_long = df_long[~df_long['product'].str.contains('Personal consumption expenditures')]
     
     # convert to datetime
     df_long['date'] = pd.to_datetime(df_long['date'], format='mixed')
@@ -143,8 +140,8 @@ def filter_by_granularity(df, target_granularity):
 def merge_IO_BEA(inputoutput, bea):
     # all the products included in these versions
     products_bea = list(set(bea['product']))
-    # all the NAICS descriptions (you can use either input or output sides i think)
-    naicsdescriptions = list(set(inputoutput['desc_I']))
+    # all the NAICS descriptions
+    naicsdescriptions = list(set(list(inputoutput['desc_O']) + list(inputoutput['desc_I'])))
 
     # load the NLP model
     bert = SentenceTransformer('paraphrase-MiniLM-L6-v2')
@@ -162,10 +159,13 @@ def merge_IO_BEA(inputoutput, bea):
         similarities = [cosine_similarity(category_embedding, sector_embedding).item() for sector_embedding in sector_embeddings]
 
         # filter matches based on the similarity threshold
+        # first look for a near-perfect-ish match
         # im taking anything with above 0.7 cosine similarity or the highest 3 matches if none above 70 exist
-        matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7]
+        matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.95]
         if not matching_indices:
-            matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
+            matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7]
+            if not matching_indices:
+                matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
 
         # append the new matches to the dataframe
         rows = pd.DataFrame({'product': [product] * len(matching_indices),
@@ -180,8 +180,8 @@ def merge_IO_BEA(inputoutput, bea):
     crosswalk_O = crosswalk[['product', 'NAICS_desc']].rename(columns={'product': 'product_O', 'NAICS_desc': 'desc_O'})
 
     # merge each side together
-    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='left')
-    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='left')
+    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='right')
+    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='right')
     IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O', 'value'], how='inner')
 
     # sum all values in the value column of the I-O matrix with the same product_I and product_O
@@ -190,8 +190,10 @@ def merge_IO_BEA(inputoutput, bea):
     IO_naics['value'] = pd.to_numeric(IO_naics['value'])
     IO_naics_grouped = IO_naics.groupby(['product_I', 'product_O'], as_index=False)['value'].sum(min_count=1)
 
+    # left merge (keep everything in I-O)
+
     # merge with BEA table (I)
-    IO_naics_I = pd.merge(left=IO_naics_grouped, right=bea, left_on='product_I', right_on='product', how='inner')
+    IO_naics_I = pd.merge(left=IO_naics_grouped, right=bea, left_on='product_I', right_on='product', how='left')
     IO_naics_I.drop(columns=['product'], inplace=True)
     IO_naics_I.rename(columns={
         'value': 'IO_value',
@@ -201,7 +203,7 @@ def merge_IO_BEA(inputoutput, bea):
     }, inplace=True)
 
     # merge with BEA table (O)
-    IO_naics_O = pd.merge(left=IO_naics_grouped, right=bea, left_on='product_O', right_on='product', how='inner')
+    IO_naics_O = pd.merge(left=IO_naics_grouped, right=bea, left_on='product_O', right_on='product', how='left')
     IO_naics_O.drop(columns=['product'], inplace=True)
     IO_naics_O.rename(columns={
         'value': 'IO_value',
@@ -210,6 +212,6 @@ def merge_IO_BEA(inputoutput, bea):
         'expenditures': 'expenditures_O'
     }, inplace=True)
 
-    IO_naics = pd.merge(left=IO_naics_I, right=IO_naics_O, on=['product_I', 'product_O', 'IO_value', 'date'], how='inner')
+    IO_naics = pd.merge(left=IO_naics_I, right=IO_naics_O, on=['product_I', 'product_O', 'IO_value', 'date'], how='outer')
 
     return IO_naics
