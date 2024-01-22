@@ -177,7 +177,7 @@ def merge_IO_BEA(inputoutput, bea):
                             'similarity': [similarities[i] for i in matching_indices]})
         crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
     
-    crosswalk.to_pickle(path_cleandata + 'cleandata//condordance.pkl')
+    crosswalk.to_pickle(path_cleandata + 'condordance6.pkl')
 
     # merging with NAICS I-O table 
 
