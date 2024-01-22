@@ -1,6 +1,10 @@
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from dotenv import dotenv_values, find_dotenv
+import os
+config = dotenv_values(find_dotenv())
+path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 
 # formats the quantity/price index tables 
 def pce_tables_clean(df):
@@ -173,6 +177,8 @@ def merge_IO_BEA(inputoutput, bea):
                             'similarity': [similarities[i] for i in matching_indices]})
         crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
     
+    crosswalk.to_pickle(path_cleandata + 'cleandata//condordance.pkl')
+
     # merging with NAICS I-O table 
 
     # merging with crosswalk
