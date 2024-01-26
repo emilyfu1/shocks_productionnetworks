@@ -9,7 +9,7 @@ path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
 inputoutput_U = pd.read_pickle(path_cleandata + 'use.pkl')
 
-bea6 = filter_by_granularity(bea_products, target_granularity=6)
+bea4 = filter_by_granularity(bea_products, target_granularity=4)
 
-bea6_IO_S = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea6)
-bea6_IO_S.to_pickle(path_cleandata + 'BEA6_IOuse_merged.pkl')
+bea6_IO_S = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea4)
+bea6_IO_S.to_pickle(path_cleandata + 'BEA4_IOuse_merged.pkl')
