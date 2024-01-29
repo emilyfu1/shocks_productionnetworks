@@ -8,7 +8,7 @@ path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 # import data
 bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
 inputoutput_U = pd.read_pickle(path_cleandata + 'use.pkl')
-
+# goods at 6th level of granularity
 bea6 = filter_by_granularity(bea_products, target_granularity=6)
 
 # get crosswalk
