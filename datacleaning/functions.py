@@ -141,7 +141,7 @@ def filter_by_granularity(df, target_granularity):
     result_df = df.loc[filtered_rows]
     return result_df
 
-def merge_IO_BEA(inputoutput, bea):
+def create_crosswalk(inputoutput, bea, crosswalk_filename):
     # all the products included in these versions
     products_bea = list(set(bea['product']))
     # all the NAICS descriptions
@@ -177,7 +177,13 @@ def merge_IO_BEA(inputoutput, bea):
                             'similarity': [similarities[i] for i in matching_indices]})
         crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
     
-    crosswalk.to_pickle(path_cleandata + 'condordance6.pkl')
+    crosswalk.to_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
+
+    return crosswalk
+
+def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
+    
+    crosswalk = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
 
     # merging with NAICS I-O table 
 
