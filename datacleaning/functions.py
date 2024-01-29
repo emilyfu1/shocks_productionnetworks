@@ -176,13 +176,11 @@ def create_crosswalk(inputoutput, bea, crosswalk_filename):
                             'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
                             'similarity': [similarities[i] for i in matching_indices]})
         crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
-    
-    crosswalk.to_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
 
     return crosswalk
 
 def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
-    
+
     crosswalk = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
 
     # merging with NAICS I-O table 
