@@ -162,20 +162,16 @@ def create_crosswalk(inputoutput, bea, crosswalk_filename):
         # calculate cosine similarity
         similarities = [cosine_similarity(category_embedding, sector_embedding).item() for sector_embedding in sector_embeddings]
 
-        # filter matches based on the similarity threshold
-        # first look for a near-perfect-ish match
-        # im taking anything with above 0.7 cosine similarity or the highest 3 matches if none above 70 exist
-        matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.95]
+        # filter matches based on the similarity threshold (look for the best match above 0.7, otherwise take the best 3 matches)
+        matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7][:1]
         if not matching_indices:
-            matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7]
-            if not matching_indices:
-                matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
+            matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
 
-        # append the new matches to the dataframe
-        rows = pd.DataFrame({'product': [product] * len(matching_indices),
-                            'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
-                            'similarity': [similarities[i] for i in matching_indices]})
-        crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
+            # append the new matches to the dataframe
+            rows = pd.DataFrame({'product': [product] * len(matching_indices),
+                                'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
+                                'similarity': [similarities[i] for i in matching_indices]})
+            crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
 
     return crosswalk
 
