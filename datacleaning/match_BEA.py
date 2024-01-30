@@ -17,5 +17,5 @@ crosswalk = create_crosswalk(inputoutput=inputoutput_U, bea=bea6, crosswalk_file
 crosswalk.to_pickle(path_cleandata + 'concordance//' + crosswalk_naics6 + '.pkl')
 
 # merge data
-bea6_IO_S = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea6, crosswalk_filename=crosswalk_naics6)
-bea6_IO_S.to_pickle(path_cleandata + 'BEA6_IOuse_merged.pkl')
+bea6_IO_U = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea6, crosswalk_filename=crosswalk_naics6)
+bea6_IO_U.to_pickle(path_cleandata + 'BEA6_naics6_merged.pkl')
