@@ -31,7 +31,7 @@ IO_usetable = inputoutput_clean(IO_usetable)
 # quick remove rest-of-world adjustment
 IO_usetable = IO_usetable[IO_usetable['desc_I'] != 'Rest of the world adjustment']
 # save
-IO_usetable.to_pickle(path_cleandata + 'use.pkl')
+IO_usetable.to_pickle(path_cleandata + 'use_naics6.pkl')
 
 # another version of the input-output table using 4-digit naics
 
