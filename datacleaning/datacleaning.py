@@ -32,32 +32,3 @@ IO_usetable = inputoutput_clean(IO_usetable)
 IO_usetable = IO_usetable[IO_usetable['desc_I'] != 'Rest of the world adjustment']
 # save
 IO_usetable.to_pickle(path_cleandata + 'use_naics6.pkl')
-
-# another version of the input-output table using 4-digit naics
-
-# full list of naics codes that i found online
-naicstonaics = pd.read_excel(path_rawdata + '2022_NAICS_Structure.xlsx', skiprows=2)[['2022 NAICS Code', '2022 NAICS Title']]
-# trim footnote thing
-naicstonaics['2022 NAICS Title'] = naicstonaics['2022 NAICS Title'].str.rstrip('T ')
-# 4-digit naics
-naicstonaics = naicstonaics[naicstonaics['2022 NAICS Code'].apply(lambda x: len(str(x))==4)]
-# convert code to string
-naicstonaics['2022 NAICS Code'] = naicstonaics['2022 NAICS Code'].astype('str')
-# append personal consumption expenditures
-naicstonaics.loc[len(naicstonaics)] = ['F010', 'Personal consumption expenditures']
-# dict
-naicstonaics = dict(zip(naicstonaics['2022 NAICS Code'], naicstonaics['2022 NAICS Title']))
-
-# get 4 digit naics
-IO_usetable4 = IO_usetable.copy()
-IO_usetable4['NAICS4_I'] = IO_usetable4['NAICS_I'].apply(lambda x: str(x)[:4] if pd.notna(x) and len(str(x)) >= 4 else str(x))
-IO_usetable4['NAICS4_O'] = IO_usetable4['NAICS_O'].apply(lambda x: str(x)[:4] if pd.notna(x) and len(str(x)) >= 4 else str(x))
-IO_usetable4 = IO_usetable4[['NAICS4_I', 'desc_I', 'NAICS4_O', 'desc_O', 'value']]
-# get 4 digit naics descriptions
-IO_usetable4['desc_I'] = IO_usetable4['NAICS4_I'].map(naicstonaics)
-IO_usetable4['desc_O'] = IO_usetable4['NAICS4_O'].map(naicstonaics)
-# group by 4 digit naics
-IO_usetable4 = IO_usetable4.groupby(['NAICS4_I', 'NAICS4_O', 'desc_I', 'desc_O'], as_index=False)['value'].sum(min_count=1)
-IO_usetable4['value'] = pd.to_numeric(IO_usetable4['value'], errors='coerce')
-# save
-IO_usetable4.to_pickle(path_cleandata + 'use_naics4.pkl')
