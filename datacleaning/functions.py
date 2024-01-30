@@ -141,7 +141,7 @@ def filter_by_granularity(df, target_granularity):
     result_df = df.loc[filtered_rows]
     return result_df
 
-def create_crosswalk(inputoutput, bea, crosswalk_filename):
+def create_crosswalk(inputoutput, bea):
     # all the products included in these versions
     products_bea = list(set(bea['product']))
     # all the NAICS descriptions
