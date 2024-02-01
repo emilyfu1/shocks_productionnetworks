@@ -1,5 +1,5 @@
 import pandas as pd
-from functions import filter_by_granularity, merge_IO_BEA, create_crosswalk
+from functions import filter_by_granularity, merge_IO_BEA
 from dotenv import dotenv_values, find_dotenv
 import os
 config = dotenv_values(find_dotenv())
@@ -12,10 +12,9 @@ inputoutput_U = pd.read_pickle(path_cleandata + 'use.pkl')
 bea6 = filter_by_granularity(bea_products, target_granularity=6)
 
 # get crosswalk
-crosswalk_naics6 = 'concordance6_naics6'
-crosswalk = create_crosswalk(inputoutput=inputoutput_U, bea=bea6, crosswalk_filename=crosswalk_naics6)
-crosswalk.to_pickle(path_cleandata + 'concordance//' + crosswalk_naics6 + '.pkl')
+concordance_naics6 = 'concordance6_naics6'
+concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')[['product', 'NAICS_desc']]
 
 # merge data
-bea6_IO_U = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea6, crosswalk_filename=crosswalk_naics6)
+bea6_IO_U = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea6, crosswalk_filename=concordance_naics6)
 bea6_IO_U.to_pickle(path_cleandata + 'BEA6_naics6_merged.pkl')
