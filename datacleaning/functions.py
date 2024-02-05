@@ -168,17 +168,17 @@ def create_crosswalk(inputoutput, bea):
         if not matching_indices:
             matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
 
-            # append the new matches to the dataframe
-            rows = pd.DataFrame({'product': [product] * len(matching_indices),
-                                'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
-                                'similarity': [similarities[i] for i in matching_indices]})
-            crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
+        # append the new matches to the dataframe
+        rows = pd.DataFrame({'product': [product] * len(matching_indices),
+                            'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
+                            'similarity': [similarities[i] for i in matching_indices]})
+        crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
 
     return crosswalk
 
 def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
 
-    concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')[['product', 'NAICS_desc']]
+    concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
 
     # merging with NAICS I-O table 
 

@@ -20,8 +20,7 @@ bea['product'] = bea['product'].str.lstrip()
 
 # run concordance function
 concordance = create_crosswalk(inputoutput=inputoutput, bea=bea)
-# fix strings
-concordance['product'] = concordance['product'].str.lstrip()
+concordance = concordance[['product', 'NAICS_desc']]
 
 # some (or a lot) manual fixes for the concordance file for persistent issues that the matching algorithm doesn't catch
 # not sure how better to address these
@@ -135,6 +134,7 @@ concordance = concordance[~(concordance['product'].str.contains('Funeral and bur
 # remove "Household appliances and electrical and electronic goods"
 concordance = concordance[~(concordance['product'].str.contains('Household cleaning products') & concordance['NAICS_desc'].str.contains('Hospitals'))]
 
+concordance.to_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')
 
 # PROPORTIONS (SPLITTING UP I-O VALUE)
 
@@ -153,4 +153,4 @@ concordance_calculateproportion['IO_proportions'] = concordance_calculateproport
 # use for merging
 concordance_calculateproportion = concordance_calculateproportion[['product', 'NAICS_desc', 'IO_proportions']]
 
-concordance_calculateproportion.to_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')
+concordance_calculateproportion.to_pickle(path_cleandata + 'concordance//concordance6_naics6_addproportions.pkl')
