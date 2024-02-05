@@ -191,8 +191,9 @@ def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
     add_naics_I['value'] = add_naics_I['value'].multiply(add_naics_I['IO_proportions'], fill_value=np.nan)
     add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='left')
     add_naics_O['value'] = add_naics_O['value'].multiply(add_naics_O['IO_proportions'], fill_value=np.nan)
-    IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O', 'value'], how='outer')[['product_I', 'product_O', 'value']]
-
+    IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O'], how='outer')[['product_I', 'product_O', 'value_x', 'value_y']]
+    IO_naics['value'] = IO_naics['value_x'] + IO_naics['value_y']
+    IO_naics = IO_naics[['product_I', 'product_O', 'value']]
     # sum all values in the value column of the I-O matrix with the same product_I and product_O
     IO_naics = IO_naics.sort_values(by=['product_I', 'product_O'])
     IO_naics = IO_naics[['product_I', 'product_O', 'value']]
