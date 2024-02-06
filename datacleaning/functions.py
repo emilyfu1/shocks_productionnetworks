@@ -39,6 +39,16 @@ def pce_tables_clean(df):
     df_long['date'] = pd.to_datetime(df_long['date'], format='mixed')
     df_long['date'] = df_long['date'] + pd.offsets.MonthEnd(0)
 
+    # remove "duplicates"
+    # Strip leading whitespace from the "product" column
+    df_long['product_stripped'] = df_long['product'].str.strip()
+
+    # Remove duplicates based on the stripped "product" column, keeping the last occurrence
+    df_long = df_long.drop_duplicates(subset=['product_stripped', 'date', 'index'], keep='last')
+
+    # Drop the additional column created for stripping whitespace
+    df_long = df_long.drop(columns=['product_stripped'])
+
     return df_long
 
 # formats the I-O tables
@@ -187,9 +197,9 @@ def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
     crosswalk_O = concordance_calculateproportion.rename(columns={'product': 'product_O', 'NAICS_desc': 'desc_O'})
 
     # merge each side together by multiplying the value column with the proportions
-    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='left')
+    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='outer')
     add_naics_I['value'] = add_naics_I['value'].multiply(add_naics_I['IO_proportions'], fill_value=np.nan)
-    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='left')
+    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='outer')
     add_naics_O['value'] = add_naics_O['value'].multiply(add_naics_O['IO_proportions'], fill_value=np.nan)
     IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O'], how='outer')[['product_I', 'product_O', 'value_x', 'value_y']]
     IO_naics['value'] = IO_naics['value_x'] + IO_naics['value_y']
