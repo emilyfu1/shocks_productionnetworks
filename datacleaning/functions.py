@@ -192,23 +192,21 @@ def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
 
     # merging with NAICS I-O table 
 
-    # merging with crosswalk
+    # change concordance column names so that i can merge with I-O table (first merge with sellers then merge with buyers)
     crosswalk_I = concordance_calculateproportion.rename(columns={'product': 'product_I', 'NAICS_desc': 'desc_I'})
     crosswalk_O = concordance_calculateproportion.rename(columns={'product': 'product_O', 'NAICS_desc': 'desc_O'})
 
-    # merge each side together by multiplying the value column with the proportions
-    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='outer')
-    add_naics_I['value'] = add_naics_I['value'].multiply(add_naics_I['IO_proportions'], fill_value=np.nan)
-    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='outer')
-    add_naics_O['value'] = add_naics_O['value'].multiply(add_naics_O['IO_proportions'], fill_value=np.nan)
-    IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O'], how='outer')[['product_I', 'product_O', 'value_x', 'value_y']]
-    IO_naics['value'] = IO_naics['value_x'] + IO_naics['value_y']
-    IO_naics = IO_naics[['product_I', 'product_O', 'value']]
+    # merge crosswalk to sellers
+    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='left')
+    # use I-O proportions
+    add_naics_I['value'] = add_naics_I['value'] * add_naics_I['IO_proportions']
+    # merge crosswalk to buyers (is this correct?)
+    IO_naics = pd.merge(left=crosswalk_O[['product_O', 'desc_O']], right=add_naics_I, on=['desc_O'], how='outer')
+
     # sum all values in the value column of the I-O matrix with the same product_I and product_O
-    IO_naics = IO_naics.sort_values(by=['product_I', 'product_O'])
     IO_naics = IO_naics[['product_I', 'product_O', 'value']]
-    IO_naics['value'] = pd.to_numeric(IO_naics['value'])
     IO_naics_grouped = IO_naics.groupby(['product_I', 'product_O'], as_index=False)['value'].sum(min_count=1)
+    IO_naics_grouped['value'] = pd.to_numeric(IO_naics_grouped['value'])
 
     # left merge (keep everything in I-O)
 
