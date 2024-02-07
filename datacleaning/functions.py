@@ -50,7 +50,7 @@ def pce_tables_clean(df):
     df_long = df_long.drop(columns=['product_stripped'])
 
     # remove punctuation
-    df_long = df_long[df_long['product'] != 'Nonprofit hospitals\' services to households']
+    df_long = df_long[~(df_long['product'].str.contains("Nonprofit hospitals' services to households"))]
 
     return df_long
 
