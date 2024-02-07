@@ -50,11 +50,7 @@ def pce_tables_clean(df):
     df_long = df_long.drop(columns=['product_stripped'])
 
     # remove punctuation
-    df_long['product_strip_punctiation'] = df_long['product'].str.translate(str.maketrans('', '', string.punctuation))
-    # Remove duplicates based on the stripped "product" column, keeping the last occurrence
-    df_long = df_long.drop_duplicates(subset=['product_strip_punctiation', 'date', 'index'], keep='last')
-    # Drop the additional column created for stripping whitespace
-    df_long = df_long.drop(columns=['product_strip_punctiation'])
+    df_long = df_long[df_long['product'] != 'Nonprofit hospitals\' services to households']
 
     return df_long
 
