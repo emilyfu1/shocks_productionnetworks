@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import string
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import dotenv_values, find_dotenv
@@ -40,14 +41,20 @@ def pce_tables_clean(df):
     df_long['date'] = df_long['date'] + pd.offsets.MonthEnd(0)
 
     # remove "duplicates"
+
     # Strip leading whitespace from the "product" column
     df_long['product_stripped'] = df_long['product'].str.strip()
-
     # Remove duplicates based on the stripped "product" column, keeping the last occurrence
     df_long = df_long.drop_duplicates(subset=['product_stripped', 'date', 'index'], keep='last')
-
     # Drop the additional column created for stripping whitespace
     df_long = df_long.drop(columns=['product_stripped'])
+
+    # remove punctuation
+    df_long['product_strip_punctiation'] = df_long['product'].str.translate(str.maketrans('', '', string.punctuation))
+    # Remove duplicates based on the stripped "product" column, keeping the last occurrence
+    df_long = df_long.drop_duplicates(subset=['product_strip_punctiation', 'date', 'index'], keep='last')
+    # Drop the additional column created for stripping whitespace
+    df_long = df_long.drop(columns=['product_strip_punctiation'])
 
     return df_long
 
