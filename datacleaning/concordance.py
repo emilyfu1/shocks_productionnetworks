@@ -22,6 +22,8 @@ bea['product'] = bea['product'].str.lstrip()
 concordance = create_crosswalk(inputoutput=inputoutput, bea=bea)
 concordance = concordance[['product', 'NAICS_desc']]
 
+concordance.to_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')
+
 # some (or a lot) manual fixes for the concordance file for persistent issues that the matching algorithm doesn't catch
 # not sure how better to address these
 
@@ -43,7 +45,7 @@ concordance = concordance[~(concordance['product'].str.contains('Tobacco') & ~co
 concordance = concordance[~(concordance['product'].str.contains('Outpatient services, gross output') & ~concordance['NAICS_desc'].str.contains('Outpatient care centers'))]
 
 # only keep accomodations
-concordance = concordance[~(concordance['product'].str.contains('Hotels and motels') & ~concordance['NAICS_desc'].str.contains('Accomodation'))]
+concordance = concordance[~(concordance['product'].str.contains('Hotels and motels') & ~concordance['NAICS_desc'].str.contains('Accommodation'))]
 
 # only keep electricity generation and utilities
 concordance = concordance[~((concordance['product'].str.contains('Electricity') & ~concordance['NAICS_desc'].str.contains('Electric power generation')) |
@@ -57,8 +59,6 @@ concordance = concordance[~(concordance['product'].str.contains('Games, toys, an
 
 # remove "Professional and commercial equipment and supplies"
 concordance = concordance[~(concordance['product'].str.contains('Personal computers/tablets and peripheral equipment') & concordance['NAICS_desc'].str.contains('Professional and commercial equipment and supplies'))]
-# add "Household appliances and electrical and electronic goods"
-concordance.loc[len(concordance)] = ['Personal computers/tablets and peripheral equipment','Household appliances and electrical and electronic goods']
 
 # remove "Other animal food manufacturing"
 concordance = concordance[~(concordance['product'].str.contains('Beef and veal') & concordance['NAICS_desc'].str.contains('Other animal food manufacturing'))]
@@ -87,13 +87,11 @@ concordance = concordance[~(concordance['product'].str.contains('Pets and relate
 # include only civic, social, professional, and similar organizations
 concordance = concordance[~(concordance['product'].str.contains('Professional advocacy, gross output') & ~concordance['NAICS_desc'].str.contains('Civic, social, professional, and similar organizations'))]
 
-# include only petroleum refineries
-concordance = concordance[~(concordance['product'].str.contains('Other fuels') & ~concordance['NAICS_desc'].str.contains('Petroleum refineries'))]
+# include only coal (remove all others)
+concordance = concordance[~(concordance['product'].str.contains('Other fuels'))]
 
 # include only computer systems design services
 concordance = concordance[~(concordance['product'].str.contains('Computer software and accessories') & ~concordance['NAICS_desc'].str.contains('Computer systems design services'))]
-# add "Household appliances and electrical and electronic goods"
-concordance.loc[len(concordance)] = ['Computer software and accessories','Household appliances and electrical and electronic goods']
 
 # remove "Glass and glass product manufacturing"
 concordance = concordance[~(concordance['product'].str.contains('Corrective eyeglasses') & concordance['NAICS_desc'].str.contains('Glass and glass product manufacturing'))]
@@ -106,15 +104,6 @@ concordance = concordance[~(concordance['product'].str.contains('Flowers, seeds,
 
 # remove "Commercial and industrial machinery and equipment repair and maintenance"
 concordance = concordance[~(concordance['product'].str.contains('Moving, storage, and freight') & concordance['NAICS_desc'].str.contains('Commercial and industrial machinery and equipment repair and maintenance'))]
-# add warehousing and storage
-concordance.loc[len(concordance)] = ['Moving, storage, and freight','Warehousing and storage']
-
-# add paperboard container manufacturing	
-concordance.loc[len(concordance)] = ['Household paper products','Paperboard container manufacturing']
-# add printing
-concordance.loc[len(concordance)] = ['Household paper products','Printing']
-# add stationery product manufacturing
-concordance.loc[len(concordance)] = ['Household paper products','Stationery product manufacturing']
 
 # remove "Warehousing and storage"
 concordance = concordance[~(concordance['product'].str.contains('Garbage and trash collection') & concordance['NAICS_desc'].str.contains('Warehousing and storage'))]
@@ -134,7 +123,45 @@ concordance = concordance[~(concordance['product'].str.contains('Funeral and bur
 # remove "Household appliances and electrical and electronic goods"
 concordance = concordance[~(concordance['product'].str.contains('Household cleaning products') & concordance['NAICS_desc'].str.contains('Hospitals'))]
 
-concordance.to_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')
+# remove "State and local government consumption expenditures"
+concordance = concordance[~(concordance['product'].str.contains('Foreign travel in the United States') & concordance['NAICS_desc'].str.contains('State and local government consumption expenditures'))]
+
+# remove "Motor vehicle and parts dealers"
+concordance = concordance[~(concordance['product'].str.contains('Net motor vehicle and other transportation insurance (116)') & concordance['NAICS_desc'].str.contains('Motor vehicle and parts dealers'))]
+
+# add gambling and remove everything else
+concordance = concordance[~(concordance['product'].str.contains('Lotteries'))]
+
+# remove "Motor vehicle gasoline engine and engine parts"
+concordance = concordance[~(concordance['product'].str.contains('Gasoline and other motor fuel') & concordance['NAICS_desc'].str.contains('Motor vehicle gasoline engine and engine parts'))]
+
+# remove "Accounting, tax preparation, bookkeeping, and payroll services"
+concordance = concordance[~(concordance['product'].str.contains('Social services, gross output') & concordance['NAICS_desc'].str.contains('Accounting, tax preparation, bookkeeping, and payroll services'))]
+
+# remove "Snack food manufacturing"
+concordance = concordance[~(concordance['product'].str.contains('Other purchased meals') & concordance['NAICS_desc'].str.contains('Snack food manufacturing'))]
+
+# remove "Motor vehicle and parts dealers"
+concordance = concordance[~(concordance['product'].str.contains('Net motor vehicle and other transportation insurance (116)') & concordance['NAICS_desc'].str.contains('Motor vehicle and parts dealers'))]
+
+# remove "Gross operating surplus"
+concordance = concordance[~(concordance['NAICS_desc'].str.contains('Gross operating surplus'))]
+
+# ADDING ROWS
+new_rows = [{'product': 'Hotels and motels', 'NAICS_desc': 'Travel arrangement and reservation services'},
+            {'product': 'Foreign travel in the United States', 'NAICS_desc': 'Accommodation'},
+            {'product': 'Personal computers/tablets and peripheral equipment', 'NAICS_desc': 'Household appliances and electrical and electronic goods'},
+            {'product': 'Other fuels', 'NAICS_desc': 'Coal mining'},
+            {'product': 'Moving, storage, and freight', 'NAICS_desc': 'Warehousing and storage'},
+            {'product': 'Household paper products', 'NAICS_desc': 'Paperboard container manufacturing'},
+            {'product': 'Household paper products', 'NAICS_desc': 'Printing'},
+            {'product': 'Household paper products', 'NAICS_desc': 'Stationery product manufacturing'},
+            {'product': 'Lotteries', 'NAICS_desc': 'Gambling industries (except casino hotels)'},
+            {'product': 'Gasoline and other motor fuel', 'NAICS_desc': 'Gasoline stations'},
+            {'product': 'Gasoline and other motor fuel', 'NAICS_desc': 'OIl and gas extraction'},
+            {'product': 'Gasoline and other motor fuel', 'NAICS_desc': 'Drilling oil and gas wells'}]
+concordance = pd.concat([concordance, pd.DataFrame(new_rows)], ignore_index=True)
+
 
 # PROPORTIONS (SPLITTING UP I-O VALUE)
 
