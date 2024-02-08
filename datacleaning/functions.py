@@ -40,17 +40,17 @@ def pce_tables_clean(df):
     df_long['date'] = pd.to_datetime(df_long['date'], format='mixed')
     df_long['date'] = df_long['date'] + pd.offsets.MonthEnd(0)
 
-    # remove "duplicates"
+    # deal with nonprofit stuff
 
-    # Strip leading whitespace from the "product" column
-    df_long['product_stripped'] = df_long['product'].str.strip()
-    # Remove duplicates based on the stripped "product" column, keeping the last occurrence
-    df_long = df_long.drop_duplicates(subset=['product_stripped', 'date', 'index'], keep='last')
-    # Drop the additional column created for stripping whitespace
-    df_long = df_long.drop(columns=['product_stripped'])
+    # remove anything with "less" in front of it
+    # remove anything with "to households" in the name since these are sales from nonprofits
+    df_long = df_long[~(df_long['product'].str.contains('to households'))]
+    df_long = df_long[~(df_long['product'].str.contains('Less'))]
 
-    # remove punctuation
-    df_long = df_long[~(df_long['product'].str.contains("Nonprofit hospitals' services to households"))]
+    # remove foreigner expenditures
+    df_long = df_long[~(df_long['product'].str.contains('Foreign travel in the United States'))]
+    df_long = df_long[~(df_long['product'].str.contains('Medical expenditures of foreigners'))]
+    df_long = df_long[~(df_long['product'].str.contains('Expenditures of foreign students in the United States'))]
 
     return df_long
 
