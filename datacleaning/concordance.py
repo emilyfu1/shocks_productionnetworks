@@ -138,9 +138,6 @@ concordance = concordance[~(concordance['product'].str.contains('Gasoline and ot
 # remove "Accounting, tax preparation, bookkeeping, and payroll services"
 concordance = concordance[~(concordance['product'].str.contains('Social services, gross output') & concordance['NAICS_desc'].str.contains('Accounting, tax preparation, bookkeeping, and payroll services'))]
 
-# remove "Snack food manufacturing"
-concordance = concordance[~(concordance['product'].str.contains('Other purchased meals') & concordance['NAICS_desc'].str.contains('Snack food manufacturing'))]
-
 # remove "Motor vehicle and parts dealers"
 concordance = concordance[~(concordance['product'].str.contains('Net motor vehicle and other transportation insurance (116)') & concordance['NAICS_desc'].str.contains('Motor vehicle and parts dealers'))]
 
