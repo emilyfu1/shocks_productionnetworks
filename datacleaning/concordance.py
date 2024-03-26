@@ -177,4 +177,4 @@ concordance_calculateproportion['IO_proportions'] = concordance_calculateproport
 # use for merging
 concordance_calculateproportion = concordance_calculateproportion[['product', 'NAICS_desc', 'IO_proportions']]
 
-concordance_calculateproportion.to_pickle(path_cleandata + 'concordance//concordance6_naics6_addproportions.pkl')
+concordance_calculateproportion.to_pickle(path_cleandata + 'concordance//concordance4_naics6_addproportions.pkl')

@@ -17,6 +17,6 @@ bea = bea[bea['product'].isin(products_2017)]
 bea['product'] = bea['product'].str.lstrip()
 
 # merge data
-concordance_naics6 = 'concordance6_naics6_addproportions'
+concordance_naics6 = 'concordance4_naics6_addproportions'
 bea6_IO_U = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea, crosswalk_filename=concordance_naics6)
-bea6_IO_U.to_pickle(path_cleandata + 'BEA6_naics6_merged.pkl')
+bea6_IO_U.to_pickle(path_cleandata + 'BEA4_naics6_merged.pkl')
