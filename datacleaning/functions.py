@@ -179,7 +179,7 @@ def create_crosswalk(inputoutput, bea):
         # filter matches based on the similarity threshold (look for the best match above 0.7, otherwise take the best 3 matches)
         matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7]
         if matching_indices:
-            matching_indices = matching_indices[-1]
+            matching_indices = [matching_indices[-1]]
         if not matching_indices:
             matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
 
