@@ -12,7 +12,7 @@ bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
 inputoutput = pd.read_pickle(path_cleandata + 'use_naics6.pkl')
 
 # filter bea data
-bea = filter_by_granularity(bea_products, target_granularity=6)
+bea = filter_by_granularity(bea_products, target_granularity=4)
 # make sure bea products actually have 2017 data
 products_2017 = bea[(bea['date'].dt.year == 2017) & (bea['expenditures'].notnull())]['product'].unique()
 bea = bea[bea['product'].isin(products_2017)]
