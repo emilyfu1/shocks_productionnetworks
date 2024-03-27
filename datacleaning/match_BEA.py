@@ -10,13 +10,13 @@ bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
 inputoutput_U = pd.read_pickle(path_cleandata + 'use_naics6.pkl')
 # goods at 6th level of granularity
 # use 4
-bea = filter_by_granularity(bea_products, target_granularity=4)
+bea = filter_by_granularity(bea_products, target_granularity=6)
 # make sure bea products actually have 2017 data
 products_2017 = bea[(bea['date'].dt.year == 2017) & (bea['expenditures'].notnull())]['product'].unique()
 bea = bea[bea['product'].isin(products_2017)]
 bea['product'] = bea['product'].str.lstrip()
 
 # merge data
-concordance_naics6 = 'concordance4_naics6_addproportions'
+concordance_naics6 = 'concordance6_naics6_addproportions'
 bea6_IO_U = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea, crosswalk_filename=concordance_naics6)
-bea6_IO_U.to_pickle(path_cleandata + 'BEA4_naics6_merged.pkl')
+bea6_IO_U.to_pickle(path_cleandata + 'BEA6_naics6_merged.pkl')

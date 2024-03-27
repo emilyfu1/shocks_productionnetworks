@@ -164,10 +164,12 @@ def create_crosswalk(inputoutput, bea):
     # load the NLP model
     bert = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
+    # TESTING PURPOSES
+    products_bea.insert(0, products_bea.pop(products_bea.index('Personal consumption expenditures')))
+
     # create the crosswalk
     crosswalk = pd.DataFrame(columns=['product', 'NAICS_desc', 'similarity'])
     for product in products_bea:
-        print(product)
 
         # get embeddings for the product category and NAICS sectors
         category_embedding = bert.encode(product, convert_to_tensor=True).reshape(1, -1)
@@ -179,14 +181,15 @@ def create_crosswalk(inputoutput, bea):
         # filter matches based on the similarity threshold (look for the best match above 0.7, otherwise take the best 3 matches)
         matching_indices = [i for i, sim in enumerate(similarities) if sim > 0.7]
         if matching_indices:
-            matching_indices = [matching_indices[-1]]
-        if not matching_indices:
+            matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:1]
+        else:
             matching_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:3]
 
         # append the new matches to the dataframe
         rows = pd.DataFrame({'product': [product] * len(matching_indices),
                             'NAICS_desc': [naicsdescriptions[i] for i in matching_indices],
                             'similarity': [similarities[i] for i in matching_indices]})
+        print(rows)
         crosswalk = pd.concat([crosswalk, rows], ignore_index=True)
 
     return crosswalk
