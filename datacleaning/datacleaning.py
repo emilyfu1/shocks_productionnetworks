@@ -28,7 +28,5 @@ pce_clean.to_pickle(path_cleandata + 'BEA_PCE.pkl')
 IO_usetable = pd.read_excel(path_rawdata + 'Use_SUT_Framework_2017_DET.xlsx', sheet_name='2017')
 # convert into my format
 IO_usetable = inputoutput_clean(IO_usetable)
-# quick remove rest-of-world adjustment
-IO_usetable = IO_usetable[IO_usetable['desc_I'] != 'Rest of the world adjustment']
 # save
 IO_usetable.to_pickle(path_cleandata + 'use_naics6.pkl')

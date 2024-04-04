@@ -70,42 +70,33 @@ def inputoutput_clean(df, wide=False):
 
     # assorted data cleaning stuff
     df = df.rename(columns={'Commodities/Industries-- Code': 'NAICS_I', 'nan-- Commodity Description': 'desc_I'})
+    # calculate final demand
+    df['fd_all-- T019 - T001'] = df['Total use of products-- T019'] - df['Total Intermediate-- T001']
+    # quick remove rest-of-world adjustment
+    df = df[df['desc_I'] != 'Rest of the world adjustment']
+        
+    # wide to long
+    df_long = pd.melt(df, id_vars=['NAICS_I', 'desc_I'], var_name='NAICS_desc_O', value_name='value')
 
-    if wide == True:
-        # regex pattern to identify descriptions and codes
-        to_remove = r'.*--\s(\w+)'
+    # split the NAICS code and descriptions back up
+    df_long[['desc_O', 'NAICS_O']] = df_long['NAICS_desc_O'].str.split('-- ', expand=True)
 
-        # Apply the regex pattern to columns with the specified format
-        df.columns = df.columns.to_series().replace(to_remove, r'\1', regex=True)
+    # reorder columns
+    df_long = df_long[['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O', 'value']]
 
-        df.drop('desc_I', axis=1, inplace=True)
+    # removing rows with no naics
+    # specify the value column since i dont want to get rid of nans there
+    exclude_columns = ['value']
+    df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
 
-        # removing rows with no naics (different for wide format)
-        # get rid of the last row since its a footnote in the raw data
-        df = df.iloc[:-1]
-        df = df.dropna(subset=['NAICS_I'])
-
-        return df
-    
-    else:
-        # wide to long
-        df_long = pd.melt(df, id_vars=['NAICS_I', 'desc_I'], var_name='NAICS_desc_O', value_name='value')
-
-        # split the NAICS code and descriptions back up
-        df_long[['desc_O', 'NAICS_O']] = df_long['NAICS_desc_O'].str.split('-- ', expand=True)
-
-        # reorder columns
-        df_long = df_long [['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O', 'value']]
-
-        # removing rows with no naics
-        # specify the value column since i dont want to get rid of nans there
-        exclude_columns = ['value']
-        df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
-
+    if wide == False:
         return df_long
+    else:
+        df_wide = df_long[['desc_I', 'desc_O', 'value']].pivot_table(index='desc_I', columns='desc_O', values='value', aggfunc='mean')
+        return df_wide
 
-''' function for filtering data in BEA data tables (2.4.3U and 2.4.4U)
-example:
+# function for filtering data in BEA data tables (2.4.3U and 2.4.4U)
+''' example:
 - first level: goods
 - second level: durable goods
 - third level: motor vehicles and parts
@@ -113,7 +104,6 @@ example:
 - fifth level: new autos
 - sixth level: new domestic autos
 output: products of specified granularity and of lower granularity if no further granularity available'''
-
 def filter_by_granularity(df, target_granularity):
     if target_granularity not in [1, 2, 3, 4, 5, 6]:
         raise Exception("Select an appropriate level of granularity")
@@ -155,6 +145,7 @@ def filter_by_granularity(df, target_granularity):
     result_df = df.loc[filtered_rows]
     return result_df
 
+# creates concordance file between products and sectors
 def create_crosswalk(inputoutput, bea):
     # all the products included in these versions
     products_bea = list(set(bea['product']))
@@ -194,6 +185,7 @@ def create_crosswalk(inputoutput, bea):
 
     return crosswalk
 
+# merges IO tables with price/quantity data
 def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
 
     concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
