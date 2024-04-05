@@ -155,11 +155,15 @@ def create_crosswalk(inputoutput, bea):
     # load the NLP model
     bert = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
-    # TESTING PURPOSES
-    products_bea.insert(0, products_bea.pop(products_bea.index('Personal consumption expenditures')))
+    # remove pce from the product lists, create a match with product = 'Personal consumption expenditures', NAICS_desc = 'fd_all'
+    naicsdescriptions.remove('Personal consumption expenditures')
+    naicsdescriptions.remove('fd_all')
+    products_bea.remove('Personal consumption expenditures')
 
     # create the crosswalk
-    crosswalk = pd.DataFrame(columns=['product', 'NAICS_desc', 'similarity'])
+    crosswalk = pd.DataFrame({'product': ['Personal consumption expenditures'],
+                            'NAICS_desc': ['fd_all'],
+                            'similarity': [np.nan]})
     for product in products_bea:
 
         # get embeddings for the product category and NAICS sectors

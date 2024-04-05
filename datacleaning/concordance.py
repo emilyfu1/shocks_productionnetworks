@@ -26,11 +26,6 @@ concordance.to_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')
 # some (or a lot) manual fixes for the concordance file for persistent issues that the matching algorithm doesn't catch
 # not sure how better to address these
 
-# remove personal consumption expenditures as a match for any products that aren't personal consumption expenditures
-# if personal consumption expenditures isn't in the product column, it shouldn't be the matching MAICS_desc either
-concordance = concordance[~((concordance['product'].str.contains('Personal consumption expenditures') & ~concordance['NAICS_desc'].str.contains('Personal consumption expenditures')) |
-                            (~concordance['product'].str.contains('Personal consumption expenditures') & concordance['NAICS_desc'].str.contains('Personal consumption expenditures')))]
-
 # remove "Other animal food manufacturing" for anything that isn't about pets
 concordance = concordance[~(~concordance['product'].str.contains('Pets and related products') & concordance['NAICS_desc'].str.contains('Other animal food manufacturing'))]
 

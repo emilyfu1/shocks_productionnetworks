@@ -9,7 +9,6 @@ path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
 inputoutput_U = pd.read_pickle(path_cleandata + 'use_naics6.pkl')
 # goods at 6th level of granularity
-# use 4
 bea = filter_by_granularity(bea_products, target_granularity=6)
 # make sure bea products actually have 2017 data
 products_2017 = bea[(bea['date'].dt.year == 2017) & (bea['expenditures'].notnull())]['product'].unique()
