@@ -72,9 +72,7 @@ def inputoutput_clean(df, wide=False):
     df = df.rename(columns={'Commodities/Industries-- Code': 'NAICS_I', 'nan-- Commodity Description': 'desc_I'})
     # calculate final demand
     df['fd_all-- T019 - T001'] = df['Total use of products-- T019'] - df['Total Intermediate-- T001']
-    # quick remove rest-of-world adjustment
-    df = df[df['desc_I'] != 'Rest of the world adjustment']
-        
+
     # wide to long
     df_long = pd.melt(df, id_vars=['NAICS_I', 'desc_I'], var_name='NAICS_desc_O', value_name='value')
 
@@ -88,6 +86,18 @@ def inputoutput_clean(df, wide=False):
     # specify the value column since i dont want to get rid of nans there
     exclude_columns = ['value']
     df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
+    
+    # remove rest-of-world adjustment
+    df_long = df_long[df_long['desc_I'] != 'Rest of the world adjustment']
+    # remove these government/defense things
+    to_remove_O = ['Total intermediate', 'Personal consumption expenditures', 'Nonresidential private fixed investment in equipment', 'Nonresidential private fixed investment in intellectual property products',
+                   'Residential private fixed investment', 'Nonresidential private fixed investment in structures', 'Change in private inventories', 'Exports of goods and services',
+                   'Federal Government defense: Consumption expenditures', 'Federal national defense: Gross investment in equipment', 
+                   'Federal national defense: Gross investment in intellectual property products', 'Federal national defense: Gross investment in structures', 
+                   'Federal Government nondefense: Consumption expenditures', 'Federal nondefense: Gross investment in equipment', 'Federal nondefense: Gross investment in intellectual property products',
+                   'Federal nondefense: Gross investment in structures', 'State and local government consumption expenditures', 'State and local: Gross investment in equipment', 
+                   'State and local: Gross investment in intellectual property products', 'State and local: Gross investment in structures', 'Total use of products']
+    df_long = df_long[~df_long['desc_O'].isin(to_remove_O)]
 
     if wide == False:
         return df_long
@@ -156,7 +166,6 @@ def create_crosswalk(inputoutput, bea):
     bert = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
     # remove pce from the product lists, create a match with product = 'Personal consumption expenditures', NAICS_desc = 'fd_all'
-    naicsdescriptions.remove('Personal consumption expenditures')
     naicsdescriptions.remove('fd_all')
     products_bea.remove('Personal consumption expenditures')
 
@@ -197,17 +206,20 @@ def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
     # merging with NAICS I-O table 
 
     # change concordance column names so that i can merge with I-O table (first merge with sellers then merge with buyers)
-    crosswalk_I = concordance_calculateproportion.rename(columns={'product': 'product_I', 'NAICS_desc': 'desc_I'})
-    crosswalk_O = concordance_calculateproportion.rename(columns={'product': 'product_O', 'NAICS_desc': 'desc_O'})
+    crosswalk_I = concordance_calculateproportion.rename(columns={'product': 'product_I', 'NAICS_desc': 'desc_I', 'IO_proportions': 'IO_proportions_I'})
+    crosswalk_O = concordance_calculateproportion.rename(columns={'product': 'product_O', 'NAICS_desc': 'desc_O', 'IO_proportions': 'IO_proportions_O'})
 
     # merge crosswalk to sellers
-    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='left')
+    add_naics_I = pd.merge(left=crosswalk_I, right=inputoutput, on='desc_I', how='left')[['product_I', 'desc_I', 'IO_proportions_I', 'desc_O', 'value']]
+    add_naics_O = pd.merge(left=crosswalk_O, right=inputoutput, on='desc_O', how='left')[['product_O', 'desc_O', 'IO_proportions_O', 'desc_I', 'value']]
+
+    IO_naics = pd.merge(left=add_naics_I, right=add_naics_O, on=['desc_I', 'desc_O', 'value'], how='outer')
     # use I-O proportions
-    add_naics_I['value'] = add_naics_I['value'] * add_naics_I['IO_proportions']
-    # merge crosswalk to buyers (is this correct?)
-    IO_naics = pd.merge(left=crosswalk_O[['product_O', 'desc_O']], right=add_naics_I, on=['desc_O'], how='outer')
+    IO_naics['value'] = IO_naics['value'] * IO_naics['IO_proportions_O']
+    IO_naics['value'] = IO_naics['value'] * IO_naics['IO_proportions_I']
 
     # sum all values in the value column of the I-O matrix with the same product_I and product_O
+
     IO_naics = IO_naics[['product_I', 'product_O', 'value']]
     IO_naics_grouped = IO_naics.groupby(['product_I', 'product_O'], as_index=False)['value'].sum(min_count=1)
     IO_naics_grouped['value'] = pd.to_numeric(IO_naics_grouped['value'])
