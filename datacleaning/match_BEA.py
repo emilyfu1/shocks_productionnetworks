@@ -8,6 +8,7 @@ path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 # import data
 bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
 inputoutput_U = pd.read_pickle(path_cleandata + 'use_naics6.pkl')
+requirementstable = pd.read_pickle(path_cleandata + 'requirements_naics6.pkl')
 # goods at 6th level of granularity
 bea = filter_by_granularity(bea_products, target_granularity=6)
 # make sure bea products actually have 2017 data
@@ -18,4 +19,8 @@ bea['product'] = bea['product'].str.lstrip()
 # merge data
 concordance_naics6 = 'concordance6_naics6_addproportions'
 bea6_IO_U = merge_IO_BEA(inputoutput=inputoutput_U, bea=bea, crosswalk_filename=concordance_naics6)
+bea6_IO_requirements = merge_IO_BEA(inputoutput=requirementstable, bea=bea, crosswalk_filename=concordance_naics6)
+bea6_IO_requirements.rename(columns={'IO_value': 'IO_leontief'}, inplace=True)
+bea6_IO_U = pd.merge(left=bea6_IO_U, right=bea6_IO_requirements, how='left', on=list(bea6_IO_U.columns).remove('IO_value'))
+
 bea6_IO_U.to_pickle(path_cleandata + 'BEA6_naics6_merged.pkl')
