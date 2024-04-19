@@ -89,7 +89,7 @@ def inputoutput_clean(df, wide=False):
     
     # remove rest-of-world adjustment
     df_long = df_long[df_long['desc_I'] != 'Rest of the world adjustment']
-    # remove these government/defense things
+    # remove these government/defense/investment things (since we are calculating final demand anyways)
     to_remove_O = ['Total intermediate', 'Personal consumption expenditures', 'Nonresidential private fixed investment in equipment', 'Nonresidential private fixed investment in intellectual property products',
                    'Residential private fixed investment', 'Nonresidential private fixed investment in structures', 'Change in private inventories', 'Exports of goods and services',
                    'Federal Government defense: Consumption expenditures', 'Federal national defense: Gross investment in equipment', 
@@ -98,6 +98,44 @@ def inputoutput_clean(df, wide=False):
                    'Federal nondefense: Gross investment in structures', 'State and local government consumption expenditures', 'State and local: Gross investment in equipment', 
                    'State and local: Gross investment in intellectual property products', 'State and local: Gross investment in structures', 'Total use of products']
     df_long = df_long[~df_long['desc_O'].isin(to_remove_O)]
+
+    if wide == False:
+        return df_long
+    else:
+        df_wide = df_long[['desc_I', 'desc_O', 'value']].pivot_table(index='desc_I', columns='desc_O', values='value', aggfunc='mean')
+        return df_wide
+
+# tbh this is going to be almost the same thing as the previous function but for the I/O requirements table
+# i think there are enough differences to warrant it having its own thing? 
+def requirements_clean(df, wide=False):
+    # temporarily join rows 3 and 4 (convenient for merging)
+    new_row = df.iloc[2:4].astype(str).apply('-- '.join, axis=0)
+
+    # replace column names with the concatenated row
+    df.columns = new_row
+
+    # drop the empty rows
+    df = df.iloc[5:]
+
+    # reset index
+    df = df.reset_index(drop=True)
+
+    # assorted data cleaning stuff
+    df = df.rename(columns={'Industry / Industry-- Code': 'NAICS_I', 'nan-- Industry Description': 'desc_I'})
+        
+    # wide to long
+    df_long = pd.melt(df, id_vars=['NAICS_I', 'desc_I'], var_name='NAICS_desc_O', value_name='value')
+
+    # split the NAICS code and descriptions back up
+    df_long[['desc_O', 'NAICS_O']] = df_long['NAICS_desc_O'].str.split('-- ', expand=True)
+
+    # reorder columns
+    df_long = df_long[['NAICS_I', 'desc_I', 'NAICS_O', 'desc_O', 'value']]
+
+    # removing rows with no naics
+    # specify the value column since i dont want to get rid of nans there
+    exclude_columns = ['value']
+    df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
 
     if wide == False:
         return df_long
