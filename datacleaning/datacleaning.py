@@ -33,5 +33,5 @@ IO_usetable.to_pickle(path_cleandata + 'use_naics6.pkl')
 
 # import I/O requirements table
 industry_requirements = pd.read_excel(path_rawdata + 'IxI_TR_2017_PRO_Det.xlsx', sheet_name='2017')
-industry_requirements = requirements_clean(industry_requirements)
+industry_requirements = requirements_clean(industry_requirements, wide=True)
 industry_requirements.to_pickle(path_cleandata + 'requirements_naics6.pkl')

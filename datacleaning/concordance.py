@@ -68,6 +68,9 @@ concordance = concordance[~(concordance['product'].str.contains('Hair, dental, s
 # remove bad match for drinks
 concordance = concordance[~(concordance['product'].str.contains('Mineral waters, soft drinks, and vegetable juices') & concordance['NAICS_desc'].str.contains('Fruit and vegetable canning, pickling, and drying'))]
 
+# remove "State and local government passenger transit"
+concordance = concordance[~(concordance['product'].str.contains('U.S. travel outside the United States') & concordance['NAICS_desc'].str.contains('State and local government passenger transit'))]
+
 # ADDING ROWS
 new_rows = [{'product': 'Hotels and motels', 'NAICS_desc': 'Travel arrangement and reservation services'},
             {'product': 'Furniture', 'NAICS_desc': 'Upholstered household furniture manufacturing'},
