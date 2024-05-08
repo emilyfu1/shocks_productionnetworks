@@ -202,6 +202,7 @@ def filter_by_granularity(df, target_granularity):
     return result_df
 
 # creates concordance file between products and sectors
+# unused after existing concordance found
 def create_crosswalk(inputoutput, bea):
     # all the products included in these versions
     products_bea = list(set(bea['product']))
