@@ -52,6 +52,12 @@ def pce_tables_clean(df):
     df_long = df_long[~(df_long['product'].str.contains('Medical expenditures of foreigners'))]
     df_long = df_long[~(df_long['product'].str.contains('Expenditures of foreign students in the United States'))]
 
+    # remove leading spaces
+    df_long['product'] = df_long['product'].str.lstrip()
+
+    # clean product names 
+    # remove numbers between parentheses that follow some of the column names so that i can use the provided concordance
+
     return df_long
 
 # formats the I-O tables

@@ -14,8 +14,6 @@ inputoutput = pd.read_pickle(path_cleandata + 'use_naics6.pkl')
 bea = filter_by_granularity(bea_products, target_granularity=6)
 # make sure bea products actually have 2017 data
 products_2017 = bea[(bea['date'].dt.year == 2017) & (bea['expenditures'].notnull())]['product'].unique()
-bea = bea[bea['product'].isin(products_2017)]
-bea['product'] = bea['product'].str.lstrip()
 
 # run concordance function
 concordance = create_crosswalk(inputoutput=inputoutput, bea=bea)
