@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import re
 import string
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -52,11 +53,12 @@ def pce_tables_clean(df):
     df_long = df_long[~(df_long['product'].str.contains('Medical expenditures of foreigners'))]
     df_long = df_long[~(df_long['product'].str.contains('Expenditures of foreign students in the United States'))]
 
-    # remove leading spaces
-    df_long['product'] = df_long['product'].str.lstrip()
-
     # clean product names 
     # remove numbers between parentheses that follow some of the column names so that i can use the provided concordance
+    df_long['product'] = df_long['product'].apply(lambda x: re.sub(r'\([^)]*\)', '', x))
+
+    # remove leading and trailing spaces
+    df_long['product'] = df_long['product'].str.strip()
 
     return df_long
 
