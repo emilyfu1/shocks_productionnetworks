@@ -3,7 +3,7 @@
 # folder structure
 We have a shared Dropbox folder that stores all our data and notes explaining the methodology that we're pursuing
 
-## \rawdata: our downloaded data from various sources!
+## _\rawdata:_ our downloaded data from various sources!
 1. [NIPA personal consumption expenditures (PCE) tables](https://www.bea.gov/itable/national-gdp-and-personal-income) from the US Bureau of Economic Analysis
     2.4.3U: product-level quantity indexes for real personal consumption expenditures
     2.4.4U: product-level price indexes for personal consumption expenditures
@@ -13,7 +13,7 @@ We have a shared Dropbox folder that stores all our data and notes explaining th
 4. The _\canada_ folder stores the Canadian versions of prices and expenditures data (and metadata). we're not currently using these.
 5. The _I-O\_old_ folder stores the I-O tables for older sector definitions. We're not currently using these.
 
-## \cleandata: where we save our transformed data, calculations, simulation results, etc.
+## _\cleandata:_ where we save our transformed data, calculations, simulation results, etc.
 1. Cleaned PCE tables: BEA_PCE.pkl
 2. Merge on cleaned PCE tables (at the 6-digit NAICS and what we're calling the 6th level of product granularity): BEA6_NAICS6_merged
 3. Cleaned I-O requirements table for 6-digit NAICS sectors: requirements_naics6
