@@ -1,12 +1,11 @@
 import pandas as pd
-from functions import create_crosswalk, filter_by_granularity
+from functions import filter_by_granularity
 from dotenv import dotenv_values, find_dotenv
 import os
 
 config = dotenv_values(find_dotenv())
 path_rawdata = os.path.abspath(config["RAWDATA"]) + '\\'
 path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
-path_figures = os.path.abspath(config["FIGURES"]) + '\\'
 
 # import data
 bea_products = pd.read_pickle(path_cleandata + 'BEA_PCE.pkl')
@@ -16,15 +15,15 @@ bea = filter_by_granularity(bea_products, target_granularity=6)
 # make sure bea products actually have 2017 data
 products_2017 = bea[(bea['date'].dt.year == 2017) & (bea['expenditures'].notnull())]['product'].unique()
 
-# run concordance function
+# load raw concordance file
 concordance = pd.read_excel(path_rawdata + 'PCEBridge_2017_DET.xlsx', sheet_name='2017')
 concordance = concordance[4:].rename(columns={'Unnamed: 1': 'product', 'Unnamed: 3': 'NAICS_desc'})[['product', 'NAICS_desc']]
 
 concordance.to_pickle(path_cleandata + 'concordance//concordance6_naics6.pkl')
 
-# PROPORTIONS (SPLITTING UP I-O VALUE)
+# PROPORTIONS (split up I-O value based on the many-to-many matches in the concordance)
 
-# use 2017 expenditures to calculate proportions of sorts
+# calculate proportions of expenditures based on 2017 values
 bea2017 = bea[bea['date'].dt.year == 2017][['product', 'expenditures']].groupby('product').sum(min_count=1).reset_index()
 
 # merge 2017 together with concordance 
