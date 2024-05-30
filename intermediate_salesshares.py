@@ -1,11 +1,7 @@
 import pandas as pd
 import numpy as np
-import string
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import dotenv_values, find_dotenv
 import os
-from datacleaning.functions import filter_by_granularity, inputoutput_clean
 config = dotenv_values(find_dotenv())
 path_rawdata = os.path.abspath(config["RAWDATA"]) + '\\'
 path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
