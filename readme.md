@@ -45,6 +45,8 @@ __concordance:__ Filters the raw concordance for the products we want and calcul
 
 __match_BEA:__ Merges the PCE data with the I-O using the proportion-calculation concordance
 
+__mergechecks:__ Visualizing how the I-O and PCE data line up within the merged data
+
 __intermediate_salesshares:__ uses the cleaned I-O requirements matrix to calculate intermediate shares of sales (this saves into the _\inversions\\_ folder)
 
 __inversions:__ I-O adjustment code and VAR results on I-O adjusted prices and quantities with classifications of shocks (and some nice visuals). Uses the merged PCE/I-O data and the calculated intermediate shares of sales
