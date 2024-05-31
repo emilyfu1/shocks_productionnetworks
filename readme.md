@@ -31,11 +31,11 @@ We have a shared Dropbox folder that stores all our data and notes explaining th
 ## Clean data: any output data is saved here
 1. Cleaned PCE tables all merged together: BEA_PCE.pkl
 2. Merge on all the cleaned PCE tables (at the 6-digit NAICS and what we're calling the 6th level of product granularity): BEA6_NAICS6_merged
-3. Cleaned I-O requirements table for 6-digit NAICS sectors: requirements_naics6
+3. Cleaned I-O requirements table for 6-digit NAICS sectors: requirements_naics6.pkl
 4. Cleaned I-O use table for 6-digit NAICS sectors: use_naics6.pkl
 5. The _\concordance\\_ folder has the cleaned version of the product-to-sector concordance 
-6. The _\inversions\\_ folder is where the I-O adjusted data and VAR residuals get saved
-7. The _\montecarlogenerated\\_ folder is where all the simulation data gets saved
+6. The _\inversions\\_ folder is where the I-O adjusted data and VAR residuals are saved
+7. The _\montecarlogenerated\\_ folder is where all the simulation data are saved
 
 # code
 
