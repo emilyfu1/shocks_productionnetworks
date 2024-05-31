@@ -6,9 +6,9 @@ We have a shared Dropbox folder that stores all our data and notes explaining th
 ## Raw data: our downloaded data from various sources!
 1. [NIPA personal consumption expenditures (PCE) tables](https://www.bea.gov/itable/national-gdp-and-personal-income) from the US Bureau of Economic Analysis. 
 
-    __2.4.3U:__ product-level quantity indexes for real personal consumption expenditures
-    __2.4.4U:__ product-level price indexes for personal consumption expenditures
-    __2.4.5U:__ product-level personal consumption expenditures in millions of dollars
+    __2.4.3U:__ product-level quantity indexes for real personal consumption expenditures, quarterly
+    __2.4.4U:__ product-level price indexes for personal consumption expenditures, quarterly
+    __2.4.5U:__ product-level personal consumption expenditures in millions of dollars, quarterly
 
     The NIPA tables have products at various types of disaggregations. More specific products have a number of indents by their relative level of disaggregation. For instance:
     
@@ -23,7 +23,7 @@ We have a shared Dropbox folder that stores all our data and notes explaining th
 
     We are using the sixth level of disaggregation wherever possible. If a type of product doesn't have this level of specificity, we just take the most specific category available. 
 
-2. [I-O use table and requirements tables for NAICS sectors](https://www.bea.gov/itable/input-output) from the US Bureau of Economic Analysis
+2. [I-O use table and requirements tables for NAICS sectors](https://www.bea.gov/itable/input-output) from the US Bureau of Economic Analysis, 2017 data
 3. [Concordance between PCE products and NAICS sectors](https://www.bea.gov/industry/industry-underlying-estimates) from the US Bureau of Economic Analysis
 4. The _\canada_ folder stores the Canadian versions of prices and expenditures data (and metadata) from Statistics Canada. we're not currently using these
 5. The _I-O\_old_ folder stores the I-O tables for older sector definitions from the US Bureau of Economic Analysis. We're not currently using these
@@ -65,4 +65,4 @@ In your local repository, you should have a file called ```.env``` with relevant
 MY_PATH="C:\Users\\you\Dropbox (Bank of Canada)\whatever"
 ```
 
-The BEA _does_ offer an API so it'd be nice to switch to that eventually. It would make the data loading much cleaner but it wouldn't affect any of the results.
+The BEA _does_ offer an API so it'd be nice to switch to that eventually. It would make the data loading much cleaner but it wouldn't affect any of the results. Getting the data through here would make retrieving monthly PCE data a lot easier since the BEA's online data tables can't load that large amount of data.
