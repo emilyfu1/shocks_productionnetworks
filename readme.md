@@ -51,7 +51,9 @@ __intermediate_salesshares:__ uses the cleaned I-O requirements matrix to calcul
 
 __inversions:__ I-O adjustment code and VAR results on I-O adjusted prices and quantities with classifications of shocks (and some nice visuals). Uses the merged PCE/I-O data and the calculated intermediate shares of sales
 
-__montecarlo:__ generates fake data using a Monte Carlo method that we can use to test our estimation work
+__montecarlodg:__ generates fake data using a Monte Carlo method that we can use to test our estimation work
+
+__montecarlosandbox:__ using fake data on VAR procedure
 
 # other stuff
 
