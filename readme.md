@@ -1,7 +1,7 @@
 # Readme
 
 # folder structure
-We have a shared Dropbox folder that stores all our data and notes explaining the methodology that we're pursuing
+We have a shared Dropbox folder that stores all our data, figures, and notes explaining the methodology that we're pursuing
 
 ## Raw data: our downloaded data from various sources!
 1. [NIPA personal consumption expenditures (PCE) tables](https://www.bea.gov/itable/national-gdp-and-personal-income) from the US Bureau of Economic Analysis. 
@@ -37,6 +37,15 @@ We have a shared Dropbox folder that stores all our data and notes explaining th
 6. The _\inversions\\_ folder is where the I-O adjusted data and VAR residuals are saved
 7. The _\montecarlogenerated\\_ folder is where all the simulation data are saved
 
+## Figures: 
+Our many graphs and other visualizations are saved here
+1. The _\merge_checks\\_ folder shows the comparison between the I-O values and PCE
+2. Prices: Stacked bar graphs that show the relationship between intermediate and value added prices
+3. Shocks: Heatmaps that show product-level classifications of shocks
+
+## Notes:
+Contains a copy of the Shapiro paper and various walkthroughs of everything done in the code
+
 # code
 
 __datacleaning:__ Works with all the raw data to make it useable for our transformations and calculations
@@ -49,11 +58,11 @@ __mergechecks:__ Visualizing how the I-O and PCE data line up within the merged 
 
 __intermediate_salesshares:__ uses the cleaned I-O requirements matrix to calculate intermediate shares of sales (this saves into the _\inversions\\_ folder)
 
-__inversions:__ I-O adjustment code and VAR results on I-O adjusted prices and quantities with classifications of shocks (and some nice visuals). Uses the merged PCE/I-O data and the calculated intermediate shares of sales
+__inversions:__ I-O adjustment code and VAR results on I-O adjusted prices and quantities with classifications of shocks (with some nice visuals). Uses the merged PCE/I-O data and the calculated intermediate shares of sales
 
 __montecarlodg:__ generates fake data using a Monte Carlo method that we can use to test our estimation work
 
-__montecarlosandbox:__ using fake data on VAR procedure
+__montecarlosandbox:__ using fake data on VAR procedure and similarly classifies shocks (with some nice visuals)
 
 # other stuff
 
