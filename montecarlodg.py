@@ -39,7 +39,7 @@ demandshock_params = np.random.uniform(-0.02, 0.02, size=len(products_to_include
 alpha = 1.2
 
 # price generation convergence
-convergence_threshold = 1e-6
+convergence_threshold = 1e-7
 max_change = float('inf')
 
 # initial values
@@ -91,7 +91,8 @@ montecarlo_prices['priceindex'] = 1
 # create diagonal matrix from intermediate_salesshares
 diag_matrix = np.diag(intermediate_salesshares)
 
-while max_change > convergence_threshold:
+# goes until convergence threshold is met
+while max_change >= convergence_threshold:
 
     prev_prices = montecarlo_prices.copy()
 
@@ -168,6 +169,7 @@ while max_change > convergence_threshold:
     print('\n')
 
 # save everything
+shocks_generated.to_pickle(path_cleandata + 'montecarlogenerated\\shocks.pkl')
 montecarlo_intermediates.to_pickle(path_cleandata + 'montecarlogenerated\\intermediateprices.pkl')
 montecarlo_sales.to_pickle(path_cleandata + 'montecarlogenerated\\sales.pkl')
 montecarlo_output.to_pickle(path_cleandata + 'montecarlogenerated\\realoutput.pkl')
