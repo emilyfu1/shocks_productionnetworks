@@ -6,8 +6,9 @@ config = dotenv_values(find_dotenv())
 path_rawdata = os.path.abspath(config["RAWDATA"]) + '\\'
 path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 
+# this is the I-O requirements table
+# this represents the amount of gross output from sector i that is produced to satisfy a unit of final demand y from sector j
 requirementstable = pd.read_pickle(path_cleandata + 'requirements_naics6.pkl')
-
 iorequirements_wide_fillna = requirementstable.fillna(value=0)
 
 # next, i need sectors that show up as both buyers and sellers
@@ -26,9 +27,10 @@ iorequirements_wide_fillna.drop(columns=[col for col in iorequirements_wide_fill
 iorequirements_wide_fillna.drop(index=[idx for idx in iorequirements_wide_fillna.index if idx not in sectors_to_include], inplace=True)
 
 # 1. Invert the data matrix to calculate Xi^(-1)
-intermediate_salesshares = np.identity(len(iorequirements_wide_fillna)) - np.linalg.inv(iorequirements_wide_fillna)
 # 2. Subtract this inverse from the identity matrix. This is Omega'*diag(gamma)
+intermediate_salesshares = np.identity(len(iorequirements_wide_fillna)) - np.linalg.inv(iorequirements_wide_fillna)
 intermediate_salesshares = pd.DataFrame(intermediate_salesshares, index=iorequirements_wide_fillna.index, columns=iorequirements_wide_fillna.columns)
+# then this sum gives the share, for each sector, of what is used as intermediates
 intermediate_salesshares = intermediate_salesshares.sum(axis=0)
 
 # merge with concordance
