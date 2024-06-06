@@ -43,6 +43,8 @@ for example,
 
 if M is the make matrix, then the entry M_i,c denotes how much of commodity c is made by industry i.
 If the use matrix is denoted by U, then the entry U_c,i denotes the amount of commodity c used by industry i or final demand purpose i.
+
+# note that the commodity and industry names are identical!! this can make things confusing but does make for easy merges
 '''
 
 IO_usetable = pd.read_excel(path_rawdata + 'Use_SUT_Framework_2017_DET.xlsx', sheet_name='2017')
