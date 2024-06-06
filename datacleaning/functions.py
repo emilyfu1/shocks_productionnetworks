@@ -9,7 +9,7 @@ import os
 config = dotenv_values(find_dotenv())
 path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
 
-# formats the quantity/price index tables 
+# formats the PCE data
 def pce_tables_clean(df):
     # put rows 2 and 3 together to get a real date row and make that the set of column names instead
     new_row = df.iloc[2:4].astype(str).apply(''.join, axis=0)
@@ -97,7 +97,7 @@ def inputoutput_clean(df, wide=False):
     
     # remove rest-of-world adjustment
     df_long = df_long[df_long['desc_I'] != 'Rest of the world adjustment']
-    # remove these government/defense/investment things (since we are calculating final demand anyways)
+    # remove these government/defense/investment things (since we are only considering final demand)
     to_remove_O = ['Total intermediate', 'Personal consumption expenditures', 'Nonresidential private fixed investment in equipment', 'Nonresidential private fixed investment in intellectual property products',
                    'Residential private fixed investment', 'Nonresidential private fixed investment in structures', 'Change in private inventories', 'Exports of goods and services',
                    'Federal Government defense: Consumption expenditures', 'Federal national defense: Gross investment in equipment', 
@@ -115,6 +115,7 @@ def inputoutput_clean(df, wide=False):
 
 # tbh this is going to be almost the same thing as the previous function but for the I/O requirements table
 # i think there are enough differences to warrant it having its own thing? 
+# formats the I-O requirements table
 def requirements_clean(df, wide=False):
     # temporarily join rows 3 and 4 (convenient for merging)
     new_row = df.iloc[2:4].astype(str).apply('-- '.join, axis=0)
@@ -201,7 +202,7 @@ def filter_by_granularity(df, target_granularity):
     result_df = df.loc[filtered_rows]
     return result_df
 
-# creates concordance file between products and sectors
+# legacy code: creates concordance file between products and sectors
 # unused after existing concordance found
 def create_crosswalk(inputoutput, bea):
     # all the products included in these versions
@@ -245,7 +246,7 @@ def create_crosswalk(inputoutput, bea):
 
     return crosswalk
 
-# merges IO tables with price/quantity data
+# merges I-O tables with price/quantity data by scaling I-O values based on the match proportions
 def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
 
     concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
