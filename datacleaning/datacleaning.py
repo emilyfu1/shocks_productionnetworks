@@ -29,15 +29,19 @@ pce_clean.to_pickle(path_cleandata + 'BEA_PCE.pkl')
 
 # import input-output USE matrix
 '''
-this is a C x (I + N) matrix where C is a bunch of commodities, I is a bunch of industries that use these commodities, and N is the number of final demand categories. 
+the make matrix is a I x C matrix where C is a bunch of commodities and I is a bunch of industries that use these commodities
+the use matrix is a C x (I + N) matrix where N is the number of final demand categories. 
+the input-output matrix is either I x I or C x C that shows either uses of industries in other industries or uses of commodities in other commodities
 
-commodities can be used by industries or used in final demand. 
+commodities can be used by industries or used in final demand categories. 
+we will be interested in final demand (i.e. all final demand categories), i.e. total use - total intermediates
 
 for example, 
 1. you can buy a wheel of cheese and eat the whole thing (personal consumption)
 2. a restaurant owner can also buy it to make a meal to then sell to people (used as an intermediate good by the restaurant industry)
 3. CSIS can buy the cheese to stick a camera into and spy on someone (government expenditure)
 
+if M is the make matrix, then the entry M_i,c denotes how much of commodity c is made by industry i.
 If the use matrix is denoted by U, then the entry U_c,i denotes the amount of commodity c used by industry i or final demand purpose i.
 '''
 
