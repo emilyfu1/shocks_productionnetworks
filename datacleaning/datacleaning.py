@@ -12,13 +12,14 @@ pce_quantityindex = pd.read_excel(path_rawdata + '2_4_3U.xlsx')
 pce_priceindex = pd.read_excel(path_rawdata + '2_4_4U.xlsx')
 # expenditures
 pce = pd.read_excel(path_rawdata + '2_4_5U.xlsx')
-# setup for merge
+# setup for merge (and data cleaning)
 pce_quantityindex = pce_tables_clean(pce_quantityindex)
 pce_quantityindex = pce_quantityindex.rename(columns={'index': 'quantityindex'})
 pce_priceindex = pce_tables_clean(pce_priceindex)
 pce_priceindex = pce_priceindex.rename(columns={'index': 'priceindex'})
 pce = pce_tables_clean(pce)
 pce = pce.rename(columns={'index': 'expenditures'})
+# merge these together
 pce_clean = pd.merge(left=pce_quantityindex, right=pce_priceindex, on=['product', 'date'], how='outer')
 pce_clean = pd.merge(left=pce_clean, right=pce, on=['product', 'date'], how='outer')
 # save
@@ -47,7 +48,7 @@ IO_usetable = inputoutput_clean(IO_usetable)
 IO_usetable.to_pickle(path_cleandata + 'use_naics6.pkl')
 
 
-# import I/O REQUIREMENTS matrix
+# import input-output REQUIREMENTS matrix
 '''
 this is the leontief inverse of the I-O matrix, which you get as (I_n − A)^(−1) for some n-sector I-O matrix A and a same-dimension identity matrix
 # this represents the amount of gross output from industry i that is produced to satisfy a unit of final demand y from industry j
