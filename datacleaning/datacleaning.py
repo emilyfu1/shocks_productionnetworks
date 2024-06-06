@@ -31,7 +31,11 @@ pce_clean.to_pickle(path_cleandata + 'BEA_PCE.pkl')
 '''
 the make matrix is a I x C matrix where C is a bunch of commodities and I is a bunch of industries that use these commodities
 the use matrix is a C x (I + N) matrix where N is the number of final demand categories. 
-the input-output matrix is either I x I or C x C that shows either uses of industries in other industries or uses of commodities in other commodities
+the input-output matrix is either 
+1. I x I, where the jth column shows the inputs needed from other industries to produce one unit of output in sector j (where the ith
+element corresponds to the ith sector) or 
+2. C x C, where the jth column shows the other commodities to produce one unit of commodity j (where the ith
+element corresponds to the ith commodity)
 
 commodities can be used by industries or used in final demand categories. 
 we will be interested in final demand (i.e. all final demand categories), i.e. total use - total intermediates
