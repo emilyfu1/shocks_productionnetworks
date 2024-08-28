@@ -78,8 +78,6 @@ def inputoutput_clean(df, wide=False):
 
     # assorted data cleaning stuff
     df = df.rename(columns={'Commodities/Industries-- Code': 'NAICS_I', 'nan-- Commodity Description': 'desc_I'})
-    # calculate final demand
-    df['fd_all-- T019 - T001'] = df['Total use of products-- T019'] - df['Total Intermediate-- T001']
 
     # wide to long
     df_long = pd.melt(df, id_vars=['NAICS_I', 'desc_I'], var_name='NAICS_desc_O', value_name='value')
