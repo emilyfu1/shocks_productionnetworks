@@ -1,10 +1,10 @@
 import pandas as pd
-from functions import pce_tables_clean, inputoutput_clean, requirements_clean
+from functions import pce_tables_clean, makeuse_clean, requirements_clean
 from dotenv import dotenv_values, find_dotenv
 import os
 config = dotenv_values(find_dotenv())
-path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
-path_rawdata = os.path.abspath(config["RAWDATA"]) + '\\'
+path_cleandata = os.path.abspath(config["CLEANDATA"]) + '//'
+path_rawdata = os.path.abspath(config["RAWDATA"]) + '//'
 
 # import BEA tables (price indexes, quantity indexes, expenditures by product)
 # indexes
@@ -27,7 +27,7 @@ pce_clean.to_pickle(path_cleandata + 'BEA_PCE.pkl')
 
 
 
-# import input-output USE matrix
+# import input-output MAKE matrix
 '''
 the make matrix is a I x C matrix where C is a bunch of commodities and I is a bunch of industries that use these commodities
 the use matrix is a C x (I + N) matrix where N is the number of final demand categories. 
@@ -51,11 +51,11 @@ If the use matrix is denoted by U, then the entry U_c,i denotes the amount of co
 # note that the commodity and industry names are identical!! this can make things confusing but does make for easy merges
 '''
 
-IO_usetable = pd.read_excel(path_rawdata + 'Use_SUT_Framework_2017_DET.xlsx', sheet_name='2017')
+IO_maketable = pd.read_excel(path_rawdata + 'Supply_2017_DET.xlsx', sheet_name='2017')
 # convert into my format
-IO_usetable = inputoutput_clean(IO_usetable)
+IO_maketable = makeuse_clean(IO_maketable, wide=True)
 # save
-IO_usetable.to_pickle(path_cleandata + 'use_naics6.pkl')
+IO_maketable.to_pickle(path_cleandata + 'make_naics6.pkl')
 
 
 # import input-output REQUIREMENTS matrix
