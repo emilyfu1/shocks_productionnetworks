@@ -250,7 +250,8 @@ def create_crosswalk(inputoutput, bea):
 
     return crosswalk
 
-# merges I-O tables with price/quantity data by scaling I-O values based on the match proportions
+# legacy code: merges I-O tables with price/quantity data by scaling I-O values based on the match proportions
+# unused after we got to using the requirements table
 def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
 
     concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
