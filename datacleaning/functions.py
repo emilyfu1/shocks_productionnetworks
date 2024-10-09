@@ -7,7 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import dotenv_values, find_dotenv
 import os
 config = dotenv_values(find_dotenv())
-path_cleandata = os.path.abspath(config["CLEANDATA"]) + '\\'
+path_cleandata = os.path.abspath(config["CLEANDATA"])
 
 # formats the PCE data
 def pce_tables_clean(df):
@@ -38,7 +38,7 @@ def pce_tables_clean(df):
     df_long['index'] = pd.to_numeric(df_long['index'], errors='coerce')
     
     # convert to datetime
-    df_long['date'] = pd.to_datetime(df_long['date'], format='mixed')
+    df_long['date'] = pd.to_datetime(df_long['date'])
     df_long['date'] = df_long['date'] + pd.offsets.MonthEnd(0)
 
     # deal with nonprofit stuff
@@ -62,8 +62,8 @@ def pce_tables_clean(df):
 
     return df_long
 
-# formats the I-O tables
-def inputoutput_clean(df, wide=False):
+# formats the make and use tables
+def makeuse_clean(df, wide=False):
     # temporarily join rows 3 and 4 (convenient for merging)
     new_row = df.iloc[3:5].astype(str).apply('-- '.join, axis=0)
 
@@ -78,8 +78,6 @@ def inputoutput_clean(df, wide=False):
 
     # assorted data cleaning stuff
     df = df.rename(columns={'Commodities/Industries-- Code': 'NAICS_I', 'nan-- Commodity Description': 'desc_I'})
-    # calculate final demand
-    df['fd_all-- T019 - T001'] = df['Total use of products-- T019'] - df['Total Intermediate-- T001']
 
     # wide to long
     df_long = pd.melt(df, id_vars=['NAICS_I', 'desc_I'], var_name='NAICS_desc_O', value_name='value')
@@ -94,18 +92,6 @@ def inputoutput_clean(df, wide=False):
     # specify the value column since i dont want to get rid of nans there
     exclude_columns = ['value']
     df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
-    
-    # remove rest-of-world adjustment
-    df_long = df_long[df_long['desc_I'] != 'Rest of the world adjustment']
-    # remove these government/defense/investment things (since we are only considering final demand)
-    to_remove_O = ['Total intermediate', 'Personal consumption expenditures', 'Nonresidential private fixed investment in equipment', 'Nonresidential private fixed investment in intellectual property products',
-                   'Residential private fixed investment', 'Nonresidential private fixed investment in structures', 'Change in private inventories', 'Exports of goods and services',
-                   'Federal Government defense: Consumption expenditures', 'Federal national defense: Gross investment in equipment', 
-                   'Federal national defense: Gross investment in intellectual property products', 'Federal national defense: Gross investment in structures', 
-                   'Federal Government nondefense: Consumption expenditures', 'Federal nondefense: Gross investment in equipment', 'Federal nondefense: Gross investment in intellectual property products',
-                   'Federal nondefense: Gross investment in structures', 'State and local government consumption expenditures', 'State and local: Gross investment in equipment', 
-                   'State and local: Gross investment in intellectual property products', 'State and local: Gross investment in structures', 'Total use of products']
-    df_long = df_long[~df_long['desc_O'].isin(to_remove_O)]
 
     if wide == False:
         return df_long
@@ -124,10 +110,7 @@ def requirements_clean(df, wide=False):
     df.columns = new_row
 
     # drop the empty rows
-    df = df.iloc[4:]
-
-    # drop the sum row 
-    df = df.iloc[:-1]
+    df = df.iloc[5:]
 
     # reset index
     df = df.reset_index(drop=True)
@@ -148,6 +131,24 @@ def requirements_clean(df, wide=False):
     # specify the value column since i dont want to get rid of nans there
     exclude_columns = ['value']
     df_long = df_long.dropna(subset=df_long.columns.difference(exclude_columns))
+
+    # remove rest-of-world adjustment
+    df_long = df_long[df_long['desc_I'] != 'Rest of the world adjustment']
+    # remove these government/defense/investment things (since we are only considering final demand)
+    to_remove_O = ['Private households',
+                    'Federal general government (defense)',
+                    'Federal general government (nondefense)',
+                    'Postal service',
+                    'Federal electric utilities',
+                    'Other federal government enterprises',
+                    'State and local government (educational services)',
+                    'State and local government (hospitals and health services)',
+                    'State and local government (other services)',
+                    'State and local government passenger transit',
+                    'State and local government electric utilities',
+                    'Other state and local government enterprises',
+                    'Total Industry Output Requirements']
+    df_long = df_long[~df_long['desc_O'].isin(to_remove_O)]
 
     if wide == False:
         return df_long
@@ -249,7 +250,8 @@ def create_crosswalk(inputoutput, bea):
 
     return crosswalk
 
-# merges I-O tables with price/quantity data by scaling I-O values based on the match proportions
+# legacy code: merges I-O tables with price/quantity data by scaling I-O values based on the match proportions
+# unused after we got to using the requirements table
 def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
 
     concordance_calculateproportion = pd.read_pickle(path_cleandata + 'concordance//' + crosswalk_filename + '.pkl')
@@ -300,4 +302,3 @@ def merge_IO_BEA(inputoutput, bea, crosswalk_filename):
     IO_naics = pd.merge(left=IO_naics_I, right=IO_naics_O, on=['product_I', 'product_O', 'IO_value', 'date'], how='outer')
 
     return IO_naics
-
