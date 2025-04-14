@@ -113,7 +113,27 @@ def find_intermediate_industries(use_table):
     use_table["Industry"] = use_table["Industry"].str.strip()
     use_table = use_table.dropna(subset=['Industry'])
     use_table = use_table[use_table['PCE Expenditure'].isna()]
-    return use_table 
+    return use_table
+
+def get_final_demand_from_use_table(use_table):
+    """Takes BEA Use table as input, returns industires with zero PCE expenditures"""
+    use_table = use_table.iloc[4:-11]
+    use_table = use_table.loc[:, use_table.iloc[0].isin(['Commodity Description', 'F01000'])]
+    use_table = use_table.iloc[1:]
+    use_table.rename(columns={'Unnamed: 1': 'Industry' , 'Unnamed: 405': 'PCE Expenditure'}, inplace=True)
+    use_table.loc[use_table['Industry'] == 'Drugs and druggists’ sundries', 'Industry'] = 'Drugs and druggists sundries'
+    use_table.loc[use_table['Industry'] == 'Insurance Carriers, except Direct Life Insurance', 'Industry'] = 'Insurance carriers, except direct life'
+    use_table.loc[use_table['Industry'] == 'Tobacco product manufacturing', 'Industry'] = 'Tobacco manufacturing'
+    use_table.loc[use_table['Industry'] == 'Scenic and sightseeing transportation and support activities for transportatio', 'Industry'] = 'scenic and sightseeing transportation and support activities'
+    use_table.loc[use_table['Industry'] == 'Community food, housing, and other relief services, including rehabilitation services', 'Industry'] = 'community food, housing, and other relief services, including vocational rehabilitation services'
+    use_table["Industry"] = use_table["Industry"].str.lower()
+    use_table["Industry"] = use_table["Industry"].str.strip()
+    use_table = use_table.dropna(subset=['Industry'])
+    use_table.loc[use_table['PCE Expenditure'].isna(),'PCE Expenditure'] = 0  # Make nans 0 (we will remove these sectors anyways)
+    use_table = use_table[['Industry','PCE Expenditure']]
+    
+    return use_table  
+
 
 
 def get_sales_from_make_matrix(make_matrix):
