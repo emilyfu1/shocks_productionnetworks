@@ -222,3 +222,28 @@ def clean_make_matrix(make_matrix):
 
     return make_matrix
 
+
+def get_demand_shock_from_shaipro_output(df, haver_product_map):
+    """Returns a df that indicates whether a product is labelled as a demand shock for a particular time period. Only works 
+    if the input df is in the same format as the results producted by Shapiro's Stata code"""
+
+    df = df[['time_month'] + [col for col in df.columns if col.startswith('demdum_')]]
+    df = df.T
+    df.columns = df.iloc[0]
+    df = df.iloc[1:]
+    df.index = df.index.str.replace('^demdum_', '', regex=True)
+    df.index = df.index.map(haver_product_map)
+
+    return df
+
+def get_expenditure_weights_from_shapiro_outputs(df, haver_product_map):
+
+    df = df[['time_month', "s"] + [col for col in df.columns if col.startswith('weight_')]]
+    df = df.T
+    df.columns = df.iloc[0]
+    df = df.iloc[1:]
+    df.index = df.index.str.replace('^weight_', '', regex=True)
+    df.index = df.index.map(lambda x: x[:-1] if len(x) > 1 else x)
+    df.index = df.index.map(haver_product_map)
+
+    return df
