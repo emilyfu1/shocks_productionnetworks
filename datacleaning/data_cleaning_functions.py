@@ -5,59 +5,33 @@ import string
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import os
+import matplotlib.pyplot as plt
 
-# formats the PCE data
-def pce_tables_clean(df):
-    # put rows 2 and 3 together to get a real date row and make that the set of column names instead
-    new_row = df.iloc[2:4].astype(str).apply(''.join, axis=0)
 
-    # replace column names with the concatenated row
-    df.columns = new_row
+def clean_bea_PQE_table(df, data_type, long=False):
 
-    # drop the empty rows
-    df = df.iloc[4:]
+    df = df.iloc[6:-5].reset_index(drop=True)
+    df = df.iloc[:, 1:]
+    df = df.rename(columns={df.columns[0]: 'products'})
+    df.loc[df['products'] == '    Final consumption expenditures of nonprofit institutions serving households (NPISHs) (132)', 'products'] = 'final consumption expenditures of nonprofit institutions serving households'
+    df['products'] = df['products'].str.replace(r'\s*\((?=[^)]*\d)[^)]*\)', '', regex=True)
+    df.set_index(df.columns[0], inplace=True)
+    start_date = "1959-01"
+    num_columns = df.shape[1]
+    new_columns = pd.date_range(start=start_date, periods=num_columns, freq='MS') 
+    df.columns = new_columns
 
-    # reset the index
-    df = df.reset_index(drop=True)
-    
-    # assorted data cleaning stuff
-    df = df.drop('LineLine', axis=1)
-    df = df.rename(columns={'nannan': 'product'})
+    df.index= df.index.str.lower()
+    df.index = df.index.str.strip()
 
-    # get rid of the weird aggregates that we dont need
-    index_to_remove = df.index[df['product'] == 'Additional aggregates:']
-    df = df.iloc[:index_to_remove[0]]
-    
-    # wide to long
-    df_long = pd.melt(df, id_vars=['product'], var_name='date', value_name='index')
 
-    # convert to numeric
-    df_long['index'] = pd.to_numeric(df_long['index'], errors='coerce')
-    
-    # convert to datetime
-    df_long['date'] = pd.to_datetime(df_long['date'], format='mixed')
-    df_long['date'] = df_long['date'] + pd.offsets.MonthEnd(0)
+    df_long = df.reset_index()  
+    df_long = pd.melt(df_long, id_vars='products', var_name='date', value_name = f'{data_type}')
 
-    # deal with nonprofit stuff
-
-    # remove anything with "less" in front of it
-    # remove anything with "to households" in the name since these are sales from nonprofits
-    df_long = df_long[~(df_long['product'].str.contains('to households'))]
-    df_long = df_long[~(df_long['product'].str.contains('Less'))]
-
-    # remove foreigner expenditures
-    df_long = df_long[~(df_long['product'].str.contains('Foreign travel in the United States'))]
-    df_long = df_long[~(df_long['product'].str.contains('Medical expenditures of foreigners'))]
-    df_long = df_long[~(df_long['product'].str.contains('Expenditures of foreign students in the United States'))]
-
-    # clean product names 
-    # remove numbers between parentheses that follow some of the column names so that i can use the provided concordance
-    df_long['product'] = df_long['product'].apply(lambda x: re.sub(r'\([^)]*\)', '', x))
-
-    # remove leading and trailing spaces
-    df_long['product'] = df_long['product'].str.strip()
-
-    return df_long
+    if long:
+        return df_long
+    else: 
+        return df 
 
 def requirements_clean(requirements):
 
@@ -73,6 +47,7 @@ def requirements_clean(requirements):
     requirements.columns = requirements.columns.str.lower()
     requirements.columns = requirements.columns.str.strip()
     requirements.index = requirements.index.str.strip()
+
     return requirements
 
 
@@ -85,6 +60,10 @@ def concordance_PCE_clean(pce_bridge):
     pce_bridge.loc[pce_bridge['PCE Bridge Industries'] == 'Insurance Carriers, except Direct Life Insurance', 'PCE Bridge Industries'] = 'Insurance carriers, except direct life'
     pce_bridge["PCE Bridge Products"] = pce_bridge["PCE Bridge Products"].str.lower()
     pce_bridge["PCE Bridge Industries"] = pce_bridge["PCE Bridge Industries"].str.lower()
+    pce_bridge.loc[pce_bridge['PCE Bridge Products'] == 'community food and housing/emergency/other relief services', 'PCE Bridge Products'] = 'community food and housing / emergency / other relief services'
+    pce_bridge.loc[pce_bridge['PCE Bridge Products'] == 'cosmetic/perfumes/bath/nail preparations and implements', 'PCE Bridge Products'] = 'cosmetic / perfumes / bath / nail preparations and implements'
+    pce_bridge.loc[pce_bridge['PCE Bridge Products'] == 'final consumption expenditures of nonprofit institutions serving households (npish)', 'PCE Bridge Products'] = 'final consumption expenditures of nonprofit institutions serving households'
+
     return pce_bridge
 
 
@@ -247,3 +226,33 @@ def get_expenditure_weights_from_shapiro_outputs(df, haver_product_map):
     df.index = df.index.map(haver_product_map)
 
     return df
+
+
+def plot_shapiro_graph_from_shapiro_ouput(shapiro_code_output, plot_title):
+    inflation_decomped = shapiro_code_output[['time_month', "dem_contr_y", "sup_contr_y"]]
+    inflation_decomped.set_index('time_month', inplace=True)
+
+    supply_inflation = inflation_decomped[["sup_contr_y"]].copy()
+    supply_inflation.rename(columns={'sup_contr_y': 'Supply Inflation'}, inplace=True)
+
+    demand_inflation = inflation_decomped[["dem_contr_y"]].copy()
+    demand_inflation.rename(columns={'dem_contr_y': 'Demand Inflation'}, inplace=True)
+
+    supply_inflation['supply_pos'] = supply_inflation['Supply Inflation'].apply(lambda x: x if x > 0 else 0)
+    demand_inflation['demand_pos'] = demand_inflation['Demand Inflation'].apply(lambda x: x if x > 0 else 0)
+    supply_inflation['supply_neg'] = supply_inflation['Supply Inflation'].apply(lambda x: x if x < 0 else 0)
+    demand_inflation['demand_neg'] = demand_inflation['Demand Inflation'].apply(lambda x: x if x < 0 else 0)
+
+    demand_inflation = demand_inflation.iloc[:-1]
+    supply_inflation = supply_inflation.iloc[:-1]
+
+    plt.figure(figsize=(26, 12))
+
+    plt.stackplot(supply_inflation.index, demand_inflation['demand_pos'], supply_inflation['supply_pos'], colors= ["#008000", "#FF0000"], labels = ["Deamnd", "Supply"])
+    plt.stackplot(supply_inflation.index, demand_inflation['demand_neg'], supply_inflation['supply_neg'], colors= ["#008000", "#FF0000"])
+    plt.xlabel('Date')
+    plt.ylabel('Inflation Percent')
+    plt.title(f'{plot_title}')
+    plt.legend()
+
+    return plt
