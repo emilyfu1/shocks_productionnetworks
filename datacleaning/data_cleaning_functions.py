@@ -58,6 +58,12 @@ def concordance_PCE_clean(pce_bridge):
     pce_bridge.rename(columns={'Unnamed: 1': 'PCE Bridge Products' , 'Unnamed: 3': 'PCE Bridge Industries'}, inplace=True)
     pce_bridge.loc[pce_bridge['PCE Bridge Industries'] == 'Tobacco product manufacturing', 'PCE Bridge Industries'] = 'Tobacco manufacturing'
     pce_bridge.loc[pce_bridge['PCE Bridge Industries'] == 'Insurance Carriers, except Direct Life Insurance', 'PCE Bridge Industries'] = 'Insurance carriers, except direct life'
+    # Manually added rows so taht total PCE is correct
+    new_rows = pd.DataFrame([
+    ["Tenant-occupied stationary homes", "Tenant-occupied housing"],
+    ["Tenant-occupied, including landlord durables", "Tenant-occupied housing"]], columns=["PCE Bridge Products", "PCE Bridge Industries"])
+    pce_bridge = pd.concat([pce_bridge, new_rows], ignore_index=True)
+
     pce_bridge["PCE Bridge Products"] = pce_bridge["PCE Bridge Products"].str.lower()
     pce_bridge["PCE Bridge Industries"] = pce_bridge["PCE Bridge Industries"].str.lower()
     pce_bridge.loc[pce_bridge['PCE Bridge Products'] == 'community food and housing/emergency/other relief services', 'PCE Bridge Products'] = 'community food and housing / emergency / other relief services'
