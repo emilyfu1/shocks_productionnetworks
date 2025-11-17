@@ -1,0 +1,275 @@
+"""
+Example usage of the flexible Newton-Raphson solver.
+
+This script demonstrates:
+1. Setting up a simple test problem
+2. Using different derivative update options
+3. Running batch counterfactual analysis
+"""
+
+import numpy as np
+import scipy.sparse as sp
+
+
+from newton_solver import SolverParams, newton_raphson_solver, batch_counterfactual_solver,batch_counterfactual_solver_SD_only
+from analyticalJacobean import analytical_jacobian_template
+
+def create_test_problem(n: int = 50, sparsity: float = 0.8):
+    """
+    Create a test problem with known structure.
+    
+    Args:
+        n: Dimension of the problem
+        sparsity: Sparsity level for Omega matrix (0 = dense, 1 = all zeros)
+        
+    Returns:
+        Tuple of (epsilon, sigma, gamma, Omega, P_VA, P_vec_initial)
+    """
+    # Parameters
+    epsilon = 0.5
+    sigma = 0.3
+    
+    # Random gamma (share parameters)
+    gamma = np.random.uniform(0.3, 0.7, n)
+    
+    # Create sparse Omega matrix (trade shares)
+    # Make it a valid trade matrix (rows sum to 1)
+    Omega = sp.random(n, n, density=1-sparsity, format='csr')
+    Omega = Omega.toarray()
+    row_sums = Omega.sum(axis=1, keepdims=True)
+    row_sums[row_sums == 0] = 1  # Avoid division by zero
+    Omega = Omega / row_sums
+    Omega = sp.csr_matrix(Omega)
+    
+    # Value added prices
+    P_VA = np.random.uniform(0.8, 1.2, n)
+    
+    # Initial guess (all ones is often reasonable for price problems)
+    P_vec_initial = np.ones(n)
+    
+    return epsilon, sigma, gamma, Omega, P_VA, P_vec_initial
+
+
+def example_single_solve():
+    """Example: Solve a single system with different derivative options."""
+    print("=" * 70)
+    print("EXAMPLE 1: Single solve with different derivative options")
+    print("=" * 70)
+    
+    # Create test problem
+    n = 50
+    epsilon, sigma, gamma, Omega, P_VA, P_vec_init = create_test_problem(n)
+    
+    params = SolverParams(epsilon, sigma, gamma, Omega, P_VA)
+    
+    # Test different derivative options
+    derivative_options = [
+        (1, "Once at beginning"),
+        (2, "Once per solve"),
+        (3, "Every 5 iterations"),
+        (4, "Analytical (not provided, will fail)")
+    ]
+    
+    for opt, description in derivative_options[:3]:  # Skip option 4 for now
+        print(f"\n--- Derivative Option {opt}: {description} ---")
+        
+        result = newton_raphson_solver(
+            P_vec_init=P_vec_init,
+            params=params,
+            derivative_option=opt,
+            update_every=5,  # Only matters for option 3
+            tol_residual=1e-8,
+            tol_step=1e-8,
+            max_iter=100,
+            verbose=True
+        )
+        
+        print(f"\nResults:")
+        print(f"  Converged: {result['converged']}")
+        print(f"  Convergence type: {result['convergence_type']}")
+        print(f"  Iterations: {result['iterations']}")
+        print(f"  Final residual norm: {result['residual_norm']:.6e}")
+        if result['warning']:
+            print(f"  Warning: {result['warning']}")
+
+
+def example_batch_counterfactual():
+    """Example: Batch counterfactual analysis."""
+    print("\n" + "=" * 70)
+    print("EXAMPLE 2: Batch counterfactual analysis")
+    print("=" * 70)
+    
+    # Create smaller test problem for speed
+    n = 30
+    epsilon, sigma, gamma, Omega, P_VA, P_vec_init = create_test_problem(n)
+    
+    # First, solve for baseline consistent P_vec
+    params_baseline = SolverParams(epsilon, sigma, gamma, Omega, P_VA)
+    
+    print("\nStep 1: Solving for baseline consistent P_vec...")
+    baseline_result = newton_raphson_solver(
+        P_vec_init=P_vec_init.to_numpy(),
+        params=params_baseline,
+        derivative_option=3,
+        update_every=5,
+        tol_residual=1e-8,
+        verbose=False
+    )
+    
+    if not baseline_result['converged']:
+        print("WARNING: Baseline did not converge!")
+        return
+    
+    P_vec_baseline = baseline_result['solution']
+    print(f"Baseline converged in {baseline_result['iterations']} iterations")
+    print(f"Baseline residual norm: {baseline_result['residual_norm']:.6e}")
+    
+    # Now run counterfactuals (perturb first 10 elements for speed)
+    print(f"\nStep 2: Running counterfactual analysis...")
+    print(f"Perturbing first 10 elements of P_VA (setting each to 1)")
+    
+    indices_to_test = np.arange(10)
+    
+    batch_results = batch_counterfactual_solver(
+        P_vec_baseline=P_vec_baseline,
+        params_baseline=params_baseline,
+        indices_to_perturb=indices_to_test,
+        derivative_option=2,  # Compute Jacobian once per counterfactual
+        tol_residual=1e-8,
+        tol_step=1e-8,
+        max_iter=100,
+        verbose=True
+    )
+    
+    # Analyze results
+    print("\n" + "-" * 70)
+    print("Counterfactual Analysis Results:")
+    print("-" * 70)
+    
+    for idx, i in enumerate(indices_to_test):
+        P_vec_cf = batch_results['counterfactual_solutions'][idx]
+        
+        # Compute contribution: percentage change in P_vec
+        pct_change = 100 * (P_vec_cf - P_vec_baseline) / P_vec_baseline
+        avg_pct_change = np.mean(np.abs(pct_change))
+        max_pct_change = np.max(np.abs(pct_change))
+        
+        print(f"\nP_VA[{i}] = 1 (was {P_VA[i]:.3f}):")
+        print(f"  Converged: {batch_results['convergence_status'][idx]}")
+        print(f"  Iterations: {batch_results['iterations'][idx]}")
+        print(f"  Residual: {batch_results['residual_norms'][idx]:.6e}")
+        print(f"  Avg abs % change in P_vec: {avg_pct_change:.2f}%")
+        print(f"  Max abs % change in P_vec: {max_pct_change:.2f}%")
+        if batch_results['warnings'][idx]:
+            print(f"  Warning: {batch_results['warnings'][idx]}")
+
+
+def example_with_analytical_jacobian():
+    """Example: Using analytical Jacobian (user must provide the function)."""
+    print("\n" + "=" * 70)
+    print("EXAMPLE 3: Using analytical Jacobian")
+    print("=" * 70)
+    
+    # Create test problem
+    n = 20
+    epsilon, sigma, gamma, Omega, P_VA, P_vec_init = create_test_problem(n)
+    params = SolverParams(epsilon, sigma, gamma, Omega, P_VA)
+    
+    # Define analytical Jacobian function
+    # This is a placeholder - user should provide the actual derivative
+    def analytical_jac_placeholder(P_vec, params):
+        """
+        Analytical Jacobian of F(P_vec).
+        
+        For the equation:
+        F(P_vec) = P_vec^(1-ε) - diag(1-γ)@P_VA^(1-ε) - diag(γ)@(Ω@P_vec)^((1-ε)/(1-σ))
+        
+        The Jacobian is:
+        J[i,j] = ∂F_i/∂P_vec_j
+        
+        User should implement this based on their specific equation structure.
+        """
+        print("\n  Note: Using placeholder analytical Jacobian (actually numerical)")
+        print("  User should replace this with actual analytical derivative!")
+        
+        # For now, fall back to numerical
+        from newton_solver import numerical_jacobian
+        return numerical_jacobian(P_vec, params)
+    
+    print("\nSolving with 'analytical' Jacobian (option 4)...")
+    result = newton_raphson_solver(
+        P_vec_init=P_vec_init,
+        params=params,
+        derivative_option=4,
+        analytical_jac_func=analytical_jac_placeholder,
+        tol_residual=1e-8,
+        verbose=True
+    )
+
+        
+    
+    
+    print(f"\nResults:")
+    print(f"  Converged: {result['converged']}")
+    print(f"  Iterations: {result['iterations']}")
+    print(f"  Final residual norm: {result['residual_norm']:.6e}")
+
+
+if __name__ == "__main__":
+    # Run examples
+    #example_single_solve()
+    #example_batch_counterfactual()
+    #example_with_analytical_jacobian()
+
+
+
+    import pickle
+    filename = "/Users/Nick/Desktop/github testing/ShapirIO_new/shocks_productionnetworks/NS_functions/temp_file_for_testing.pkl"
+    with open(filename,'rb') as file:
+        ϵ, σ, gamma, omega, PVA,P_vec_init,weights,baseColumnIndicies = loaded_data = pickle.load(file)
+
+    #remove gamma=0
+    keep_ind = gamma>0
+
+    params = SolverParams(ϵ, σ, gamma, omega, PVA)
+
+    error = P_vec_init**(1-ϵ) -  (1-gamma) * PVA**(1-ϵ) - gamma * (omega @ P_vec_init**(1-σ))**((1-ϵ)/(1-σ))
+
+    if np.abs(error).max()>1e-7:
+        error('Something does not add up')
+
+    result = newton_raphson_solver(
+            P_vec_init=P_vec_init,
+            params=params,
+            derivative_option=4,
+            analytical_jac_func = analytical_jacobian_template,
+            update_every=5,  # Only matters for option 3
+            tol_residual=1e-8,
+            tol_step=1e-8,
+            max_iter=100,
+            verbose=True
+        )
+    
+    print(f"\nStep 2: Running counterfactual analysis...")
+    print(f"Perturbing first 10 elements of P_VA (setting each to 1)")
+    
+    indices_to_test = np.arange(3)
+    
+    batch_results = batch_counterfactual_solver_SD_only(
+        P_vec_baseline=result['solution'],
+        params_baseline=params,
+        basis_for_perturb=baseColumnIndicies,
+        indices_to_perturb=indices_to_test,
+        weights=weights,
+        derivative_option=4,  
+        analytical_jac_func = analytical_jacobian_template,
+        tol_residual=1e-8,
+        tol_step=1e-8,
+        max_iter=100,
+        verbose=True
+    )
+
+    
+    print("\n" + "=" * 70)
+    print("All examples complete!")
+    print("=" * 70)
