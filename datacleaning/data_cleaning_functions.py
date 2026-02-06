@@ -34,6 +34,7 @@ def clean_bea_PQE_table(df, data_type, long=False):
         return df 
 
 def requirements_clean(requirements):
+    """Cleans the Industry by Industry Requirments table"""
 
     requirements = requirements.iloc[2:-1, 1:]
     requirements = requirements.drop(requirements.index[1])
