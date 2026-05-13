@@ -8,30 +8,170 @@ import os
 import matplotlib.pyplot as plt
 
 
-def clean_bea_PQE_table(df, data_type, long=False):
+def clean_bea_PQE_table(df, data_type, long=False, frequency="auto"):
+    """Clean BEA P/Q/E tables and infer monthly vs quarterly date columns."""
 
-    df = df.iloc[6:-5].reset_index(drop=True)
-    df = df.iloc[:, 1:]
-    df = df.rename(columns={df.columns[0]: 'products'})
-    df.loc[df['products'] == '    Final consumption expenditures of nonprofit institutions serving households (NPISHs) (132)', 'products'] = 'final consumption expenditures of nonprofit institutions serving households'
-    df['products'] = df['products'].str.replace(r'\s*\((?=[^)]*\d)[^)]*\)', '', regex=True)
-    df.set_index(df.columns[0], inplace=True)
-    start_date = "1959-01"
-    num_columns = df.shape[1]
-    new_columns = pd.date_range(start=start_date, periods=num_columns, freq='MS') 
-    df.columns = new_columns
+    year_row = 4
+    period_row = 5
+    first_data_row = 6
+    footer_rows = 5
+    product_col = 1
+    first_value_col = 2
 
-    df.index= df.index.str.lower()
-    df.index = df.index.str.strip()
+    month_map = {
+        "JAN": 1,
+        "FEB": 2,
+        "MAR": 3,
+        "APR": 4,
+        "MAY": 5,
+        "JUN": 6,
+        "JUL": 7,
+        "AUG": 8,
+        "SEP": 9,
+        "OCT": 10,
+        "NOV": 11,
+        "DEC": 12,
+    }
 
+    value_positions = list(range(first_value_col, df.shape[1]))
+    years = pd.Series(df.iloc[year_row, first_value_col:].to_numpy(), index=value_positions).ffill()
+    periods = (
+        pd.Series(df.iloc[period_row, first_value_col:].to_numpy(), index=value_positions)
+        .astype(str)
+        .str.strip()
+        .str.upper()
+    )
 
-    df_long = df.reset_index()  
-    df_long = pd.melt(df_long, id_vars='products', var_name='date', value_name = f'{data_type}')
+    valid_month = periods.isin(month_map)
+    valid_quarter = periods.str.fullmatch(r"Q[1-4]", na=False)
+
+    if frequency == "auto":
+        if valid_month.sum() and not valid_quarter.sum():
+            frequency = "monthly"
+        elif valid_quarter.sum() and not valid_month.sum():
+            frequency = "quarterly"
+        elif valid_month.sum() >= valid_quarter.sum():
+            frequency = "monthly"
+        elif valid_quarter.sum():
+            frequency = "quarterly"
+        else:
+            raise ValueError("Could not infer BEA table frequency from header row.")
+
+    if frequency == "monthly":
+        valid_periods = valid_month
+        valid_positions = valid_periods[valid_periods].index.tolist()
+        date_labels = [
+            pd.Timestamp(year=int(float(y)), month=month_map[p], day=1)
+            for y, p in zip(years.loc[valid_positions], periods.loc[valid_positions])
+        ]
+    elif frequency == "quarterly":
+        valid_periods = valid_quarter
+        valid_positions = valid_periods[valid_periods].index.tolist()
+        date_labels = [
+            pd.Period(f"{int(float(y))}{p}", freq="Q").to_timestamp(how="start")
+            for y, p in zip(years.loc[valid_positions], periods.loc[valid_positions])
+        ]
+    else:
+        raise ValueError("frequency must be one of 'auto', 'monthly', or 'quarterly'.")
+
+    cleaned = df.iloc[first_data_row:-footer_rows, [product_col] + valid_positions].copy()
+    cleaned.columns = ["products"] + date_labels
+
+    cleaned.loc[
+        cleaned["products"] == "    Final consumption expenditures of nonprofit institutions serving households (NPISHs) (132)",
+        "products",
+    ] = "final consumption expenditures of nonprofit institutions serving households"
+
+    cleaned["products"] = cleaned["products"].str.replace(r"\s*\((?=[^)]*\d)[^)]*\)", "", regex=True)
+    cleaned.set_index("products", inplace=True)
+    cleaned.index = cleaned.index.str.lower()
+    cleaned.index = cleaned.index.str.strip()
+
+    df_long = cleaned.reset_index()
+    df_long = pd.melt(df_long, id_vars="products", var_name="date", value_name=f"{data_type}")
 
     if long:
         return df_long
-    else: 
-        return df 
+    else:
+        return cleaned
+
+
+def clean_bea_peq_table(df_raw, data_type, long=False):
+    """Clean PEQ quarterly tables that use explicit year and quarter header rows."""
+
+    product_col = 1
+
+    quarter_row = None
+    for i in range(len(df_raw)):
+        row = df_raw.iloc[i].astype(str).str.strip()
+        if row.str.fullmatch(r"Q[1-4]", na=False).sum() >= 4:
+            quarter_row = i
+            break
+
+    if quarter_row is None or quarter_row == 0:
+        raise ValueError("Could not locate PEQ quarter header row.")
+
+    year_row = quarter_row - 1
+    first_data_row = quarter_row + 1
+
+    quarters_full = df_raw.iloc[quarter_row].astype(str).str.strip().str.upper()
+    valid_quarter = quarters_full.str.fullmatch(r"Q[1-4]", na=False)
+    value_cols = valid_quarter[valid_quarter].index.tolist()
+
+    years = pd.Series(df_raw.iloc[year_row, value_cols].to_numpy(), index=value_cols).ffill()
+    quarters = quarters_full.loc[value_cols]
+
+    date_labels = [
+        pd.Period(f"{int(float(y))}{q}", freq="Q").to_timestamp(how="start")
+        for y, q in zip(years, quarters)
+    ]
+
+    cleaned = df_raw.iloc[first_data_row:, [product_col] + value_cols].copy()
+    cleaned.columns = ["products"] + date_labels
+
+    cleaned["products"] = (
+        cleaned["products"]
+        .astype(str)
+        .str.strip()
+        .replace({"nan": np.nan, "": np.nan})
+    )
+    cleaned = cleaned[cleaned["products"].notna()]
+
+    stop_mask = cleaned["products"].str.contains(
+        r"legend|footnote|footnotes|includes net purchases",
+        case=False,
+        na=False,
+    )
+    if stop_mask.any():
+        stop_pos = np.where(stop_mask)[0][0]
+        cleaned = cleaned.iloc[:stop_pos]
+
+    cleaned["products"] = (
+        cleaned["products"]
+        .str.replace(r"\d+$", "", regex=True)
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
+        .str.lower()
+    )
+    cleaned.set_index("products", inplace=True)
+
+    for c in cleaned.columns:
+        cleaned[c] = (
+            cleaned[c]
+            .astype(str)
+            .str.replace(",", "", regex=False)
+            .str.strip()
+            .replace({"---": np.nan, "--": np.nan, "—": np.nan, "nan": np.nan, "": np.nan})
+        )
+        cleaned[c] = pd.to_numeric(cleaned[c], errors="coerce")
+
+    df_long = cleaned.reset_index()
+    df_long = pd.melt(df_long, id_vars="products", var_name="date", value_name=f"{data_type}")
+
+    if long:
+        return df_long
+    else:
+        return cleaned
 
 def requirements_clean(requirements):
     """Cleans the Industry by Industry Requirments table"""
