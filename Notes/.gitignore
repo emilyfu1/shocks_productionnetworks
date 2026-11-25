@@ -1,6 +1,6 @@
 # ignore everything in this folder
 *
 
-# except the .gitignore file and .csv files
+# except the .gitignore file and .tex files
 !.gitignore
 !*.tex
