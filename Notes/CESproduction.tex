@@ -1,0 +1,236 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\usetikzlibrary{matrix,decorations.pathreplacing}
+
+\newcommand{\sigmac}{\underline{\sigma}_{c,t}}
+\newcommand{\sigmad}{\underline{\sigma}_{d,t}}
+\newcommand{\dZ}{d\underline{Z}_t}
+\newcommand{\sigmacd}{\underline{\sigma}_t^{\Delta}}
+\newcommand{\D}{\mathcal{D}_t}
+\newcommand{\sigmap}{\underline{\sigma}_{P,t}}
+\newcommand{\sigmapc}{\underline{\sigma}_{P_c,t}}
+\newcommand{\sigmapd}{\underline{\sigma}_{P_d,t}}
+\newcommand{\mup}{\mu_t^{P}}
+\newcommand{\mud}{\mu_t^{\mathcal{D}}}
+\newcommand{\sigmaD}{\underline{\sigma}_{\mathcal{D},t}}
+\newcommand{\muq}{\mu_{q,t}}
+\newcommand{\sigmavt}{\underline{\sigma}_{\vartheta,t}}
+\newcommand{\sigmaq}{\underline{\sigma}_{q,t}}
+\newcommand{\sigmaK}{\underline{\sigma}_{K,t}}
+\newcommand{\vt}{\vartheta_t}
+\newcommand{\amb}{(\mathds{1}_a\sigma_a-\mathds{1}_b\sigma_b)}
+\newcommand{\bma}{(\mathds{1}_b\sigma_b-\mathds{1}_a\sigma_a)}
+\newcommand{\nuad}{\underline{\nu}_t^{ad}}
+\newcommand{\nubd}{\underline{\nu}_t^{bd}}
+\newcommand{\nuab}{\underline{\nu}_t^{a}}
+\newcommand{\nubb}{\underline{\nu}_t^{b}}
+\newcommand{\sigmaeta}{\underline{\sigma}_{\eta,t}}
+\newcommand{\sigmas}{\underline{\sigma}_{S,t}}
+\newcommand{\bsigmas}{\underline{\bar{\sigma}}_{S}}
+\newcommand{\muvt}{\mu_t^\vartheta}
+\newcommand{\PP}{\left(\underline{P}\right)}
+\newcommand{\IO}{\mathbf{\Omega\left(\underline{P}\right)}}
+\newcommand{\io}{\mathbf{\Omega}}
+\newcommand{\fd}{\mathbf{\Xi\left(\underline{P}\right)}}
+\newcommand{\fdd}{\mathbf{\Xi}}
+\newcommand{\ishare}{\underline{\gamma}\left(\underline{P}\right)}
+\newcommand{\ishares}{\underline{\gamma}}
+\newcommand{\MM}{\mathbf{\mathcal{M}\PP}}
+\newcommand{\MMM}{\mathbf{\mathcal{M}}}
+\newcommand{\obj}{\mathbf{\Phi}}
+\newcommand{\objt}{\mathbf{\tilde{\Phi}}}
+\newcommand{\nuu}{(\underline{\nu})}
+\newcommand{\nured}{\textcolor{red}{\nu}}
+\newcommand{\nuredOne}{\textcolor{red}{\nu_1}}
+\newcommand{\nuredTwo}{\textcolor{orangenice}{\nu_2}}
+\newcommand{\scaleBlueOne}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 11}\nu}{1-\psi_{PHL,1\rightarrow 11}}}}
+\newcommand{\scaleBlueTwo}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 1,rice}\nu}{1-\psi_{PHL,rice\rightarrow 1,rice}}}}
+\newcommand{\scaleBlueOneOne}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 11}\nu_1}{1-\psi_{PHL,1\rightarrow 11}}}}
+\newcommand{\scaleBlueTwoOne}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 1,rice}\nu_1}{1-\psi_{PHL,rice\rightarrow 1,rice}}}}
+
+\newcommand{\scaleBlueOneTwo}{\textcolor{greennice}{1-\frac{1-\psi_{PHL,rice\rightarrow 11}}{\nu_2 }}}
+\newcommand{\scaleBlueTwoTwo}{\textcolor{greennice}{1-\frac{1-\psi_{PHL,rice\rightarrow 1,rice}}{\nu_2}}}
+\newcommand{\mb}[1]{\mathbold{\tilde{#1}}_t}
+\newcommand{\mbb}[2]{\mathbold{\tilde{#1}}_{#2,t}}
+
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+	
+\definecolor{red}{rgb}{0.9,0.1,0.1}
+\definecolor{blue}{rgb}{0,0,0.7}
+\definecolor{dgr}{rgb}{0.08,0.25,0.18}
+\definecolor{navy}{RGB}{0,0,165}
+\definecolor{org}{HTML}{EB811B}
+\definecolor{lgr}{HTML}{14B03D}
+\definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
+
+\definecolor{graphblue}{RGB}{64,130.56,194.5}
+\definecolor{graphred}{RGB}{255,0,0}
+\definecolor{graphyellow}{RGB}{237.8340,177.64,32}
+\definecolor{graphpurple}{RGB}{126,47,142}
+
+\newcommand{\hlight}[1]{\textcolor{org}{#1}}
+\newcommand{\glight}[1]{\textcolor{lgr}{#1}}
+\newcommand{\rlight}[1]{\textcolor{red}{#1}}
+\newcommand{\blight}[1]{\textcolor{graphblue}{#1}}
+\newcommand{\plight}[1]{\textcolor{graphpurple}{#1}}
+\begin{document}
+\title{CES production -- beyond Cobb-Douglas}
+\author{Nick}
+\maketitle
+
+\paragraph{Purpose:} The goal of this note is to re-do our calculations of the price of value added and the supply/demand influence calculations when we have CES production instead of Cobb-Douglas.
+
+
+
+\section*{Calculating the price of value added}
+
+Production is now given by:
+
+\begin{align*}
+	Y_{i,t} &= \left[(1-\gamma_i)VA_{i,t}^{\frac{\epsilon-1}{\epsilon}} + \gamma_i M_{i,t}^{\frac{\epsilon-1}{\epsilon}}\right]^{\frac{\epsilon}{\epsilon-1}}\\
+	M_{i,t} &= \left[\sum_j\omega_{j\rightarrow i} M_{j\rightarrow i,t}^{\frac{\sigma-1}{\sigma}}\right]^{\frac{\sigma}{\sigma-1}}
+\end{align*}
+where $M_{i,t}$ is intermediate inputs used by $i$ and $M_{j\rightarrow i,t}$ are intermediates of product $j$ used by $i$ in production.
+
+Standard optimization gives us the following price index:
+
+\begin{align*}
+	P_{i,t} &= \left[(1-\gamma_i)P_{VA,i,t}^{1-\epsilon} + \gamma_i P_{M,i,t}^{1-\epsilon}\right]^{\frac{1}{1-\epsilon}}\\
+	P_{M,i,t} &= \left[\sum_j \omega_{j\rightarrow i}P_{j,t}^{1-\sigma}\right]^{\frac{1}{1-\sigma
+}}\\
+	\Leftrightarrow P_{i,t} &= \left[(1-\gamma_i)P_{VA,i,t}^{1-\epsilon} + \gamma_i \left(\sum_j \omega_{j\rightarrow i}P_{j,t}^{1-\sigma}\right)^{\frac{1-\epsilon}{1-\sigma}}\right]^{\frac{1}{1-\epsilon}}
+\end{align*}
+
+Unlike the Cobb-Douglas case, this cannot be linearly inverted!
+
+To solve this we are going to need to do some hat algebra to be able to replace the parameters with data.
+
+So let's do that: I won't derive it but with Hat algebra we can write this in terms of 2017 IO data:
+
+\begin{align*}
+	\hat{\underline{P}}_t^{1-\epsilon} &= diag(1-\underline{\gamma}_{2017})\hat{\underline{P}}_{VA,t}^{1-\epsilon} + diag(\underline{\gamma}_{2017}) \left(\mathbf{\Omega}_{2017}\hat{\underline{P}}_{t}^{1-\sigma} \right)^{\frac{1-\epsilon}{1-\sigma}}
+\end{align*}
+where exponents are elementwise and $\hat{\underline{P}}_t \equiv \underline{P}_{t}/\underline{P}_{2017}$.
+
+Since $\hat{\underline{P}}_t$ is data, calculating $\underline{P}_{VA,t}$ is relatively easy:
+
+\[
+	\hat{\underline{P}}_{VA,t} = \left[\hat{\underline{P}}_t^{1-\epsilon} -diag(\underline{\gamma}_{2017}) \left(\mathbf{\Omega}_{2017}\hat{\underline{P}}_{t}^{1-\sigma} \right)^{\frac{1-\epsilon}{1-\sigma}}\right]^{\frac{1}{1-\epsilon}}
+\]
+
+Next, we want to think about how we can calculate the influence of different sectors (or collections of sectors). Let's continue to assume that final demand is Cobb-Douglas so that we can write:
+
+\[
+	\hat{P}_t^{CPI} = \underline{\omega}_{CPI}' \hat{\underline{P}}_t 
+\]
+
+Now we have a problem: this system is non-linear in terms of the underlying prices of value added. Moreover, we don't have a closed form expression for output prices as a function of the price of value added. 
+
+So let me propose the following routine to estimate the contributions of each sector:
+
+\begin{itemize}
+	\item We calculate the change in the price of value added with the above formula.
+	\item We loop over every sector and time period
+	\item We assume that $\hat{P}_{VA,i,t}=1$ (i.e. no change) for just that sector
+	\item We use a Newton-Rhapson routine to solve for $P_{CPI,-i,t}$
+	\item We then see if these contributions sum to 1 (they won't for a non-linear model). 
+	\item The difference from 1 is called interaction
+	\item We plot the results.
+\end{itemize}
+
+
+
+\end{document}

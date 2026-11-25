@@ -1,0 +1,153 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Constructing I-O matrices from Make and Use Matrices}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+\paragraph{Purpose:} The purpose of this note is to discuss how to aggregate make and use tables into I-O matrices.
+
+I made a conceptual error in the first version of this analysis by misunderstanding what a make and use matrix is. My apologies. This note will fix this issue.
+
+To start with let's define a make and use matrix:
+
+\begin{itemize}
+	\item {\bf Make Matrix:} This is a $I$ x $C$ matrix where $I$ is industries and $C$ is commodities or products. if $M$ is the make matrix, then the entry $M_{i,c}$ denotes how much of commodity $c$ is made by industry $i$.
+	\item {\bf Use Matrix:} This is a $C$ x $(I+N)$ matrix where $N$ is the number of final demand categories. For simplicity we can think of a case where $N=1$ but it doesn't have to. If the use matrix is denoted by $U$, then the entry $U_{c,i}$ denotes the amount of commodity $c$ used by industry $i$ or final demand purpose $i$.
+	\item {\bf Sales vector:} This is a $I$ x 1 vector denoted by $S$ where each entry is the sales made by each sector.  This is obtained by summing across rows of the make matrix $M$. \emph{This will need to be constructed from the data}.
+	\item {\bf Total Commodity Sales:} This is a $C$ x 1 vector of commodity production (also Sales by commodity). This is obtained by summing the rows of the Use matrix $U$ (including final demand) and is denoted by $P$. \emph{This will also need to be constructed from the data}.
+\end{itemize}
+
+For our purposes we either want an I-O matrix that is $C$ x $C$ (commodity to commodity) or $I$ x $I$ (industry to industry). To create these from the raw data requires some assumptions. I am going to suggest that we make the following one (which is called the ``common technology assumption''). 
+
+\paragraph{Common Technology Assumption:} Every commodity $c$ is produced with the same production technology \emph{regardless of the producing industry}. This says that wood produced by the agriculture sector (perhaps by clearing farmland) is produced the same way as wood from the logging sector (both come from trees, require saws to be cut down and lumberjacks to do so). This is likely a little inaccurate but let's proceed with that. Let's also assume that all industries (firms) face the same price for all commodity inputs. This means that with the same technology + the same prices, they will utilize inputs in the same proportion. Finally let's assume that each production function is constant returns to scale. That means that we can write:
+
+$$
+	B:= \underbrace{U_{1:C,1:I}}_{\substack{\text{Excludes}\\\text{Final Demand}}}diag(1\oslash S)
+$$
+where $B$ represents a \emph{direct requirements} matrix and is simply the intensity of each input needed to produce . At the prevailing prices, this is the optimal mix of inputs that can produce \$ 1 of sales for each industry.
+
+Note that $1\oslash S$ indicates \emph{element} division -- meaning we invert each element of the sales matrix. 
+
+That gives us the amount of each commodity used as a share of \emph{industry} sales. This is almost our $\Omega$ matrix from previous notes. But to get there, we need to make the units of the rows and columns of this matrix the same. To do that we apply our common technology assumption by creating a ``industry-output-proportion'' matrix $C$ as follows:
+
+$$
+	C:= M'diag(1\otimes S)
+$$
+
+This shows the commodity composition of each industry's production. If we assume the common technology assumption then we can derive an a commodity x commodity matrix as:
+
+$$
+	IO = BC^{-1} = \underbrace{(U_{1:C,1:I} diag(1\otimes S))}_{C\;\times\; C}\underbrace{(M'diag(1\otimes S))^{-1}}_{C\;\times\; C}
+$$
+Note that we are dividing by Sales in both terms (and one is inverted), so I am wondering if the sales division cancels out here. Can we check this by seeing what the distribution of values is. Do they sum to 1?
+
+One other thing to check is that sometimes the entries of this kind of $IO$ are negative. Let's check how often this is the case. If it is a big issue, then we probably should revise the procedure. Unfortunately I can't find many very helpful materials on exactly how to do this... Let's hope it isn't too big an issue.
+
+\paragraph{Calculating Value Added:} Here we can take our Commodity Sales $P$ and can subtract intermediates (obtained by summing over rows of our $IO$ matrix --- if in \$ and not shares). Can we now check how many of these are negative?
+
+
+
+\end{document}

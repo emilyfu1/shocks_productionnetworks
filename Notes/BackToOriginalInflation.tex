@@ -1,0 +1,199 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{rednice}{rgb}{0.85,0.26,0}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\usetikzlibrary{matrix,decorations.pathreplacing,arrows.meta,positioning}
+
+\newcommand{\vy}{\underline{y}}
+\newcommand{\ve}{\underline{\epsilon}}
+\newcommand{\A}[1]{\mathbold{A_{#1}}}
+\newcommand{\D}[1]{\mathbold{D_{#1}}}
+\newcommand{\C}[1]{\mathbold{C_{#1}}}
+\newcommand{\B}[1]{\mathbold{B_{#1}}}
+\newcommand{\R}[1]{\mathbold{R_{#1}}}
+
+%\newtheorem{definition}{Definition}
+\begin{document}
+\title{Original Inflation Calculation with Leontief}
+\author{N}
+\maketitle
+
+\paragraph{Purpose: }
+
+I want to derive an approximation that will connect the Leontief ShapirIO decomposition to net inflation defined the way Shapiro does it.
+
+Let's get started.
+
+\section{Derivations*}
+
+CPI inflation is now calculated as:
+
+\[
+	\pi_{CPI,t} \equiv \sum_p \omega_{PCE,p,t} \underbrace{\left(\frac{P_{p,t}}{P_{p,t-1}} - 1\right)}_{\equiv \pi_{p,t}} = \underline{\omega_{PCE,t}}'\underline{\pi}_{t}
+\]
+
+Note that our I-O decomposition has the following decomposition
+
+\[
+	\underline{P}_t = \underbrace{(I-A_t)^{-1}diag(\mathds{1}_p'A_t)}_{\equiv B_t} \underline{P}_{VA,t}
+\]
+where I put a $t$ subscript on $A_t$ because we have changes in the set of available products.
+
+In summation terms this is:
+
+\[
+	P_{p,t} = \sum_{p'} B_{p,p',t} P_{VA,p',t}
+\]
+
+Now we can define product level inflation as:
+
+\[
+	\pi_{p,t} \equiv \frac{P_{p,t}-P_{p,t-1}}{P_{p,t-1}} = \frac{\sum_{p'}\left(B_{p,p',t}(P_{VA,p',t} - P_{VA,p',t-1}) + (B_{p,p',t} - B_{p,p',t-1})P_{VA,p,t-1}\right)}{\sum_{p''} B_{p,p'',t-1}P_{VA,p'',t-1}}
+\]
+
+where in the numerator I added and subtracted $B_{p,p',t}P_{VA,p,t-1}$ to get this expression. Next we can do the following adjustments as well:
+
+\begin{align*}
+ \pi_{p,t} &= \frac{\sum_{p'}\left(B_{p,p',t}(P_{VA,p',t} - P_{VA,p',t-1})\textcolor{bluenice}{\frac{P_{VA,p',t-1}}{P_{VA,p',t-1}}} + (B_{p,p',t} - B_{p,p',t-1})P_{VA,p,t-1}\textcolor{orangenice}{\frac{B_{p,p',t}}{B_{p,p',t}}}\right)}{\sum_{p''} B_{p,p'',t-1}P_{VA,p'',t-1}}\\
+ &=\frac{\sum_{p'}\left(B_{p,p',t}\textcolor{bluenice}{P_{VA,p',t-1}}\frac{P_{VA,p',t} - P_{VA,p',t-1}}{\textcolor{bluenice}{P_{VA,p',t-1}}} +\textcolor{orangenice}{B_{p,p',t}}P_{VA,p,t-1} \frac{B_{p,p',t} - B_{p,p',t-1}}{\textcolor{orangenice}{B_{p,p',t}}}\right)}{\sum_{p''} B_{p,p'',t-1}P_{VA,p'',t-1}}\\
+ &=\underbrace{\sum_{p'}\frac{B_{p,p',t}P_{VA,p',t-1}}{\sum_{p''} B_{p,p'',t-1}P_{VA,p'',t-1}}}_{\equiv \omega_{VA,p,p',t}}\left(\pi_{VA,p',t-1} + \Delta B_{p,p',t}\right)
+\end{align*}
+
+where $\pi_{VA,p',t}\equiv \frac{P_{VA,p',t} - P_{VA,p',t-1}}{P_{VA,p',t-1}}$ and $\Delta B_{p,p',t} \equiv \frac{B_{p,p',t} - B_{p,p',t-1}}{\textcolor{orangenice}{B_{p,p',t}}}$
+
+So far this is an exact decomposition \textcolor{orange}{(don't forget the time subscript in the change in $B$ matrix -- we divide by $B$ in time $t$ not $t-1$.}
+
+Now let's link this to CPI inflation:
+
+\begin{align*}
+	\pi_{CPI,t} &= \sum_p \omega_{PCE,p,t}\pi_{p,t}\\
+	& = \sum_p \omega_{PCE,p,t}\sum_{p'}\omega_{VA,p,p',t} \left(\pi_{VA,p',t-1} + \Delta B_{p,p',t}\right)\\
+	& = \sum_{p'}\sum_p \omega_{PCE,p,t}\omega_{VA,p,p',t} \left(\pi_{VA,p',t-1} + \Delta B_{p,p',t}\right)\\
+	&=\sum_{p'}\left(\underbrace{\sum_p \omega_{PCE,p,t}\omega_{VA,p,p',t}}_{\equiv W_{p',t}} \pi_{VA,p',t-1} + \underbrace{\sum_p \omega_{PCE,p,t}\omega_{VA,p,p',t}\Delta B_{p,p',t}}_{\equiv V_{p',t}}\right)
+	&= \sum_{p'}W_{p',t}\pi_{VA,p',t-1} + V_{p',t}
+\end{align*}
+
+And this is also an exact decomposition!
+
+\section*{Implementation Steps}
+
+\begin{enumerate}
+	\item Start by constructing the time varying matrices $B_t\equiv (I-A_t)^{-1}diag(\mathds{1}_p'A_t)$ which should be a different $\mathcal{P}_t$ x $\mathcal{P}_t$ for each time period (where $\mathcal{P}_t$ is the number of products in that period). Note also that this only differs by the set of products -- if that set doesn't change, then $B_t = B_{t-1}$.
+	\item Then use this to construct $\omega_{VA,p,p',t} \equiv \frac{B_{p,p',t}P_{VA,p',t-1}}{\sum_{p''} B_{p,p'',t}P_{VA,p'',t-1}}$. Note that this is a different $\mathcal{P}_t$ x $\mathcal{P}_t$ matrix for each time period $t$. 
+	\item Calculate value added inflation and the change in $B$ matrices (not the denominator in the $B$ formula):
+	\begin{align*}
+		\pi_{VA,p',t}&\equiv \frac{P_{VA,p',t}-P_{VA,p',t-1}}{P_{VA,p',t-1}}\\
+		\Delta B_{p,p',t} &\equiv \frac{\Delta B_{p,p',t}-]\Delta B_{p,p',t-1}}{\Delta B_{p,p',t}}
+	\end{align*}
+	\item Then create $W_{p',t}$ and $V_{p',t}$
+	
+	\begin{align*}
+		W_{p',t}&\equiv \sum_p \omega_{PCE,p,t}\omega_{VA,p,p',t}\\
+		V_{p',t}&\equiv \sum_p \omega_{PCE,p,t}\omega_{VA,p,p',t}\Delta B_{p,p',t}
+	\end{align*}
+	\item Now with these check that the following holds:
+	\[
+	\pi_{CPI,t} = \sum_{p'} \left(W_{p',t}' \pi_{VA,p',t} + V_{p',t}\right)
+	\]
+	\item If not, let Nick know!
+	\item Then calculate demand and supply inflation as follows:
+	\begin{align*}
+		\pi_{demand,t}^{Shapiro} &\equiv \sum_{p'} D_{p',t} \omega_{PCE,p',t} \pi_{p',t}\\
+		\pi_{supply,t}^{Shapiro} &\equiv \sum_{p'} (1-D_{p',t}) \omega_{PCE,p',t} \pi_{p',t}\\		
+		\pi_{demand,t}^{ShapirIO} &\equiv \sum_{p'} D_{p',t} \left(W_{p',t}' \pi_{VA,p',t} + V_{p',t}\right)\\
+		\pi_{supply,t}^{ShapirIO} &\equiv \sum_{p'} (1-D_{p',t}) \left(W_{p',t}' \pi_{VA,p',t} + V_{p',t}\right)\\	
+	\end{align*}
+	\item Do the 12 month averaging thing you already do and then the standard plots.
+\end{enumerate}
+
+\end{document}

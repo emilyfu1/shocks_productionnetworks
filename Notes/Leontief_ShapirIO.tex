@@ -1,0 +1,243 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{rednice}{rgb}{0.85,0.26,0}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\usetikzlibrary{matrix,decorations.pathreplacing,arrows.meta,positioning}
+
+\newcommand{\vy}{\underline{y}}
+\newcommand{\ve}{\underline{\epsilon}}
+\newcommand{\A}[1]{\mathbold{A_{#1}}}
+\newcommand{\D}[1]{\mathbold{D_{#1}}}
+\newcommand{\C}[1]{\mathbold{C_{#1}}}
+\newcommand{\B}[1]{\mathbold{B_{#1}}}
+\newcommand{\R}[1]{\mathbold{R_{#1}}}
+
+%\newtheorem{definition}{Definition}
+\begin{document}
+\title{Leontief ShapirIO}
+\author{N}
+\maketitle
+
+
+\paragraph{Goal:} Outline an approach to do ShapirIO with an assumption of Leontief Production.
+
+\section{The model and math}
+Consumption will remain Cobb-Douglas between products $\mathcal{P}$:
+
+\[
+	C_t = \prod_{j\in \mathcal{P}} C_{p,t}^{\textcolor{greennice}{\omega_{PCE,p,t}}}
+\]
+
+where the coefficients $textcolor{greennice}{\omega_{PCE,p}}$ are directly mappable to the PCE expenditure data we have (and green will mean we have data on it).
+
+Production now changes to Leontief:
+
+\[
+	Y_{p,t} = \min \left\{\frac{M_{i\rightarrow p,t}}{\textcolor{greennice}{\omega_{i \rightarrow p}}},  \frac{VA_{p,t}}{\textcolor{greennice}{\omega_{VA \rightarrow p}}} \right\}
+\]
+
+where $\sum_i \textcolor{greennice}{\omega_{i \rightarrow p}} + \textcolor{greennice}{\omega_{VA,p}} = 1$ is the intensity with which each intermediate input (and value added inputs) are needed in production.
+
+Firm demand for each product has no prices -- it is the proportion of that input needed to produce the quantity of output $Y_{p,t}$\footnote{Note that we don't directly observe total production by product -- we observe sales and quantity consumed by households in BEA. These are not the same!}:
+
+\[
+	M_{i\rightarrow p,t} = \textcolor{greennice}{\omega_{i \rightarrow p}}Y_{p,t}
+\]
+
+And:
+
+\[
+	VA_{p,t} = \textcolor{greennice}{\omega_{VA \rightarrow p}} Y_{p,t}
+\]
+
+Given these demand's that marginal cost is simply the price of each input multiplied by the amount needed of each to ensure that 1 more unit of output is needed. Since all are needed in equal proportion, there is only one way to combine inputs to produce the additional output -- as given by $\{\textcolor{greennice}{\omega_{i\rightarrow,p}} \}_{i \in \mathcal{P} + VA}$.
+
+\[
+	MC_{p,t} = \sum_{i\in \mathcal{P}}\textcolor{greennice}{\omega_{i \rightarrow p}} P_{i,t} + \omega_{VA \rightarrow p} P_{VA,p,t} 
+\]
+
+If we assume that there is no markup so that $P_{p,t} = MC_{p,t}$, we can calculate $P_{VA,t}$ as:
+
+\begin{align}
+	P_{VA,p,t} = \frac{P_{p,t} - \sum_{i\in \mathcal{P}}\textcolor{greennice}{\omega_{i \rightarrow p} P_{i,t}}}{\textcolor{greennice}{\omega_{VA,p,t}}}\label{eqn:pricing}
+\end{align}
+
+Or using matrix algebra:
+
+\[
+	\underline{P}_{VA,t} = \underbrace{diag(1-\mathds{1}_{\mathcal{P}}'\textcolor{greennice}{\mathbold{A}})^{-1}}_{\equiv diag(\underline{\omega}_{VA})^{-1}}(I - \textcolor{greennice}{\mathbold{A}})\textcolor{greennice}{\underline{P}_t}
+\]
+where $\underline{P}_{VA,t}$ is the $\mathcal{P}$ x $1$ vector of value added prices, $\underline{P}_t$ is the $\textcolor{greennice}{\mathcal{P}}$ x $1$ vector of output prices (BEA data) and $\textcolor{greennice}{\mathbold{A}} = \{\omega_{p\rightarrow i,2017}\}$ is the I-O matrix which we get based on our 2017 data.\footnote{This $A$ may be the transpose of Ben's $A$ matrix in earlier notes. It is also $diag(\underline{\gamma})\mathbold{\Omega}$ from my previous notes.} $\mathds{1}_{\mathcal{P}}'\textcolor{greennice}{\mathbold{A}}$ is intended to be the sum of all rows in each column (columnsum) of $\textcolor{greennice}{\mathbold{A}}$ or $\sum_{i} \omega_{i\rightarrow p,2017}$ (i.e. $\mathds{1}$ is a vector of ones).
+
+\paragraph{Problem:} It should be clear from the above formula that we can get negative value added prices. This is something we should check.
+
+To run our VARs we also need sales so let's derive this using the market clearing conditions of all goods. We know that production = sales and in our simple setup, firms can sell their output to other firms or to consumers (no investment, exporting or government spending). Market clearing (assuming one sales price $P_{i,t}$ for each product to all customers), gives us the following equation:
+
+\[
+	Sales_{i,t} = \textcolor{greennice}{P_{i,t}} Y_{i,t} = \sum_p \textcolor{greennice}{P_{i,t}}M_{i\rightarrow p,t} + \textcolor{greennice}{P_{i,t}C_{i,t}}
+\]
+where we get $\textcolor{greennice}{P_{i,t}C_{i,t}}$ directly from the PCE.
+
+We can substitute in the demand expressions to get:
+
+\begin{align*}
+	Sales_{i,t} &= \textcolor{greennice}{P_{i,t}} Y_{i,t} = \sum_p \textcolor{greennice}{P_{i,t}}\textcolor{greennice}{A_{i \rightarrow p}}Y_{p,t} + \textcolor{greennice}{P_{i,t}C_{i,t}}\\
+	&=\sum_p \textcolor{greennice}{\frac{P_{i,t}}{P_{p,t}}}\textcolor{greennice}{A_{i \rightarrow p}}Sales_{p,t}
+\end{align*}
+
+where in the final line I multiplied and divided by $\textcolor{greennice}{P_{p,t}}$ and used the fact that sales is given by $\textcolor{greennice}{P_{p,t}}Y_{p,t}$.
+
+
+In matrix form we can do the following:
+
+\begin{align*}
+	\underline{Sales}_{t} &= diag(\textcolor{greennice}{\underline{P}_t})\textcolor{greennice}{\mathbold{A}}diag(\textcolor{greennice}{\underline{P}_t})^{-1} \underline{Sales}_t + \textcolor{greennice}{\underline{PC}_t}\\
+	\Leftrightarrow \underline{Sales}_{t} &= \left(I - diag(\textcolor{greennice}{\underline{P}_t})\textcolor{greennice}{\mathbold{A}}diag(\textcolor{greennice}{\underline{P}_t})^{-1}\right)^{-1} \textcolor{greennice}{\underline{PC}_t}
+\end{align*}
+
+Calculating sales is essentially the same as before except we need to construct a time-varying Leontief Inverse based on the expenditure shares changing as a function of price changes.
+
+\paragraph{Warning and danger!} This transformation of the I-O matrix over time will lead to some very large and possibly non-nonsensical changes. For example, we are assuming all sectors use computers in fixed proportions in production based on 2017 usage. In 1950 compute is super expensive because the technology doesn't exist yet. This method will assume that cars use the same microchips in 1950 as they do in 2017 -- but at a much higher cost. This will make the expenditure share on computers \underline{stupidly large} and will translate to computer sales in 1950 being \underline{enormous}. We may want to ignore these price adjustment terms when calculating sales and use the previous formula.
+
+\paragraph{Small other note:} I am assuming in this derivation that the price index is 1 in 2017. That allows us to perfectly map from $\{A_{i\rightarrow p}\}_{p\in \mathcal{P} + VA}$ -- model parameters -- to 2017 expenditure share data (I-O matrix). If the price indices we not 1 in 2017, then we need to apply the following formula instead:
+
+\begin{align*}
+ \underline{Sales}_{t} &= \left(I - diag(\textcolor{greennice}{\underline{P}_t})diag(\textcolor{greennice}{\underline{P}_{2017}})^{-1}\textcolor{greennice}{\mathbold{A}}diag(\textcolor{greennice}{\underline{P}_t})^{-1}diag(\textcolor{greennice}{\underline{P}_{2017}})\right)^{-1} \textcolor{greennice}{\underline{PC}_t}
+\end{align*}
+let's not do that...
+
+OK, so this gives us the price of value added and sales with which to run the same VARs on value added prices and sales to do our identification. Great!
+
+\section{Influence Calculations}
+
+Next, let's do the influence calculations. Here we have very similar equations to the Cobb-Douglas case except in Cobb-Douglas influence is linear in \underline{log-}prices vs. here where it is fully linear:
+
+\begin{align*}
+	\underline{P}_{VA,t} &= diag(1-\mathds{1}_{\mathcal{P}}'\textcolor{greennice}{\mathbold{A}})^{-1}(I-\textcolor{greennice}{A})\textcolor{greennice}{\underline{P}_t} & \text{Leontief Production}\\			\log(\underline{P}_{VA,t}) &= diag(1-\mathds{1}_{\mathcal{P}}'\textcolor{greennice}{\mathbold{A}})^{-1}(I-\textcolor{greennice}{A})\log(\textcolor{greennice}{\underline{P}_t}) & \text{Previous Cobb-Douglas  Production}\\
+\end{align*}	
+
+CPI is given by:
+
+\begin{align*}
+	P_{CPI,t} &= \textcolor{greennice}{\underline{\omega}_{PCE,t}}'\textcolor{greennice}{\underline{P_t}}\\
+	&=\underbrace{\textcolor{greennice}{\underline{\omega}_{PCE,t}}'(I-\textcolor{greennice}{A})^{-1}diag(\mathds{1}_\mathcal{P}'\textcolor{greennice}{\mathbold{A}})}_{\equiv \textcolor{orangenice}{\underline{\omega}_{VA,t}}}\underline{P}_{VA,t} &\text{From \cref{eqn:pricing}}
+\end{align*}
+where I use the orange to differentiate this concept from the blue one below.
+
+Because this is linear, I think it is better to define inflation differently. Inflation is then given by:
+
+\begin{align*}
+	\pi_{CPI,t}&\equiv \frac{P_{CPI,t}}{P_{CPI,t-1}} = \frac{\textcolor{orangenice}{\underline{\omega}_{VA,t}'}\underline{P}_{VA,t}}{\textcolor{orangenice}{\underline{\omega}_{VA,t-1}}'\underline{P}_{VA,t-1}} = \frac{\sum_p \textcolor{orangenice}{\omega_{VA,p,t}} P_{VA,p,t}}{\sum_{p'} \textcolor{orangenice}{\omega_{VA,p',t-1}} P_{VA,p',t-1}}& \substack{\text{(Sum notation more}\\\text{convenient for below)}}\\
+	&=\sum_p \underbrace{\frac{\textcolor{orangenice}{\omega_{VA,p,t}} P_{VA,p,t-1}}{\sum_{p'} \textcolor{orangenice}{\omega_{VA,p',t-1}} P_{VA,p',t-1}}}_{\equiv \textcolor{bluenice}{\underline{\omega}_{\pi_{VA},p,t}}}\underbrace{\frac{P_{VA,p,t}}{P_{VA,p,t-1}}}_{\equiv \pi_{VA,p,t}} &\substack{\text{Multiply each term by 1: }\\ \frac{P_{VA,p,t-1}}{P_{VA,p,t-1}}}\\
+	&=\sum_{p} \textcolor{bluenice}{\underline{\omega}_{\pi_{VA},p,t}}\pi_{VA,p,t}
+\end{align*}
+
+So this is cool -- we now have linear weights on inflation! However, we risk comparing log-inflation to percent change inflation. This could mean we aren't comparing apples to apples. Let me now outline some choices for going forward.
+
+\section{Options for going forward}
+
+\begin{enumerate}
+	\item {\bf Redo both classification and influence:} We use Leontief to re-do our supply/demand classification \emph{and} recalculate influence. This means we could get different results for {\bf two} reasons: the supply/demand shocks change and the influence changes. Given the new way of calculating Sales is likely going to lead to weird nonsense, I don't want this option to be the only thing we do. So it makes me think we should also do...
+	\item {\bf Redo influence with old ShapirIO $\mathcal{D}$ matrix}. We take the D matrix from the Cobb-Douglas math and apply it to $\underline{P}_{VA}^{Leontief}$ and $ \textcolor{bluenice}{\underline{\omega}_{\pi_{VA},p,t}}^{Leontief}$. This exercise says if the distribution of supply and demand shocks were the same, what would the impact on CPI be? This to me is a useful exercise as well because it is more about the propagation of shocks between sectors. But note that any amplified propagation also applies to demand shocks to upstream sectors: if oil gets a large demand shock from consumers, then this shock will affect the cost of oil for firms that produce using oil. Their cost rises would be attributed to the initial oil demand shock. 
+\end{enumerate}
+
+To me we should probably do both of these to understand where the differences come from.
+
+Then we also have the question as to whether to switch the CPI definition from log-differences to percent change. I think I am ok with just not comparing apples to apples on this but Ben open to your thoughts.
+
+
+
+
+
+
+\end{document}

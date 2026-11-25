@@ -1,0 +1,192 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Running the VAR for ShapirIO}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+\paragraph{Purpose:} The purpose of this note is to introduce some details to run a VAR.
+
+\section{What is a VAR}
+
+A VAR is simply OLS with a vector of LHS variables. The ``V'' stands for Vector (meaning multiple LHS variables), ``A'' for Auto which simply means over time (so the RHS variables are going to be lags of the LHS variables).
+
+So a 2-variable VAR will be like this:
+
+\[
+	\underbrace{\begin{bmatrix}
+		\log{price}_{t}\\
+		\log{quantity}_{t}
+	\end{bmatrix}}_{\equiv \underbar{Y}_t}
+	=
+	\underbrace{\begin{bmatrix}
+		a_{price,price} & q_{price quantity}\\
+		a_{quantity,price}&a_{quantyt,quantity}
+	\end{bmatrix}}_{\equiv A \text{ Parameter matrix}}
+	\begin{bmatrix}
+		\log{price}_{t-1}\\
+		\log{quantity}_{t-1}
+	\end{bmatrix}
+	+\begin{bmatrix}
+	e_{price,t}\\
+	e_{quantity,t}
+	\end{bmatrix}
+\]
+
+The parameter matrix $A$ can be estimated using the same formula for OLS adjusted for the fact that the LHS is a vector. We can stack $\underline{Y}_{t-1}$ into the following matrices:
+
+\[
+	\mathbf{Y}_{RHS}\equiv \begin{bmatrix}
+		\underline{Y}_{0}\\
+		\vdots\\
+		\underline{Y}_{T-1}
+	\end{bmatrix},\;\;\;\;\;\mathbf{Y}_{LHS}\equiv\begin{bmatrix}
+		\underline{Y}_{1}\\
+		\vdots\\
+		\underline{Y}_{T}
+	\end{bmatrix}
+\]
+
+\begin{align*}
+	\hat{A}&=\left(\sum_t \underline{Y}_{t-1}'\underline{Y}_{t-1}\right)^{-1}\left(\sum_t\underline{Y}_{t-1}'\underline{Y}_t\right)&\text{Summation notation}\\
+	&=\left(\mathbf{Y}_{RHS}'\mathbf{Y}_{RHS}\right)^{-1}\mathbf{Y}_{RHS}'\mathbf{Y}_{LHS}&\text{Matrix Notation}
+\end{align*}
+
+Note that Python has a package to do all this VAR stuff so I would not worry too much about the details of implementation.
+
+Here is what I would like from you. 
+
+\begin{enumerate}
+	\item Using the price and quantity data we collected I want you to run VARs for every sector. This should be done with the BEA dataframe (not the one merged with the IO yet)
+	\item The VAR above has a single lag on the RHS but one can run VARs with multiple lags. Since this is monthly data, I want you to run 24 lags to start with (we can consider lag length selection later).
+	\item Then I want you to save the residuals from each sectoral regression in their own data frame.
+	\item Then in that residual dataframe, I want you calculate an expenditure residual as the product of the price and quantity residuals.
+\end{enumerate}
+
+Here is some code that might help:
+	
+\begin{lstlisting}[label=some-code,caption=Some Code]
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+\# Import Statsmodels
+from statsmodels.tsa.api import VAR
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tools.eval_measures import rmse, aic
+
+model = VAR(df)
+for i in [1,2,3,4,5,6,7,8,9]:
+    result = model.fit(i)
+    print('Lag Order =', i)
+    print('AIC : ', result.aic)
+    print('BIC : ', result.bic)
+    print('FPE : ', result.fpe)
+    print('HQIC: ', result.hqic, '\n')
+\end{lstlisting}
+
+
+\end{document}

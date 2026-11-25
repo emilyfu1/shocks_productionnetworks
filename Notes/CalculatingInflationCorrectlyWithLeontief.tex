@@ -1,0 +1,166 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{rednice}{rgb}{0.85,0.26,0}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\usetikzlibrary{matrix,decorations.pathreplacing,arrows.meta,positioning}
+
+\newcommand{\vy}{\underline{y}}
+\newcommand{\ve}{\underline{\epsilon}}
+\newcommand{\A}[1]{\mathbold{A_{#1}}}
+\newcommand{\D}[1]{\mathbold{D_{#1}}}
+\newcommand{\C}[1]{\mathbold{C_{#1}}}
+\newcommand{\B}[1]{\mathbold{B_{#1}}}
+\newcommand{\R}[1]{\mathbold{R_{#1}}}
+
+%\newtheorem{definition}{Definition}
+\begin{document}
+\title{Consistent Inflation Definitions}
+\author{N}
+\maketitle
+
+With the Leontief Production we only get the exact match of the two inflations with a very specific definition of inflation.
+
+\[
+	\Pi_{CPI,t} \equiv \frac{P_{CPI,t}}{P_{CPI,t-1}} = \frac{\sum_p \omega_{PCE,p,t} P_{p,t}}{\sum_{p'} \omega_{PCE,p',t-1} P_{p',t-1}}
+\]
+
+The Shapiro definition of inflation does {\bf NOT} hold exactly any more (because we aren't doing log-approximations).
+
+The goal of this note is to outline the new way to calculate inflation for the graphs. Note that this new way will result in \emph{different} inflation profiles. However, if done for both the Shapiro and ShapirIO graphs, we should still get them summing to the same value.
+
+Let's proceed:
+
+\section{Calculating Inflation}
+
+Note that if we calculate gross inflation the way I said we get the following correspondence:
+
+\begin{align*}
+	\Pi_{CPI,t}&\equiv \frac{P_{CPI,t}}{P_{CPI,t-1}} = \frac{\textcolor{orangenice}{\underline{\omega}_{VA,t}'}\underline{P}_{VA,t}}{\textcolor{orangenice}{\underline{\omega}_{VA,t-1}}'\underline{P}_{VA,t-1}} = \frac{\sum_p \textcolor{orangenice}{\omega_{VA,p,t}} P_{VA,p,t}}{\sum_{p'} \textcolor{orangenice}{\omega_{VA,p',t-1}} P_{VA,p',t-1}}& \substack{\text{(Sum notation more}\\\text{convenient for below)}}\\
+	&=\sum_p \underbrace{\frac{\textcolor{orangenice}{\omega_{VA,p,t}} P_{VA,p,t-1}}{\sum_{p'} \textcolor{orangenice}{\omega_{VA,p',t-1}} P_{VA,p',t-1}}}_{\equiv \textcolor{bluenice}{\underline{\omega}_{\pi_{VA},p,t}}}\underbrace{\frac{P_{VA,p,t}}{P_{VA,p,t-1}}}_{\equiv \Pi_{VA,p,t}} &\substack{\text{Multiply each term by 1: }\\ \frac{P_{VA,p,t-1}}{P_{VA,p,t-1}}}\\
+	&=\sum_{p} \textcolor{bluenice}{\underline{\omega}_{\pi_{VA},p,t}}\Pi_{VA,p,t}
+\end{align*}
+
+This introduces an immediate problem: this is \emph{gross} inflation (1.1 = 10\% rise) whereas we want net inflation.
+
+How can we do this with the Shapiro method? See below:
+
+\begin{enumerate}
+	\item Calculate Gross inflation for output and value-added prices: $\Pi_{p,t} \equiv P_{p,t}/P_{p,t-1}$ and $\Pi_{VA,p,t}\equiv P_{VA,p,t}/P_{VA,p,t-1}$.
+	\item Collect the weights for value added $\omega_{\Pi_{VA},p,t}$ and calculate the following weights for Shapiro:
+	\[
+		\omega_{\Pi,p,t}\equiv \frac{\omega_{PCE,p,t}P_{p,t-1}}{\sum_{p'}\omega_{PCE,p',t-1}P_{p',t-1}}
+	\]
+	\item Verify that $\Pi_{CPI,t} = \sum_p \omega_{\Pi,p,t}\Pi_{p,t} = \sum_p\textcolor{bluenice}{\underline{\omega}_{\pi_{VA},p,t}} \Pi_{VA,p,t}$
+	\item How then do we get to net inflation? We need the following definitions:
+	\begin{itemize}
+		\item $\omega_{\Pi,p,t}^{lag}\equiv \frac{\omega_{PCE,p,t-1}P_{p,t-1}}{\sum_{p'}\omega_{PCE,p',t-1}P_{p',t-1}}$
+		\item $\textcolor{rednice}{\omega_{VA,p,t}^{lag}}\equiv \frac{\textcolor{orangenice}{\omega_{VA,p,t-1}}P_{VA,p,t-1}}{\sum_{p'}\textcolor{orangenice}{\omega_{VA,p',t-1}}P_{VA,p',t-1}}$
+	\end{itemize}	
+	
+	Calculate supply and demand inflation as:
+	\begin{align*}
+		\pi_{CPI,t}^{Demand, Shapiro} &= \sum_p D_{p,t} \left[\omega_{\Pi,p,t}\underbrace{\pi_{p,t}}_{\text{NET Inflation}} +  (\omega_{\Pi,p,t} - \omega_{\Pi,p,t}^{lag})\right] \\
+				\pi_{CPI,t}^{Supply, Shapiro} &= \sum_p (1-D_{p,t}) \left[\omega_{\Pi,p,t}\underbrace{\pi_{p,t}}_{\text{NET Inflation}} +  (\omega_{\Pi,p,t} - \omega_{\Pi,p,t}^{lag})\right] \\
+		\pi_{CPI,t}^{Demand, ShapirIO} &= \sum_p D_{p,t} \left[\textcolor{bluenice}{\omega_{\Pi_{VA},p,t}}\underbrace{\pi_{VA,p,t}}_{\text{NET Inflation}} + (\textcolor{bluenice}{\omega_{\Pi_{VA},p,t}}- \textcolor{rednice}{\omega_{VA,p,t}^{lag}})\right] \\
+				\pi_{CPI,t}^{Supply, ShapirIO} &= \sum_p (1-D_{p,t}) \left[\textcolor{bluenice}{\omega_{\Pi_{VA},p,t}}\underbrace{\pi_{VA,p,t}}_{\text{NET Inflation}} + (\textcolor{bluenice}{\omega_{\Pi_{VA},p,t}}- \textcolor{rednice}{\omega_{VA,p,t}^{lag}})\right] \\
+	\end{align*}
+	\item Verify that 
+	\begin{align*}
+		\pi_{CPI,t}^{Demand, Shapiro} + \pi_{CPI,t}^{Supply, Shapiro} &=  \pi_{CPI,t} \equiv \Pi_{CPI,t} -1\\
+		\pi_{CPI,t}^{Demand, ShapirIO} + \pi_{CPI,t}^{Supply, ShapirIO} &=\pi_{CPI,t} \equiv \Pi_{CPI,t} -1
+		\end{align*}
+	\item Only then do the 12-month lag thing.
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,169 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+	
+\definecolor{red}{rgb}{0.9,0.1,0.1}
+\definecolor{blue}{rgb}{0,0,0.7}
+\definecolor{dgr}{rgb}{0.08,0.25,0.18}
+\definecolor{navy}{RGB}{0,0,165}
+\definecolor{org}{HTML}{EB811B}
+\definecolor{lgr}{HTML}{14B03D}
+\definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
+
+\definecolor{graphblue}{RGB}{64,130.56,194.5}
+\definecolor{graphred}{RGB}{255,0,0}
+\definecolor{graphyellow}{RGB}{237.8340,177.64,32}
+\definecolor{graphpurple}{RGB}{126,47,142}
+
+\newcommand{\hlight}[1]{\textcolor{org}{#1}}
+\newcommand{\glight}[1]{\textcolor{lgr}{#1}}
+\newcommand{\rlight}[1]{\textcolor{red}{#1}}
+\newcommand{\blight}[1]{\textcolor{graphblue}{#1}}
+\newcommand{\plight}[1]{\textcolor{graphpurple}{#1}}
+
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Doing our supply/demand contribution graph properly}
+\author{{\emph{Which influencer has the most influence?}}}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+\paragraph{Purpose:} When I did the original note for the classification of sectors and being the \emph{originator} of a supply or demand shock, I thought we could do a similar graph to Shapiro's inflation graph showing contributions of demand and supply with our classifications directly. Based on our last meeting, it became clear that this was incorrect. If a sector (like oil) is the source of a supply shock \emph{everywhere} we need to have the right approach to capture this.
+
+Here is what I would suggest in order to operationalize this. \hlight{Note that I will use the same notation of matrices that we have in our other notes -- $\mathbold{\Omega}$ is the share of intermediates row sources from column, $\underline{\gamma}$ is the intermediate share of sales for each industry.}
+
+\begin{enumerate}
+	\item Start by writing a function that produces the graphs. This function should take as inputs the following:
+	\begin{itemize}
+		\item $\pi_t$ -- CPI inflation ($T$ x $1$ total time series)
+		\item $\mathbold{E}$ -- Expenditure weights by sector ($P$ x $T$) where $P$ is the number of products and $T$ is the number of time periods. Note that $1_P'E = 1_T'$ -- the sum of expenditure weights over the product/industry dimension $P$ is 1.
+		\item A Demand shock matrix $\mathbold{D}$ ($P$ x $T$) where entries are between 0 and 1. If an entry is 0.75 for sector 3 in 2000Q1, then it means that in 2000Q1, sector 3 was 75\% affected by a demand shock and 25\% affected by a supply shock.
+		\item A matrix of sectoral inflations $\mathbold{\Pi}$ ($P$ x $T$) where ($1_P'(\mathbold{E}\cdot \mathbold{\Pi})\approx \pi_t$) noting that $1_P$ is a $P$ x $1$ vector of ones and $A\cdot B$ means the elementwise multiplication of $A$ and $B$.\footnote{What I mean by this math is if you take the expenditure shares and scale them by inflation in each product/industry and then sum over products/industries, you should get CPI inflation and it should be close to the first input.}
+	\end{itemize}
+	Note that there might be more inputs I have forgotten. 
+	
+	This function will then plot CPI inflation as a line, then calculate $1_P'(\mathbold{D} \cdot \mathbold{E}\cdot \mathbold{\Pi})$ and plot it as a bar and call it the ``demand contribution to CPI''. For supply bars it will calculate $1_P'((1-\mathbold{D}) \cdot \mathbold{E}\cdot \mathbold{\Pi})$.
+	
+	\item Use this function to replicate the Shapiro classification. In this case entries of $D$ will either be 1 or 0.
+	\item Next we will use this function to implement our classification. We will get a initial matrix $\hlight{\tilde{D}}$ from our procedure. This however only characterizes the sectors based on the \emph{initial} source of the shock (supply of demand). What we want is to calculate the influence of these shocks throughout the economy. To do this let's do the following:
+	\begin{enumerate}
+		\item We should already have a classification where if $P_{VA}$ (price of value added) and \underline{real} quantity (i.e. real production and not sales) both rise/fall in industry $i$ at time $t$, we say $\hlight{\tilde{D}_{i,t}}=1$. If instead $P_{VA}$ and quantity move in opposite directions, we say $\hlight{\tilde{D}_{i,t}}=0$.\footnote{Tony can you please check we are doing the classification this way?}
+		\item Next we want to calculate the influence of this onto prices.\footnote{Ben, note that if we wanted to do the influence on quantities we would need to do something a little different to this. Let me know if you want the math for that.} To find that first let us calculate the following $\mathbold{\Theta}\equiv (I-diag(\underline{\gamma})\mathbold{\Omega})^{-1} = (I-\mathbold{\Delta})^{-1}$. \rlight{Note that $\mathbold{\Theta}\neq \mathbold{\Xi}$ because $\mathbold{\Xi}=(I-\mathbold{\Delta}')^{-1}$}. $\mathbold{\Theta}$ is also a $P$ x $P$ matrix.
+		\item Next we should calculate the influence shares of $P_{VA}$ movements onto output prices (and therefore sectoral inflation). However doing so is a little tricky because even though $\mathbold{\Theta}$ is constant, the value added prices vary over time. 
+		\item Next calculate $\mathbold{\theta}_t\equiv \mathbold{\Theta}\cdot (\log(\underline{P}_{VA,t})\otimes 1_P')$ where $\underline{P}_{VA,t}$ is a $P$ x $1$ matrix when doing this multiplication.\footnote{$\otimes $ represents the kronecker product but effectively all I want is $P$ repetitions of the vector $\log(\underline{P}_{VA,t})$ so that all rows have the same number in them.} Note that we need to do this for every time period $t=[1,\dots,T]$. Note also that $\mathbold{\theta}_t$ is a $P$ x $P$ matrix (and the we have $T$ of these).
+		\item Calculate the column sum of $\underline{\kappa}_t = 1_P'\mathbold{\theta}_t$. Note that $\underline{\kappa}_t$ should be $1$ by $P$.
+		\item Influence is calculated by $\mathbold{\lambda}_t\equiv diag(1/\underline{\kappa}_t)\mathbold{\theta}_t$. This is a $P$ x $P$ matrix and there are $T$ of them -- one for each $t$. Since $\mathbold{\Lambda}_t$ is an influence share, the column-sum should be 1: $1_P'\mathbold{\lambda}=1_P$ or summing over rows within a column should be 1.
+		\item Calculate the input $\mathbold{D}$ one column at a time. That is if $\underline{D}_t$ is the $t^{th}$ column of $\mathbold{D}$ and $\hlight{\underline{\tilde{D}}_t}$ is the $t^{th}$ column of $\hlight{\tilde{D}}$, then it is calculated as: $\underline{D}_t\equiv \mathbold{\lambda}_t\hlight{\tilde{\underline{D}}_t}$. Note that since $\mathbold{\lambda}_t$ is $P$ x $P$ and $\hlight{\tilde{D}_t}$ is $P$ x $1$, each $\underline{D}_t$ is $P$ x $1$. 
+		\item Finally concatenate the $\underline{D}_t$s to get:
+		
+		$$
+			\mathbold{D} = \begin{bmatrix}
+				\underline{D}_1 &\dots &\underline{D}_T
+			\end{bmatrix}
+		$$
+	\end{enumerate}
+	\item Before using $\mathbold{D}$ as an input we should verify that all entries are between 0 and 1. Let me know if any are negative -- this might be possible and we need to think about what to do in that case.
+\end{enumerate}
+
+
+\end{document}
