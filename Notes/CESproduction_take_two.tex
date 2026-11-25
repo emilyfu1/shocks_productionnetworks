@@ -1,0 +1,395 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\usetikzlibrary{matrix,decorations.pathreplacing}
+
+\newcommand{\sigmac}{\underline{\sigma}_{c,t}}
+\newcommand{\sigmad}{\underline{\sigma}_{d,t}}
+\newcommand{\dZ}{d\underline{Z}_t}
+\newcommand{\sigmacd}{\underline{\sigma}_t^{\Delta}}
+\newcommand{\D}{\mathcal{D}_t}
+\newcommand{\sigmap}{\underline{\sigma}_{P,t}}
+\newcommand{\sigmapc}{\underline{\sigma}_{P_c,t}}
+\newcommand{\sigmapd}{\underline{\sigma}_{P_d,t}}
+\newcommand{\mup}{\mu_t^{P}}
+\newcommand{\mud}{\mu_t^{\mathcal{D}}}
+\newcommand{\sigmaD}{\underline{\sigma}_{\mathcal{D},t}}
+\newcommand{\muq}{\mu_{q,t}}
+\newcommand{\sigmavt}{\underline{\sigma}_{\vartheta,t}}
+\newcommand{\sigmaq}{\underline{\sigma}_{q,t}}
+\newcommand{\sigmaK}{\underline{\sigma}_{K,t}}
+\newcommand{\vt}{\vartheta_t}
+\newcommand{\amb}{(\mathds{1}_a\sigma_a-\mathds{1}_b\sigma_b)}
+\newcommand{\bma}{(\mathds{1}_b\sigma_b-\mathds{1}_a\sigma_a)}
+\newcommand{\nuad}{\underline{\nu}_t^{ad}}
+\newcommand{\nubd}{\underline{\nu}_t^{bd}}
+\newcommand{\nuab}{\underline{\nu}_t^{a}}
+\newcommand{\nubb}{\underline{\nu}_t^{b}}
+\newcommand{\sigmaeta}{\underline{\sigma}_{\eta,t}}
+\newcommand{\sigmas}{\underline{\sigma}_{S,t}}
+\newcommand{\bsigmas}{\underline{\bar{\sigma}}_{S}}
+\newcommand{\muvt}{\mu_t^\vartheta}
+\newcommand{\PP}{\left(\underline{P}\right)}
+\newcommand{\IO}{\mathbf{\Omega\left(\underline{P}\right)}}
+\newcommand{\io}{\mathbf{\Omega}}
+\newcommand{\fd}{\mathbf{\Xi\left(\underline{P}\right)}}
+\newcommand{\fdd}{\mathbf{\Xi}}
+\newcommand{\ishare}{\underline{\gamma}\left(\underline{P}\right)}
+\newcommand{\ishares}{\underline{\gamma}}
+\newcommand{\MM}{\mathbf{\mathcal{M}\PP}}
+\newcommand{\MMM}{\mathbf{\mathcal{M}}}
+\newcommand{\obj}{\mathbf{\Phi}}
+\newcommand{\objt}{\mathbf{\tilde{\Phi}}}
+\newcommand{\nuu}{(\underline{\nu})}
+\newcommand{\nured}{\textcolor{red}{\nu}}
+\newcommand{\nuredOne}{\textcolor{red}{\nu_1}}
+\newcommand{\nuredTwo}{\textcolor{orangenice}{\nu_2}}
+\newcommand{\scaleBlueOne}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 11}\nu}{1-\psi_{PHL,1\rightarrow 11}}}}
+\newcommand{\scaleBlueTwo}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 1,rice}\nu}{1-\psi_{PHL,rice\rightarrow 1,rice}}}}
+\newcommand{\scaleBlueOneOne}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 11}\nu_1}{1-\psi_{PHL,1\rightarrow 11}}}}
+\newcommand{\scaleBlueTwoOne}{\textcolor{bluenice}{\frac{1-\psi_{PHL,rice\rightarrow 1,rice}\nu_1}{1-\psi_{PHL,rice\rightarrow 1,rice}}}}
+
+\newcommand{\scaleBlueOneTwo}{\textcolor{greennice}{1-\frac{1-\psi_{PHL,rice\rightarrow 11}}{\nu_2 }}}
+\newcommand{\scaleBlueTwoTwo}{\textcolor{greennice}{1-\frac{1-\psi_{PHL,rice\rightarrow 1,rice}}{\nu_2}}}
+\newcommand{\mb}[1]{\mathbold{\tilde{#1}}_t}
+\newcommand{\mbb}[2]{\mathbold{\tilde{#1}}_{#2,t}}
+
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+	
+\definecolor{red}{rgb}{0.9,0.1,0.1}
+\definecolor{blue}{rgb}{0,0,0.7}
+\definecolor{dgr}{rgb}{0.08,0.25,0.18}
+\definecolor{navy}{RGB}{0,0,165}
+\definecolor{org}{HTML}{EB811B}
+\definecolor{lgr}{HTML}{14B03D}
+\definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
+
+\definecolor{graphblue}{RGB}{64,130.56,194.5}
+\definecolor{graphred}{RGB}{255,0,0}
+\definecolor{graphyellow}{RGB}{237.8340,177.64,32}
+\definecolor{graphpurple}{RGB}{126,47,142}
+
+\newcommand{\hlight}[1]{\textcolor{org}{#1}}
+\newcommand{\glight}[1]{\textcolor{lgr}{#1}}
+\newcommand{\rlight}[1]{\textcolor{red}{#1}}
+\newcommand{\blight}[1]{\textcolor{graphblue}{#1}}
+\newcommand{\plight}[1]{\textcolor{graphpurple}{#1}}
+\begin{document}
+\title{CES production -- beyond Cobb-Douglas}
+\author{Nick}
+\maketitle
+
+\paragraph{Purpose:} The goal of this note is to re-do our calculations of the price of value added and the supply/demand influence calculations when we have CES production instead of Cobb-Douglas.
+
+\paragraph{Problem:} With Cobb-Douglas the output prices are log-linear in input prices and with Leontief the output prices are linear in input prices. With CES more generally, neither are true and value added prices become a non-linear function of output prices. This makes writing a decomposition much trickier. Let's see how far we can go.
+
+
+
+\section*{Calculating the price of value added and Sales}
+
+Consumption remains Cobb-Douglas in products:
+
+\[
+	C_t = \prod_p C_{i,t}^{\glight{\omega_{PCE,i,t}}}
+\]
+where $\glight{\omega_{PCE,i,t}}$ are the expenditure weights from the BEA over all $\mathcal{P}$ products with individual products denoted by $i$. Note that if I highlight something in green then we have data on it.
+
+Production is now given by:
+
+\begin{align*}
+	Y_{i,t} &= \left[(1-c_i)VA_{i,t}^{\frac{\epsilon-1}{\epsilon}} + c_i \sum_j \varpi_{j\rightarrow i} M_{j\rightarrow i,t}^{\frac{\epsilon-1}{\epsilon}}\right]^{\frac{\epsilon}{\epsilon-1}}\\
+\end{align*}
+where $M_{i,t}$ is intermediate inputs used by $i$ and $M_{j\rightarrow i,t}$ are intermediates of product $j$ used by $i$ in production. 
+
+Assuming firms optimize profits taking prices as given:
+
+\begin{align*}
+	\max_{Y_{i,t}, VA_{i,t}, \{M_{j\rightarrow i,t}\}_j} P_{i,t} Y_{i,t} - P_{VA,i,t} VA_{i,t} - \sum_j P_{j,t} M_{j\rightarrow i,t}
+\end{align*}
+
+Standard optimization gives us the following formula for output prices:
+
+\begin{align}
+	\glight{P_{i,t}} &= \left[(1-c_i)^\epsilon P_{VA,i,t}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t}}^{1-\epsilon}\right]^{\frac{1}{1-\epsilon}}\label{eqn:P_i}
+\end{align}
+
+and the following formula for the expenditure shares that each sector $i$ spends on inputs from $j$:
+
+\[
+	\omega_{j\rightarrow i,t} \equiv \frac{P_{j,t}M_{j\rightarrow i,t}}{P_{i,t} Y_{i,t}} = (c_i \varpi_{j\rightarrow i})^\epsilon\left(\frac{P_{j,t}}{P_{i,t}}\right)^{1-\epsilon} 
+\]
+with the share of expenditure on value added given by: $\omega_{VA,i,t}\equiv 1-\sum_j \omega_{j\rightarrow i,t}$.
+
+Note that because we only have input-output data in 2017, we are assuming that the expenditure shares for inputs never change:
+
+\[
+	\omega_{j\rightarrow i,t} = \glight{\omega_{j\rightarrow i, 2017}}
+\]
+
+Unlike the Cobb-Douglas case, Equation \ref{eqn:P_i} cannot be linearly inverted! However, note that the expression is linear if instead of solving for $P_{i,t}$ in terms of $P_{VA,i,t}$ and $P_{j,t}$, we solve for $P_{i,t}^{1-\epsilon}$ and $P_{VA,i,t}^{1-\epsilon}$.
+
+Let's also try to solve for the (gross) change in output prices: $\hat{\Pi}_{i,t}^{1-\epsilon} \equiv P_{i,t} / P_{i,t-1}$ (where in general $\hat{X}_t \equiv X_t/X_{t-1}$). Given that the parameters are assumed to be constant we can write this as:
+
+\begin{align*}
+	\hat{\Pi}_{i,t}^{1-\epsilon} &= \left(\frac{\glight{P_{i,t}}}{\glight{P_{i,t-1}}}\right)^{1-\epsilon} = \frac{(1-c_i)^\epsilon P_{VA,i,t}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t}}^{1-\epsilon}}{(1-c_i)^\epsilon P_{VA,i,t-1}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t-1}}^{1-\epsilon}}\\
+	&=\frac{(1-c_i)^\epsilon \hat{\Pi}_{VA,i,t}^{1-\epsilon}P_{VA,i,t-1}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \hat{\Pi}_{j,t}^{1-\epsilon}\glight{P_{j,t-1}}^{1-\epsilon}}{(1-c_i)^\epsilon P_{VA,i,t-1}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t-1}}^{1-\epsilon}}\\
+	&=\frac{(1-c_i)^\epsilon P_{VA,i,t-1}^{1-\epsilon}}{(1-c_i)^\epsilon P_{VA,i,t-1}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t-1}}^{1-\epsilon}}\hat{\Pi}_{VA,i,t}^{1-\epsilon}+ \sum_j \frac{c_i^\epsilon\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t-1}}^{1-\epsilon}}{(1-c_i)^\epsilon P_{VA,i,t-1}^{1-\epsilon} + c_i^\epsilon \sum_j\varpi_{j\rightarrow i}^\epsilon \glight{P_{j,t-1}}^{1-\epsilon}}\hat{\Pi}_{j,t}^{1-\epsilon}\\
+	&=\underbrace{\frac{(1-c_i)^\epsilon P_{VA,i,t-1}^{1-\epsilon}}{\glight{P_{i,t-1}}^{1-\epsilon}}}_{\equiv {\omega_{VA, i,t-1}}}\hat{\Pi}_{VA,i,t}^{1-\epsilon} +\sum_j \underbrace{\frac{c_i^\epsilon\varpi_{j\rightarrow i}^{1-\epsilon}\glight{P_{j,t-1}}^{1-\epsilon}}{\glight{P_{i,t-1}}^{1-\epsilon}}}_{\equiv {\omega_{j\rightarrow i,t-1}}}\hat{\Pi}_{j,t}^{1-\epsilon}\\
+		&={\omega_{VA, i,t-1}}\hat{\Pi}_{VA,i,t}^{1-\epsilon} + \sum_j {\omega_{j\rightarrow i,t-1}}\hat{\Pi}_{j,t}^{1-\epsilon}\\
+	&=\glight{\omega_{VA, i,2017}}\hat{\Pi}_{VA,i,t}^{1-\epsilon} + \sum_j \glight{\omega_{j\rightarrow i,2017}}\hat{\Pi}_{j,t}^{1-\epsilon}
+\end{align*}
+where the last line follows by the assumption that expenditure shares on products never change.
+
+And thus output price inflation (raised to the power of $1-\epsilon$) is linearly related to value added inflation and output prices in other sectors (both raised to the power of $1-\epsilon$).
+
+Let's define the following matrix $\glight{\mathbold{A}}\equiv \{\omega_{j\rightarrow i,2017}\}_{j,i}$ and let $\underline{X}_t$ be the vector of $X_{i,t}$. Finally let $\mathds{1}_\mathcal{P}$ be a $\mathcal{P}$ x $1$ vector of ones (where $\mathcal{P}$ is the number of products). In that case the above equation becomes:
+
+\begin{align}
+	\underline{\hat{\Pi}}_{t}^{1-\epsilon} &= diag(1-\mathds{1}_{\glight{\mathbold{A}}\mathcal{P}})\underline{\hat{\Pi}}_{VA,t}^{1-\epsilon} + \glight{\mathbold{A}}\underline{\hat{\Pi}}_{t}^{-1\epsilon}\nonumber\\
+	\Leftrightarrow \underline{\hat{\Pi}}_{VA,t}^{1-\epsilon} &= [diag(1-\glight{\mathbold{A}}\mathds{1}_{\mathcal{P}})]^{-1}(I-\glight{\mathbold{A}})\underline{\hat{\Pi}}_t^{1-\epsilon}\label{eqn:VA_formula}
+\end{align}
+
+Next let's calculate Sales. We have the following market clearing condition for each good:
+
+\[
+	Y_{i,t} = C_{i,t} + \sum_j M_{i\rightarrow j,t}
+\]
+
+Since we assume the same price for all customers, let's multiply by the price $P_{i,t}$ and use the definitions of the expenditure shares to get the following expressions:
+
+\begin{align*}
+	Sales_{i,t} &\equiv P_{i,t}Y_{i,t} = \underbrace{\glight{P_{i,t}C_{i,t}}}_{\text{BEA expenditure data}} + \sum_j P_{j,t}M_{i\rightarrow j,t}\\
+	&=\glight{P_{i,t}C_{i,t}} + \sum_j \glight{\omega_{i\rightarrow j,2017}}Sales_{j,t}\\
+\end{align*}
+
+In matrix notation we have:
+\begin{align*}
+	\underline{Sales}_t &= \glight{\underline{PC}_{i,t}} + \glight{\mathbold{A}}' \underline{Sales}_t\\
+	\Leftrightarrow \underline{Sales}_t&= (1-\glight{\mathbold{A}}')^{-1} \glight{\underline{PC}_{i,t}}
+\end{align*}
+
+\section*{Inflation the way Shapiro does it}
+
+Note that Shapiro calculates CPI inflation as:
+
+\[
+	\pi_{CPI,t} \equiv \sum_i \glight{\omega_{PCE,i,t}}\left(\frac{P_{i,t}}{P_{i,t-1}}-1\right) =  \glight{\underline{\omega}_{PCE,t}}'\underline{\pi}_{t}
+\]
+
+with $\mathds{1}_{\mathcal{P}}'\glight{\omega_{PCE,t}} = 1$.
+
+Note that we have a problem here: we have a linear decomposition of $\underline{\Pi}_t^{1-\epsilon} = (\underline{\pi}_t+1)^{1-\epsilon}$! Obviously a linear decomposition of $\underline{\Pi}_t^{1-\epsilon}$ is not a linear decomposition of $\underline{\pi_t}$!
+
+But we can cheat a bit here. Define $\hlight{S_{i,t}}\equiv (\hat{\Pi}_{i,t}-1) / (\hat{\Pi}_{i,t}^{1-\epsilon}-1)$. We have:
+
+\begin{align*}
+	\pi_t &= 	diag(\hlight{\underline{S}_t})\hat{\Pi}_t^{1-\epsilon}\\
+	&= diag(\hlight{\underline{S}_t})(I-\glight{\mathbold{A}})^{-1}diag(1-\glight{\mathbold{A}}\mathds{1}_{\mathcal{P}})(\underline{\hat{\Pi}}_{VA,t}^{1-\epsilon}-1)
+\end{align*}
+
+Given this, we can then decompose Shaprio CPI into:
+
+\begin{align*}
+	\pi_{CPI,t} &= \glight{\omega_{PCE,t}}'diag(\hlight{\underline{S}_t})(\hat{\Pi}_t^{1-\epsilon}-1)\\
+	&= \glight{\omega_{PCE,t}}'diag(\hlight{\underline{S}_t})(I-\glight{\mathbold{A}})^{-1}diag(1-\glight{\mathbold{A}}\mathds{1}_{\mathcal{P}})(\underline{\hat{\Pi}}_{VA,t}^{1-\epsilon}-1)
+\end{align*}
+
+Why is this cheating? Because $\hlight{S_{i,t}}$ is clearly affected by $\underline{\hat{\Pi}}_{VA,t}$ but we are pretending it is not. Effectively we are saying that if (elasticity scaled) value added cost changes in sector $j$ contributes $30\%$ to the elasticity-scaled price change in sector i --- $\hat{\Pi}_{i,t}^{1-\epsilon}$ --- then it also contributes 30\% to the unscaled price change in sector i! Obviously this is mathematically incorrect: the contribution of a factor to $X$ is in general not equivalent to its contribution to $X^{1-\epsilon}$. But I think this is ok as a fudge for the current exercise. Since we do have a linear decomposition in the elasticity-scaled price changes, I don't think it matters too much to say this is equivalent to having the same share be allocated to the non-scaled price change.
+
+
+\section*{What to do when the product set changes?}
+
+Implicitly we are approximating $\omega_{j\rightarrow i,t-1}$ with $\glight{\omega_{j\rightarrow i,2017}}$ so we need to use $t-1$ as the trigger for when products exist or not.
+
+There are two cases:
+\begin{enumerate}
+	\item {\bf When a product enters in $t$.} It should \underline{not} be in $\glight{\omega_{j\rightarrow i,t-1}}$. Also, value added price changes for products that are just entering should be 1: $\hat{\Pi}_{VA,i,t} = 1$ for all $i$ entering. To remove $i$ from $\glight{\omega_{j\rightarrow i,t-1}}$ let's continue to make the i$^{th}$ row and column zeros with a 1 on the i$^{th}$ diagonal:
+	
+	\[
+		\glight{\omega_{j\rightarrow i,t-1}} = \begin{cases}
+		\glight{\omega_{j\rightarrow i,2017}} & \rlight{\text{if }P_{i,t},\; P_{i,t-1},\;P_{j,t}\text{ and }P_{j,t-1}\text{exist}}\\
+		\rlight{0}& \text{If }P_{i,t-1}\text{ or } P_{j,t-1}\text{does not exist}	
+		\end{cases}	
+	\]
+We also have:
+	\[
+		\hat{\Pi}_{VA,i,t} = 1
+	\]	
+	whenever $i$ does not exist in $t-1$.
+	\item {\bf When a product exits in $t$:} Because here we are using the lagged weights to calculate the change in prices, we should give the series non-zero weight. That means we calculate the change in value-added prices that are consistent with the product existing in $t$ even though it doesn't. 
+\end{enumerate}
+
+\section*{Implementation}
+
+Here are my suggested steps to follow:
+
+\begin{enumerate}
+	\item Check my math above. Any issues or questions email/call me.
+	\item Define \[
+		\glight{\omega_{j\rightarrow i,t-1}} = \begin{cases}
+		\glight{\omega_{j\rightarrow i,2017}} & \rlight{\text{if }P_{i,t},\; P_{i,t-1},\;P_{j,t}\text{ and }P_{j,t-1}\text{exist}}\\
+		\rlight{0}& \text{If }P_{i,t-1}\text{ or } P_{j,t-1}\text{does not exist}	
+		\end{cases}	
+	\]
+	where note that when all products are observed this should be the same as the $\mathbold{A}$ matrix in Leontief. Quick check on this (sums across a row):
+	\begin{itemize}
+		\item $\max\left\{\glight{\mathbold{A}}'\mathds{1}_{\mathcal{P}}\right\} < 1$
+		\item $\max\left\{\glight{\mathbold{A}}'\mathds{1}_{\mathcal{P}}\right\} > 0$
+	\end{itemize}
+	If this does not hold, check $\glight{\mathbold{A}}'$. It should hold for the transpose and then please proceed with the transpose of the input matrix $\glight{\mathbold{A}}'$. If this does hold, continue without transposing.
+	\item Create time varying I-O matrices: $\mathbold{A}_t \equiv \{\omega_{j\rightarrow i,t}\}_{i,j}$ from step 1.
+	\item Calculate Sales according to:
+		\[
+			\underline{Sales}_t= (1-{\mathbold{A}_t}')^{-1} \glight{\underline{PC}_{i,t}}
+		\]	
+		Don't forget the transpose here.
+	\item Check that every sales is always above 0. If it is ever negative try transposing $\mathbold{A}_t$. If that fails talk with Nick.
+	\item Pick an elasticity $\epsilon$. To start with, let's do something like 0.3.
+	\item Construct output price inflation raised to the power of $1-\epsilon$: $\underline{\hat{\Pi}}_t^{1-\epsilon} \equiv \left(\frac{\underline{P}_t}{\underline{P}_{t-1}}\right)^{1-\epsilon}$.
+	\item Calculate $\mathbold{B}_t\equiv (I-\mathbold{A}_t)^{-1}diag(1-\mathds{1}_{\mathcal{P}}'{\mathbold{A}_t})$. 
+	\item Confirm that $\mathbold{B}_t\mathds{1}_{\mathcal{P}} = 1$ for all time periods $t$. 
+	\item Calculate value added inflation consistent with this elasticity:
+	\[
+		\hlight{\underline{\hat{\Pi}}_{VA,t}^{1-\epsilon}} = \mathbold{B}_t^{-1}\underline{\hat{\Pi}}_t^{1-\epsilon}
+	\]
+	\item Confirm that $\underline{\hat{\Pi}}_t^{1-\epsilon} - \mathbold{B}_t \underline{\hat{\Pi}}_{VA,t}^{1-\epsilon} = \underline{0}$. If not, something is wrong and you need to check for errors.
+	\item Once we have value added inflation calculate net value added inflation:
+	\[
+		\pi_{VA,i,t} = \left(\hlight{\Pi_{VA,i,t}^{1-\epsilon}}\right)^{\frac{1}{1-\epsilon}} -1
+	\]
+	\item Use sales and net value added inflation as LHS variables in the VAR analysis to get $\blight{D_{i,t}^{CES}}$ to indicate if product $i$ in time $t$ is mostly demand or not.
+	\item Calculate $\hlight{S_t}\equiv \frac{\underline{\hat{\Pi}}_t-1}{\underline{\hat{\Pi}}_t^{1-\epsilon}-1}$.
+	\item Calculate $\pi_{i,t}\equiv \frac{\glight{P_{i,t}}}{\glight{P_{i,t-1}}}$ and confirm:
+	\[
+		\pi_{i,t} = \hlight{S_{i,t}}\left(\hat{\Pi}_{i,t}^{1-\epsilon}-1\right)
+	\]
+	\item Calculate $\pi_{CPI,t}\equiv \sum_i \glight{\omega_{PCE,i,t}}\pi_{i,t}$ and then confirm that:
+	
+	\[
+	\pi_{CPI,t}  = \underline{\omega}_{PCE,t}'\underline{\pi}_t		
+	\]
+	If not, you made a coding error somewhere. 
+	\item Calculate the weights:
+	
+	\[
+		\hlight{\underline{\omega}_{VA,t}}\equiv \underline{\omega}_{PCE,t}'(I-\mathbold{A}_t)^{-1}diag(I-\mathbold{A}_t\mathds{1}_{\mathcal{P}})
+	\]
+	
+	Note that $\omega_{VA,i,t}$ may not sum to 1 over $i$ however, we do want $\omega_{VA,i,t}>0$. You made an error if this is not the case (or Nick's intuition about this being above 0 is wrong). 
+	\item Check that 
+	\[
+	\pi_{CPI,t} = \hlight{\underline{\omega}_{VA,t}}' \left(\hlight{\underline{\hat{\Pi}}_{VA,t}^{1-\epsilon}} - 1\right)
+	\]
+	If not, you made an error or Nick made a math error.
+	\item Calculate the following:
+	\begin{align*}
+		\pi_{demand,t}^{\text{Shapiro scale}} &= \sum_j \blight{D_{i,t}^{CES}} \glight{\omega_{PCE,j,t}} \pi_{j,t}\\
+		\pi_{supply,t}^{\text{Shapiro scale}} &= \sum_j (1-\blight{D_{i,t}^{CES}}) \glight{\omega_{PCE,j,t}} \pi_{j,t}\\
+		\pi_{demand,t}^{\text{Shapiro shocks}} &= \sum_j D_{i,t}^{\text{Shapiro original}} \hlight{\underline{\omega}_{VA,j,t}} (\hat{\Pi}_{VA,j,t}^{1-\epsilon}-1)\\
+		\pi_{supply,t}^{\text{Shapiro shocks}} &= \sum_j (1-D_{i,t}^{\text{Shapiro original}}) \hlight{\underline{\omega}_{VA,j,t}} (\hat{\Pi}_{VA,j,t}^{1-\epsilon}-1)\\
+		\pi_{demand,t}^{CES} &= \sum_j \blight{D_{i,t}^{CES}} \hlight{\underline{\omega}_{VA,j,t}} (\hat{\Pi}_{VA,j,t}^{1-\epsilon}-1)\\
+		\pi_{supply,t}^{CES} &= \sum_j (1-\blight{D_{i,t}^{CES}}) \hlight{\underline{\omega}_{VA,j,t}} (\hat{\Pi}_{VA,j,t}^{1-\epsilon}-1)\\
+	\end{align*}
+	\item Do the Shapiro 12 month lag thing on all series (including $\pi_{CPI,t}$).
+	\item Produce 3 plots with:
+	\begin{enumerate}
+		\item $\pi_{CPI,t}^{12}$ as a line against bars of $\pi_{demand,t}^{\text{Shapiro scale}}$ and $\pi_{supply,t}^{\text{Shapiro scale}}$
+	\item $\pi_{CPI,t}^{12}$ as a line against bars of $\pi_{demand,t}^{\text{Shapiro shocks}}$ and $\pi_{supply,t}^{\text{Shapiro shocks}}$
+		\item $\pi_{CPI,t}^{12}$ as a line against bars of $\pi_{demand,t}^{CES}$ and $\pi_{supply,t}^{CES}$
+	\end{enumerate}
+	\item If this all looks good, maybe try plot (c) with different $\epsilon$? Maybe $\epsilon \in \{0.1,0.6\}$ as well as 0.3.
+\end{enumerate}
+
+\end{document}

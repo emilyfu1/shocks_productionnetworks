@@ -1,0 +1,193 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Re-thinking the ShapirIO approach}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+\paragraph{Purpose:} This note is intended to clarify the whole approach we are taking and to correct some errors Nick made (sorry all).
+
+\section*{The theoretical framework}
+
+We observe prices, consumption quantities and consumption expenditures for a variety of sectors: $(p_s,c_s,FD_s)_{s\in S}$. We also observe and input-output matrix $IO_{i,j,2017}$ where each entry records how much $i$ is buying from $j$ in dollars. We also know overall consumption expenditures $FD_{s,2017}$.
+
+We can easily calculate sales in 2017 as:
+\[
+	Sales_s = \sum_{j}IO_{j,s}+FD_s
+\]
+
+But we would like a method to calculate sales in all time periods.
+
+To do this, let's assume that we have the same I-O matrix \emph{in shares} as we do in 2017.
+
+Let's calculate the following :
+
+\[
+	\Omega_{i,j}\equiv\frac{IO_{ij,2017}}{\sum_{j'}IO_{ij',2017}}
+\]
+
+Note that the rows of this should sum to 1:
+\[
+	\mathbold{\Omega}\underline{1}_S = \underline{1}_S
+\]
+where $\underline{1}_S$ is a vector of ones of length $S$.
+
+Next if we define the intermediate share of sales as:
+\[
+	\gamma_{i} \equiv \frac{\sum_j IO_{i,j,2017}}{\sum_{j'}IO_{j',i,2017}+FD_{i,2017}}
+\]
+
+We can now use our time series of consumption expenditures $FD_{s,t}$ to get:
+
+\[
+	Sales_{s,t} = (I-\mathbold{\Omega}'diag(\underline{\gamma}))^{-1}FD_{s,t} 
+\]
+where FD can be the expenditure series (in USD) or it can be the product of the price and quantity indexes $\widetilde{FD}_{s,t}=p_{s,t}\times c_{s,t}$.
+
+While we have \emph{output} prices for all goods it would be nice to  have a sense of the price of value added in each sector (i.e. removing the price of intermediates). So let's see if we can calculate this. Under Cobb-Douglas production we have:
+
+\[
+	P_s^{int} = \exp^{\sum_{j}\Omega_{i,j}\log(P_{j,t})}
+\]
+
+More generally, we have:
+
+\[
+	P_{s,t}^{int} = \left[\sum_{j}\Omega_{i,j}P_{j,t}^{1-\theta}\right]^{\frac{1}{1-\theta}}
+\]
+where $\theta$ is the elasticity of substitution between intermediate varieties. Ideally this would be set to a low value.
+
+Then if we assume a similar structure between value added and intermediates (and assume a gross markup of 1) then we get one of:
+
+\begin{align*}
+	mc_{s,t}&=\exp^{(1-\gamma_s)\log(P_{s,t}^{VA})+\frac{\gamma_s}{1-\mu_{s,t}}\log(P_{s,t}^{int})} & \text{Cobb-Douglas Production}\\
+mc_{s,t}&=\left[(1-\gamma_s)(P_{s,t}^{VA})^{1-\epsilon}+\gamma_s(P_{s,t}^{int})^{1-\epsilon}\right]^{\frac{1}{1-\epsilon}} & \text{Constant Elasticity of Substitution Production}	
+\end{align*}
+$P_{s,t}^{VA}$ is the price of value added in sector $s$ (this is the cost of labor plus land and capital required to produce a unit of output). 
+
+Again assuming that markups are 1, we can calculate a time-series for $P_{s,t}^{VA}$ that is correct up to a (sector-specific) scale factor:
+
+\begin{align*}
+	mc_{s,t}&=\frac{P_{s,t}}{\mu_s}\\
+	\Rightarrow P_{s,t}^{VA} &= \exp^{\frac{1}{1-\gamma_s}\left[\log(P_{s,t})-\gamma_s\log(P_{s,t}^{int})\right]}&\text{Cobb-Douglas}\\
+	\Rightarrow P_{s,t}^{VA} &= \left(\frac{1}{1-\gamma_s}\left[\left(P_{s,t}\right)^{1-\epsilon}-\gamma_s(P_{s,t}^{int})^{1-\epsilon}\right]\right)^{\frac{1}{1-\epsilon}}&\text{CES}
+\end{align*}
+
+\section{A new procedure to follow:}
+
+Instead of running the VAR first and then doing the I-O adjustments, let's do the I-O adjustment first and then do the VAR. So this would entail:
+
+\begin{enumerate}
+	\item Find $sales_{s,t}$ using the formulation above.
+	\item Find $P_{s,t}^{VA}$ as well.
+	\item Compare $P_{s,t}^{VA}$ to $P_{s,t}$ using the bar graph approach we already used (pick 1 quarter every decade to do this).
+	\item If 3. checks out, then run two sets of VARs: one matching Shapiro with $(p_{s,t},q_{s,t})$ and one with $(p_{s,t}^{VA},sales_{s,t})$. If you prefer, feel free to run a VAR with some notion of real production: $y_{s,t}=\frac{sales_{s,t}}{p_{s,t}}$ noting that we use the output price data $p_{s,t}$ here.
+	\item Classify shocks (sector-by-sector and time period by time period) as mostly demand or mostly supply using the Shapiro classification.
+	\item Also classify the mostly demand/mostly supply as positive or negative
+	\item Compare the IO vs. Shapiro classifications.
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,295 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+	
+\definecolor{red}{rgb}{0.9,0.1,0.1}
+\definecolor{blue}{rgb}{0,0,0.7}
+\definecolor{dgr}{rgb}{0.08,0.25,0.18}
+\definecolor{navy}{RGB}{0,0,165}
+\definecolor{org}{HTML}{EB811B}
+\definecolor{lgr}{HTML}{14B03D}
+\definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
+
+\definecolor{graphblue}{RGB}{64,130.56,194.5}
+\definecolor{graphred}{RGB}{255,0,0}
+\definecolor{graphyellow}{RGB}{237.8340,177.64,32}
+\definecolor{graphpurple}{RGB}{126,47,142}
+
+\newcommand{\hlight}[1]{\textcolor{org}{#1}}
+\newcommand{\glight}[1]{\textcolor{lgr}{#1}}
+\newcommand{\rlight}[1]{\textcolor{red}{#1}}
+\newcommand{\blight}[1]{\textcolor{graphblue}{#1}}
+\newcommand{\plight}[1]{\textcolor{graphpurple}{#1}}
+
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Making concordances concord}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+\paragraph{Purpose:} We are still a little stuck on the IO to consumer product concordance. If I understand correctly there are three issues:
+
+\begin{enumerate}
+	\item Products that have no corresponding industry in the concordance. Some have industries in another concordance (for investment). Remaining ones, appear to be direct imports and foreign consumption -- is this correct?
+	\item Some products have industries in the concordance but these industries are not in the IO data -- examples seem to be second hand goods and scrap. Are there any others on this list?
+	\item Some industries in the IO appear to have no product in the concordance. There appears to be two types: those with names that match a category (insurance, tobacco, vehicle parts); and those that appear to be intermediate industries (in that they don't sell directly to households).
+\end{enumerate}
+
+Let me discuss what to do about each group in turn.
+
+\section{Concordance not concording every product\\ {\footnotesize (Concording is totally a word)}}
+Here it sounds like we get most of the problems solved if we combine the consumption concordance with the investment concordance. Here is how I would do that.
+
+\begin{enumerate}
+	\item Let $I$ be the investment concordance with $I(s)$ denote the product(s) that industry $s$ produces. Let $C$ be the concordance for consumption. Let $Ind$ be a list of industries
+	\item We construct a new list $\tilde{C}$ like the following pseudo python code:
+	
+	
+	\emph{$\tilde{C}$ = [$C(s)$ if $s$ in $C$ else $I(s)$ for $s$ in $Ind$]}
+	
+	The idea is that if there is a product(s) in the consumption concordance, we use that first. If there is no product in the consumption concordance, then and only then do we use the investment concordance. The way I wrote the psuedo-Python code may not work but the idea was that every industry in the IO matrix should get matched to a product (hence the loop over the $Ind$ list). There might be a better way to do this (looping over products for instance) -- Tony I will let you figure it out!
+\end{enumerate}
+
+\section{Industries with no IO}
+
+Next let's think about the industries which we can map to products but which don't have any IO data. Since these sound like industries that have no need to be in the IO (say second hand goods), I think it is easiest to just add them into the IO with 0 entries. The idea is that if we added two industries, an IO matrix would go from $\Upsilon$ below to $\tilde{\Upsilon}$ below.
+
+\begin{align*}
+	\Upsilon = \begin{bmatrix} 
+	\Upsilon_11 & \Upsilon_{12}\\
+	\Upsilon_{21} & \Upsilon_{22}
+	\end{bmatrix},\;\;\;	\tilde{\Upsilon} = \begin{bmatrix} 
+	\Upsilon_11 & \Upsilon_{12}&0&0\\
+	\Upsilon_{21} & \Upsilon_{22}&0&0\\
+	0&0&0&0\\
+	0&0&0&0
+	\end{bmatrix}
+\end{align*}
+
+The final demand vector would remain unchanged (since the point was that we have consumer expenditure on these products/industries but no IO data). If there is no entry for the sector in the final demand vector, please add it from the 2017 consumer expenditure data we have from the Table 2\_4\_5U data.
+
+\section{Industries without products}
+
+Ok, some of these sectors have manual name changes we can do but it also turns out that there is IO data for sectors that have 0 sales to households. These sectors are important -- for instance steel manufacturers -- but also because we are getting our time series data on personal consumption expenditures, we won't have any data on these sectors. The question for this note is what to do about it?
+
+\subsection{A magic miracle solution}
+
+See if we can find quarterly data for expenditures (or value added) and prices of the intermediates from somewhere. If they exist then our problems are solved!!!
+
+
+\subsection{An option for later\\{\small (The option our project deserves but not the option we need right now)}}
+It strikes me that with our IO model we could use some sort of unobserved components model to estimate the missing time series for these sectors. It is like a principle components (latent factors) problem except we know the factor loadings -- they are the expenditure shares on the sectors we do observe!
+
+Perhaps for the longer term we could think about some procedure here to get time series for these sectors so that we can get a more accurate estimate of supply shocks. Also a demand shock for cars can affect the price of aeroplanes by bidding up the cost of aluminium, steel etc. In an ideal world we would want to capture this aluminium effect.
+
+\subsection{An option for now\\ {\small (Not the option our project deserves but the option we need right now)}}
+
+For the short run, I think what we want to do is to aggregate these sectors away and reallocate the value added to sectors whose prices/quantities we do observe.
+
+The way to do this is as follows
+
+\begin{align*}
+\Upsilon=\begin{bmatrix}
+\Upsilon_{11}&\Upsilon_{12}&\Upsilon_{13}\\
+\Upsilon_{21}&\Upsilon_{22}&\Upsilon_{23}\\
+\Upsilon_{31}&\Upsilon_{32}&\Upsilon_{33}
+\end{bmatrix},\;\;\;\Xi = \begin{bmatrix}
+\xi_1\\ \xi_2\\0
+\end{bmatrix}
+\end{align*}
+where \underline{everything here is in dollars} (not shares of sales).
+
+Here we want to remove the third sector. Note that value added is given by:
+
+$$
+	\underline{VA} = \begin{bmatrix}
+		\xi_1 +  \Upsilon_{12} + \Upsilon_{13} - (\Upsilon_{21} +\Upsilon_{31})\\
+		\xi_2 +  \Upsilon_{21} + \Upsilon_{23} - (\Upsilon_{12} +\Upsilon_{32})\\
+		0 +  \Upsilon_{31} + \Upsilon_{32} - (\Upsilon_{13} +\Upsilon_{23})\\
+	\end{bmatrix}
+$$
+
+where total value added is $VA = \xi_1 + \xi_2$.
+
+What we want to do is to apportion the value added of sector 3 to sectors 1 and 2 -- the question is in what proportion? I propose that this is done by apportioning the entries of the IO matrix to sector 1 and sector 2 based on the \emph{sales} shares of sector 1 and 2 earned by sector 3.\footnote{I prefer sales to value added because sectoral value added could be negative.} So define the sales share as follows:
+
+$$
+\underline{\lambda} \equiv	\begin{bmatrix}
+ 		\frac{\Upsilon_{31}}{\Upsilon_{31} + \Upsilon_{32} }\\
+ 		\frac{\Upsilon_{32}}{\Upsilon_{31} + \Upsilon_{32} }\\
+	\end{bmatrix}
+$$
+
+Define then the following matrix:
+
+$$
+	\Lambda \equiv \begin{bmatrix}
+		1 & 0 & \lambda_1\\
+		0 & 1 & \lambda_2
+	\end{bmatrix}
+$$
+
+
+Then we do $\tilde{\Upsilon} = \Lambda \Upsilon \Lambda'$ which gives us the following IO matrix:
+
+\begin{align*}
+\tilde{\Upsilon}&=\begin{bmatrix}
+\Upsilon_{11}+\lambda_1\Upsilon_{31}&\Upsilon_{12}+\lambda_1\Upsilon_{32}&\Upsilon_{13}+\lambda_1\Upsilon_{33}\\
+\Upsilon_{21}+\lambda_2\Upsilon_{31}&\Upsilon_{22}+\lambda_2\Upsilon_{32}&\Upsilon_{23}+\lambda_2\Upsilon_{33}\\
+\end{bmatrix}\Lambda'\\
+& = \begin{bmatrix}
+\Upsilon_{11}+\lambda_1(\Upsilon_{31}+\Upsilon_{31})+\lambda_1^2\Upsilon_{33}&\Upsilon_{12}+\lambda_1\Upsilon_{32}+\lambda_2\Upsilon_{13}+\lambda_1\lambda_2\Upsilon_{33}\\
+\Upsilon_{21}+\lambda_2\Upsilon_{31}+\lambda_1\Upsilon_{23}+\lambda_1\lambda_2\Upsilon_{33}&\Upsilon_{22}+\lambda_2\Upsilon_{32}+\lambda_2\Upsilon_{23}+\lambda_2^2\Upsilon_{33}\\
+\end{bmatrix}
+\end{align*}
+
+Using the new IO matrix, let's calculate value added:
+
+$$
+	\tilde{VA} = \begin{bmatrix}
+		\xi_1 + \Upsilon_{12}+\lambda_1\Upsilon_{32}+\lambda_2\Upsilon_{13} - (\Upsilon_{21}+\lambda_2\Upsilon_{31}+\lambda_1\Upsilon_{23})\\
+		\xi_2 + \Upsilon_{21}+\lambda_2\Upsilon_{31}+\lambda_1\Upsilon_{23} - (\Upsilon_{12}+\lambda_1\Upsilon_{32}+\lambda_2\Upsilon_{13})
+	\end{bmatrix}
+$$
+
+Total value added is:
+
+$$
+	VA = \xi_1 + xi_2
+$$
+
+as before!
+
+\subsubsection{Operationalizing this with many sectors:}
+The key is to create a multi-intermediate-only-sector version of $\Lambda$. Once that is done we are good. The challenge to creating a $\Lambda$ matrix more generally is that some of the intermediate sectors may have sales \emph{to other} intermediate sectors. We want to account for this but eventually not end up with residual sales to other intermediate sectors. My solution is to construct $\Lambda$ with a loop but it might be easier to do it another way.
+\begin{enumerate}
+	\item Create an indicator for the sectors with 0 PCE. The indicator should be 1 if PCE =0 and 0 otherwise. Let $I$ be the number of industries to remove.
+	\item Create a temporary matrix that will eventually become $\Lambda$. Call this $\tilde{\Lambda}^{(0)}$. Make it $N$ x $N$ where $N$ is the total number of sectors. Make this matrix an identity matrix (1 on diagonals and 0s on off-diagonals).
+	\item Create a dynamic list of industries. To start with these will include the industries to remove and in the next step we will gradually remove them.
+	\item Loop over each sector with an indicator of 1. Make sure to loop \emph{backwards} (because we are going to remove entries it makes sense to start from the end and go backwards). Let $i$ index the iteration and assume that we have a $\tilde{\Lambda}^{(i-1)}$ that already exists. Let $s(i)$ be the sector in question.
+	\begin{enumerate}
+		\item Create an $N-i$ x $N-i$ identity matrix and call it $\Phi_i$.
+		\item Calculate the sales share of sector $s(i)$ to all sectors \emph{other than $s(i)$}. That means $share(s_i,j) = \frac{Sales_{i\rightarrow j}}{\sum_{k\neq i} Sales_{i\rightarrow k}}$ where $sales_{i\rightarrow j}$ denotes sales \emph{from} $i$ \emph{to} $j$.
+		\item Remove the $s(i)$ \emph{row} from the matrix $\Phi$. In the $s(i)$ \emph{column} replace the entries all with the sales shares $\underline{share(s_i)}$.
+		\item Then update $\tilde{\Lambda}^{(i)} = \tilde{\Lambda}^{(i-1)}\Phi_i$. The new $\tilde{\Lambda}^{(i)}$ matrix should be $N$ x $N-i$.
+		\item Remove the sector $s(i)$ from the dynamic sector list. 
+	\end{enumerate}
+	\item Once the loop is complete then we have our needed $\Lambda \equiv \tilde{\Lambda}^{(I)}$. We can then construct the new IO matrix in two steps:
+	\item Convert the IO matrix from sales shares into dollars. To do this we multiply by sales (which you should have from the make matrix when you calculate intermediate sales shares). This is done by element multiplication of $\mathbf{\Omega}$ by a sales vector. $\Upsilon = \mathbf{Omega} \circ (\underline{Sales} \otimes 1_N')$. So the sales \underline{column vector} is repeated $N$ times until it is an $N$ x $N$ matrix. Then this matrix is element multiplied ($\circ$) by each element of $\mathbf{\Omega}$.
+	\item Calculate value added for the economy using $\underline{VA} = 1_N'(Sales - (\upsilon 1_N))$. In words, sum over the columns of $\Upsilon$ (for each row add the column entries together). Then subtract this sum from sales to get sectoral value added. Then sum all rows into a single number.
+	\item Then we can calculate our new IO matrix in USD.
+	\begin{align*}
+		\tilde{\Upsilon} &= \Lambda \Upsilon \Lambda'\\
+		\tilde{Sales} &= \Lambda Sales
+	\end{align*}
+	
+	Verify that a) the new $\tilde{\Upsilon}$ matrix is $N-I$ x $N-I$ and $\tilde{Sales}$ is $N-I$ x $1$. Second, recalculate economy-wide value added and ensure it is identical to the pre-transformation level.
+	\item Once we verify value added is unchanged, let's get a new Omega:
+	$$
+		\mathbf{\tilde{\Omega}}\equiv \tilde{\Upsilon} \circ (1/\tilde{Sales} \otimes 1_N')
+	$$
+	
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,165 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Running the VAR for ShapirIO}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+\paragraph{Purpose:} The purpose of this note is to introduce some additional details for the ShapirIO project.
+
+What we should currently have:
+
+\begin{enumerate}
+	\item Residuals for product x time for price and quantity: $\mu_{i,t}^{price},\;\mu_{i,t}^{quantity}$.
+	\item An I-O matrix that is $I$ x $I$ where $I$ is the number of sectors. Let $IO_{i,j}$ be this matrix where $i$ sells to $j$. 
+	\item A final demand vector that is $I$ x 1 and records final consumption. We have not saved final investment or government spending or exports. This might need to be fixed later on... Not sure! Let this vector be denoted as $\underline{FD}$
+\end{enumerate}
+
+What I would like you to do:
+
+\begin{enumerate}
+	\item Calculate an I-O matrix \emph{sales} shares:
+	
+	\[
+		\Omega_{i,j} = \frac{IO_{i,j}}{FD_i+ \sum_{j} IO_{i,j}}
+	\]
+	Note that here I am assuming that the only final use/sales for each sector is consumption.
+	\item With this sales share matrix calculate the following IO-adjusted price residual:
+	\[
+		\underline{u}^{price,IO}\equiv (I-\Omega)^{-1}\underline{u}^{price}
+	\]
+	\item Next let's solve for the IO-adjusted quantity shock. This takes two shocks. First we calculate the change in sales for each sector (accounting for direct effects of changes in consumer spending and indirect effects through the I-O matrix). 
+	\[
+		\underline{u}^{sales,IO} = (I-\Omega)^{-1}(\underline{u}^{price}\circ \underline{u}^{quantity})
+	\]
+	where $a\circ b$ means elementwise mutiplication of $a$ and $b$ ($.*$ in matlab, $*$ in Python).
+	\item Next let's find the IO adjusted quantity residual:
+	\[
+		\underline{u}^{q,IO} = \underline{u}^{sales,IO}\oslash\underline{u}^{price,IO}
+	\]
+	where $a \otimes b$ denotes elementwise \emph{division} of $a$ in the numerator and $b$ in the denominator. This is equivalent to $.*$ in Matlab and $/$ in Python.
+\end{enumerate}
+
+Then once you have these do the following:
+
+\begin{itemize}
+	\item Calculate the following: $u^{price,Difference}_{i,t} \equiv u_{i,t}^{price}-u_{i,t}^{price,IO}$. Then do a stacked bar graph where we decompose the Shapiro prices into the IO part and the difference. To make these look clear, can we do the following:
+	\begin{itemize}
+		\item Pick 1 month/quarter every decade and then do separate subplots for each decade (so there should be like 6 graphs). 
+		\item On each graph, order the graphs by $u_{i,t}^{price}$. Then plot the stacked graphs.
+		\item N.B. Stacked graph commands typically don't do negatives and positives together well. I suggest plotting all positive values first, then plot the negative values on top of them. When plotting the bars use $u_{i,t}^{price,IO}$ and $u_{i,t}^{difference,IO}$ only 
+		\item Plot a line that corresponds to $u_{i,t}^{price}$ so we can see the ``total'' effect as a line. The final graph should look like Figure 4 at this link \href{https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/publications/analytical-notes/2013/an2013-09.pdf#page=13}{here} with only 2 colors.	
+	\end{itemize}
+	\item Repeat these graphs for the $u_{i,t}^{quantity}$ residuals 
+	\item Do the Shapiro Classification: $I_{demand}=1$ if $sign(u_{i,t}^{price})=sign(u_{i,t}^{quantity})$ and $I_{supply}=1$ if $sign(u_{i,t}^{quantity})=-sign(u_{i,t}^{price})$
+	\item Do the same classification for the IO residuals
+	\item Do a heatmap where sectors are rows and there are two columns. Color column 1 green if there is a Shapiro demand shock and red if there is a Shapiro supply shock. Then color column 2 green if there is an IO demand shock and red if there is a IO supply shock.
+	\item See if you can figure out a way to get the heatmap to also do negative/positive demand/supply shocks (4 colors perhaps)?
+\end{itemize}
+
+Let me know if you have any questions!
+
+
+\end{document}

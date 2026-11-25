@@ -1,0 +1,280 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1in,rmargin=1in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{MyWhite}{RGB}{255, 255, 255}
+	
+\definecolor{red}{rgb}{0.9,0.1,0.1}
+\definecolor{blue}{rgb}{0,0,0.7}
+\definecolor{dgr}{rgb}{0.08,0.25,0.18}
+\definecolor{navy}{RGB}{0,0,165}
+\definecolor{org}{HTML}{EB811B}
+\definecolor{lgr}{HTML}{14B03D}
+\definecolor{shadecolor}{rgb}{0.8,0.8,0.8}
+
+\definecolor{graphblue}{RGB}{64,130.56,194.5}
+\definecolor{graphred}{RGB}{255,0,0}
+\definecolor{graphyellow}{RGB}{237.8340,177.64,32}
+\definecolor{graphpurple}{RGB}{126,47,142}
+
+\newcommand{\hlight}[1]{\textcolor{org}{#1}}
+\newcommand{\glight}[1]{\textcolor{lgr}{#1}}
+\newcommand{\rlight}[1]{\textcolor{red}{#1}}
+\newcommand{\blight}[1]{\textcolor{graphblue}{#1}}
+\newcommand{\plight}[1]{\textcolor{graphpurple}{#1}}
+
+\usepackage{colortbl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\usepackage{listings}
+\def\cN{\mathcal{N}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\usepackage{mdframed}
+\newmdtheoremenv{assumption}{Assumption}
+
+\usepackage{enumitem}
+
+
+\begin{document}
+
+
+%\onehalfspacing
+
+
+\title{Requirements to collapse requirements tables}
+\author{\rlight{\emph{Updated By Nick November 4th 2024}}}
+%Beggar or Prosper-thy-Neighbour? \\
+%Fiscal Spillovers Across Firms and Countries
+\maketitle
+
+The purpose of this note is to highlight how we want to collapse the output from our requirements matrix input into \emph{product} level data.
+
+\rlight{Update note: I ended up entering a ``two wrongs make a right'' situation with the transposing. Thanks to Tony suggesting I go through this note a little more carefully, I realize that I have suggested transposing too often. I don't think this means we did anything wrong in the end but let me clarify the full procedure below to make sure everything is being done correctly. Apologies all!}
+
+\paragraph{\hlight{Some clarificiation:}} \hlight{IO matrices can be recorded two ways:}
+
+\hlight{\begin{enumerate}
+	\item Rows \underline{sell} to columns
+	\item Rows \underline{buy} from columns
+\end{enumerate}}
+
+\hlight{In my original math, I derived things assuming that the incoming data was written as rows \underline{selling} to columns and that I wanted our model objects to be written as rows \underline{buying} from columns. That is:}
+
+\begin{align*}
+	&\hlight{\mathbold{\Xi}} && \hlight{\text{Original data where row \underline{sells} to column}}\\
+	&\hlight{\mathbold{\Omega}} && \hlight{\text{Key IO object I want where row \underline{buys} from column}}
+\end{align*}
+
+\hlight{This was correct, but nonetheless in the conversion I made some mistakes. In particular, in step 12, $\underline{\gamma}$ should be the \underline{column}-sum of the matrix $(I-\Xi)^{-1}$. I thought it was the row-sum, got confused and then said that we should take the transpose of $\Delta$. This was not incorrect, but if we do it this way, then a bunch of transposes I added to $\mathbold{\Omega}$ should be removed (as Tony suggested might be the case).}
+
+\hlight{To ensure fewer errors, let me derive the total requirements matrix with a simple example using the BEA logic of things. Then I will repeat the updated steps of what to do:}
+
+
+\section*{\hlight{Simple example of deriving the total-requirements matrix}}
+
+\paragraph{\hlight{Setup:}}
+\hlight{Let's imagine that we have two industries: oil drilling and oil refining. Oil drilling produces one product crude oil and oil refining takes crude oil and produces two products -- petrol and diesel. }
+
+\hlight{Let's imagine that the intermediates only \emph{use} table ($U$) looks like the following:}
+
+\hlight{$$
+	U\equiv \begin{bmatrix}
+	 	0 & 400\\
+	 	200 & 50 \\
+	 	100 & 100
+	\end{bmatrix}
+$$}
+
+\hlight{This is read as drilling (column 1) \underline{uses} \$0 of crude oil, \$200 of  petrol and \$100 of diesel in production whereas the refining sector (column 2)  \underline{uses} \$400 of crude oil, \$50 of petrol and \$100 of diesel in its production.}
+
+\hlight{Next, let's imagine that the make table ($M$) looks like the following:}
+
+\hlight{$$
+	M\equiv \begin{bmatrix}
+		400 & 0& 0\\
+		0 & 400 & 400\\
+	\end{bmatrix}
+$$}
+
+\hlight{This is read as the crude oil sector (row 1) makes/produces \$400 of crude oil and \$0 of petrol and diesel respectively. The refining sector (row 2) by contrast makes \$ 400 of petrol and \$400 of diesel.}
+
+\hlight{Based on this, final demand is given by the following vector:\footnote{\hlight{This ensures that total sales = production. In reality there may be inventories but I will ignore this.}}}
+
+\hlight{$$
+	F \equiv \begin{bmatrix}
+		0\\150\\200
+	\end{bmatrix}
+$$}
+
+\hlight{Now we can calculate the following terms:}
+
+\hlight{\begin{align*}
+	q&= U\underline{1}_2 + F = \begin{bmatrix}400\\400\\400  \end{bmatrix} &&q\equiv \text{Sales of each Product}\\
+	y&= M\underline{1}_3 \quad\;\; = \begin{bmatrix}400\\800
+	\end{bmatrix} && y\equiv \text{Industry Sales}
+\end{align*}}
+\hlight{where $1_N$ is a vector of ones of length $N$.}
+
+\hlight{Note that total production in \$ is the same whether we sum industry sales of product sales. This is by accounting. }
+
+\hlight{Next, let's construct the inputs needed for the direct requirements matrix $\Delta$. First we calculate the industry market shares of products $D$ which is the share each industry (i.e. drilling or refining) produces of each commodity (i.e. crude, petrol or diesel). This is calculated by dividing each column of $M$ by (the transpose of) $q$. This is:}
+
+\hlight{$$
+	D\equiv M diag(1/q) = \begin{bmatrix}
+		1 & 0 & 0\\
+		0 & 1 & 1
+	\end{bmatrix}
+$$ }
+
+\hlight{Next we calculate the ``direct input coefficients matrix'' $B$ which calculates intensity that each product (i.e. crude, petrol and diesel) is \emph{used} in production by each industry (i.e. drilling or refining). The intensity is measured as a share of industry sales. This is calculated by dividing each row of $U$ by industry sales:}
+
+\hlight{$$
+	B\equiv U diag(1/y) = \begin{bmatrix}
+		0 & 0.5\\
+		0.5 & 0.0625\\
+		0.25 & 0.125
+	\end{bmatrix}
+$$ }
+
+\hlight{Finally we can calculate the ``direct requirements matrix'' $\tilde{\mathbold{\Delta}}$ as:\footnote{\hlight{This is the same $\mathbold{\Delta}$ as in the original steps (but I added a tilde because we are now going to transpose this matrix in the following steps). Note that in order to calculate $B$ and $D$ from the actual make and use data and to combine it in this way requires some additional assumptions that the BEA does for us. This is why we use only the total requirements matrix as an input.}}}
+
+\hlight{$$
+	\tilde{\mathbold{\Delta}} = DB = \begin{bmatrix}
+		1 & 0 & 0\\
+		0 & 1 & 1\\
+	\end{bmatrix}\begin{bmatrix}
+			0 & 0.5\\
+		0.5 & 0.0625\\
+		0.25 & 0.125
+	\end{bmatrix} = \begin{bmatrix}
+		0 & 0.5\\
+		0.75 & 0.1875
+	\end{bmatrix}
+$$}
+
+\hlight{This matrix states that the drilling sector spends 75\% of its sales on inputs from the refining sector. Similarly, the refining sector/industry spends 50\% if its sales on inputs from the drilling sector and 18.75\% of sales on inputs from its own sector.}
+
+\hlight{Note that if we want to calculate the \underline{total} intermediate share of sales, we need to sum over \emph{columns} of this matrix. That is, we should calculate intermediate share of sales $\underline{\gamma}$ as:}
+
+\hlight{\begin{align*}
+	\underline{\gamma} = \tilde{\mathbold{\Delta}}' 1_2 = \begin{bmatrix}
+		0.75\\ 0.6825
+	\end{bmatrix}
+\end{align*}}
+
+\rlight{This is the key mistake that I made in the initial steps and is the cause of the transpose confusion from earlier.} \hlight{But some good news coming out of this is that the BEA data \underline{is} recorded in a manner consistent with the derivation note -- it is just that for the cleaning steps I outlined, I didn't account for the need to transpose properly.}
+
+\hlight{Note that we then get the data we load in $\Xi$ by taking the Leontief inverse:}
+
+\hlight{$$
+	\mathbold{\Xi} \equiv (I-\mathbold{\Delta})^{-1}
+$$}
+
+\hlight{On the next page, I update the steps needed to proceed with corrections as needed in \rlight{red}.}
+
+
+\newpage
+\section*{The \rlight{updated} cleaning steps}
+
+
+
+\begin{enumerate}
+	\item Load in the requirements matrix and call this $\Xi$. \rlight{Note that the raw input data is of the form that rows produce and {\bf \underline{sell}} to columns. This is important!}
+	\item Calculate the following object: $\mathbold{\Delta} \equiv \rlight{(I-(\Xi')^{-1})}$.\footnote{\rlight{Note that here I fixed the error we discussed earlier where there were two inverses. Second I added the requirement that we transpose $\Xi$ so that $\mathbold{\Delta}$ is measured in terms of row \underline{buying} from column. }} Note that $\mathbold{\Delta} = \rlight{ diag(\underline{\gamma})\mathbold{\Omega}}$ and we need both $\mathbold{\Omega}$ and $\underline{\gamma}$ for our full procedure. \rlight{Note that under this definition, $\Omega$ is defined such that rows {\bf \underline{buy}} from columns. This is the \underline{same} way around to $\mathbold{\Delta}$ as defined in this step. The transpose on $\mathbold{\Xi}$ replaces the transpose of $\mathbold{\Omega}$ I removed from the earlier version of this note. }
+	\item Next merge in the concordance to both the rows \emph{and} columns of $\mathbold{\Delta}$. 
+	\item First, collapse the \emph{columns} of $\mathbold{\Delta}$ to the product level \underline{by taking unweighted sums}. If there are $I$ industries and $P$ products, the new $\mathbold{\Delta}$ should be $I$ x $P$ (previously $I$ x $I$).
+	\item Next, load in the Make matrix and sum over all columns. The remaining version is sales (in \$) and should be $I$ x 1 (meaning $I$ rows and 1 column). Call this vector $\underline{sales}$.
+	\item Merge in the produce concordance with the sales vector. 
+	\item Calculate the group sum of sales for every \emph{product}.
+	\item Calculate the sales \emph{share} of each industry \emph{as a percent of its product group}. Example: if cars, trucks, boats, planes and trains are industries inside the "vehicles" product category with sales of 100 each and computers and cellphones are industries inside the "electronics" product category (also with sales of 100 each), then the sales \emph{shares} of cars, trucks, boats, planes and trains are all 0.2 (100/500) and the sales shares of computes and cellphones are each 0.5 (100/200). So if you groupby "product" and sum these sales shares, you should get a $P$ x 1 vector of ones.
+	\item Merge sales shares into the data frame containing $\mathbold{\Delta}$. 
+	\item Collapse the \emph{rows} of $\mathbold{\Delta}$ by using a weighted average using the sales shares as the weights. Unfortunately the version of pandas I last used did not have a canned weighted average function -- to do this instead you can calculate a variable: $weightTimesDeltaValue \equiv \text{sales share}_i \times \Delta_{i,j}$. Then groupby product\_i (i.e. product corresponding to the \emph{rows} of $\mathbold{\Delta}$) and then sum $weightTimesDeltaValue$. This will automatically be a weighted average.
+	\item You should be left with a $\mathbold{\Delta}$ that is $P$ x $P$ (i.e. has rows and columns that are product level).
+	\item Now calculate $\underline{\gamma} = \mathbold{\Delta}1_P$ (i.e. rowsum: for each row, sum over all columns). $\underline{\gamma}$ should be a single column.
+	\item Now calculate $\mathbold{\Omega} = [diag(1/\underline{\gamma})\mathbold{\Delta}]$ (i.e. divide the elements of $\mathbold{\Delta}$ by their rowsum). \rlight{Tony asked if the transpose here was correct. It is \underline{not} for the reasons given in step 2. We adjusted $\Delta$ so that it is measured where each row \emph{buys} from each column and we want $\Omega$ to be measured in the same way. As such, the transpose that was here is no longer needed.} \hlight{You can check this is correct by ensuring that rows of $\mathbold{\Omega}$ sum to 1.}
+	\item Continue the procedure using $\Omega$ and $\underline{\gamma}$ as inputs. You should not use any other I-O related inputs other than these two objects (of course there will be time series data on price and quantity).
+\end{enumerate}
+
+
+\end{document}

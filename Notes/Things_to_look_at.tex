@@ -1,0 +1,201 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{rednice}{rgb}{0.85,0.26,0}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\usetikzlibrary{matrix,decorations.pathreplacing}
+
+\newcommand{\vy}{\underline{y}}
+\newcommand{\ve}{\underline{\epsilon}}
+\newcommand{\A}[1]{\mathbold{A_{#1}}}
+\newcommand{\D}[1]{\mathbold{D_{#1}}}
+\newcommand{\C}[1]{\mathbold{C_{#1}}}
+\newcommand{\B}[1]{\mathbold{B_{#1}}}
+\newcommand{\R}[1]{\mathbold{R_{#1}}}
+
+%\newtheorem{definition}{Definition}
+\begin{document}
+\title{Some possible checks to see what our influence correction is doing}
+\author{N}
+\maketitle
+
+
+\paragraph{Purpose:} To come up with some checks to see what is going on with our influence calculations.
+
+\paragraph{First check: Expenditure Shares vs. Influence Impacts}
+
+We know that CPI is given by:
+
+\begin{equation}
+	\log(P)_{CPI,t} = \underline{\omega}_{t}'\log(\underline{P}_t)\label{eqn:CPI}
+\end{equation}
+where $\underline{x}$ is an $N$ x $1$ vector of variable $x$ (either $P$ or $\omega$) where $N$ is the number of products and $\underline{\omega}$ is a vector of expenditure shares in consumption (and sums to 1).
+
+We also calculated influence using an $N$ by $N$ matrix I called $\mathbf{\Theta}$ which is calculated as:
+
+\[
+	\mathbf{\Theta}\equiv (I_N - diag(\underline{\gamma})\mathbf{\Omega})^{-1}diag(1-\underline{\gamma})
+\]
+where $\underline{\gamma}$ is the vector of intermediate shares of sales for each sector and $\mathbf{\Omega}$ is the I-O matrix.
+
+This matrix was used to apportion value added price $\underline{P}_{VA,t}$ changes to output prices $\underline{P}_t$. When we decided some value added price changes were due to demand, we used this matrix to translate that to changes in output prices.
+
+Here is what I would like done:
+
+\begin{enumerate}
+	\item Calculate $\underline{\omega}_{VA}\equiv \mathbf{\Theta}'\underline{\omega}$ (don't forget the transpose). This vector translates product value added ``prices'' to CPI the same way Equation \ref{eqn:CPI} translates product output prices to CPI.
+	\item Pick 3 time periods. One early in the sample, one near 1981 and one near the end of the sample. Then for each do the following
+	\item Order the sectors by highest to lowest expenditure shares in CPI: $\underline{\omega}_{t}$. Apply the \underline{same} ordering to the value added equivalent $\underline{\omega}_{VA}$. That is if both are in the same dataframe, we are ordering the rows the same way by the sectors/products with the largest $\omega_{i,t}$ to the smallest.
+	\item Plot both series with products/sectors on the horizontal and the value of $\omega_{i,t}$ and $\omega_{i,VA,t}$ on the vertical. Each concept has its own lines.
+\end{enumerate}
+
+\emph{What we are looking for:} Based on Ben's example, we are wanting to see if these are very different. 
+
+{\bf Note:} If it is hard to see the differences between the two lines, take the log of $\omega_{i,t}$ and $\omega_{i,VA,t}$ and replot. Both should be positive so this should be able to be done. 
+
+\paragraph{Second check: Distribution of Demand Shocks and Supply Shocks}
+
+Next we should see if we are in a situation where the demand shocks and supply shock \emph{values} look similar. To do this, for the same 3 time periods as above, I want you to take the variables you calculated:
+
+\begin{align*}
+	\log(P_{VA,t})^{D=1} &\equiv \log(\underline{P}_{VA,t}) \circ \tilde{\underline{D}}_t\\
+	\log(P_{VA,t})^{D=0} &\equiv \log(\underline{P}_{VA,t})\circ (1-\tilde{\underline{D}}_t) 
+\end{align*}
+where $\underline{P}_{VA,t}$ is a vector containing the value added ``price'' of value added in each sector at time $t$ and $\tilde{\underline{D}}_t$ is a vector indicating whether the sector has faced a demand shock or a supply shock (it is 1 or 0).
+
+Here is what I suggest we do:
+
+\begin{enumerate}
+	\item Remove any sectors in $\log(P_{VA,t})^{D=1}$ where $\tilde{\underline{D}}=0$. Before we kept these and made them 0. Now I want them removed.
+	\item Do the same for $\log(P_{VA,t})^{D=0}$ when $\tilde{\underline{D}}_t=1$
+	\item Do a histogram or kernal density plot of both of these. Ideally it would be transparent so we can see both of the distributions like the figure below:
+	
+	\includegraphics[width=8cm]{graph_to_use.png}
+	
+	where we underline{don't} need the vertical lines indicating the mean. All I want is the transparent shading if possible.
+	\item One other thing: if doing a kernal density be sure to account for the fact that we want to see if we have \emph{more} of supply shocked sectors or demand shocked sectors. If the kernal density function makes the area under the density sum to one, then we don't want to use that function -- a histogram would be better
+\end{enumerate}
+
+\emph{What we are looking for:} Is it the case that supply and demand densities are the same or not? If they are the same, then unless we have super skewed expenditure/influence weights, we will see very similar supply/demand contributions regardless of the weights used.
+
+\paragraph{Third Check: Top 10 contributors}
+
+Finally, I propose we plot the contribution of the 10 sectors/products with the largest contribution (or do a table of them).
+
+We calculate contribution as follows:
+
+\[
+	contrib_t =\frac{1}{P_{CPI,t}}\underline{\omega}_{VA,t}'diag(P_{VA,t})
+\]
+ 
+ $contrib_t$ should be an $N$ x $1$ vector \emph{and} should sum to 1. {\bf Let me know if it does not.}
+ 
+ Once it sums to 1, we can plot/table the top 10 values of it. If we are plotting these, then let's do a bar graph with 1 color for mostly supply sectors and another for mostly demand. If we are doing a table, then include the mostly demand/mostly supply column please!
+
+\emph{What we are looking for:} This calculates the interaction of the highest weights (influence) with the size of the shock. Basically we are seeing if anything pops out here. Are the top 10 sectors contributing a large amount to CPI (e.g. 20\% or more) or are the contributions very diffuse?
+
+
+\paragraph{Additional thing to do on graph 2 if time}
+
+Let's replicate the second graph with Shapiro shocks. The way to do this is to replace the value added weights with expenditure weights and the value added prices with output prices. 
+
+
+\begin{align*}
+	\log(P_{t})^{D^{Shapiro}=1} &\equiv \log(\underline{P}_{t}) \circ \tilde{\underline{D}}_t^{Shapiro}\\
+	\log(P_{t})^{D^{Shapiro}=0} &\equiv \log(\underline{P}_{t})\circ (1-\tilde{\underline{D}}_t^{Shapiro}) 
+\end{align*}
+
+And repeat the steps with these objects.
+
+Thanks!
+
+\end{document}

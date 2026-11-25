@@ -1,0 +1,418 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{rednice}{rgb}{0.85,0.26,0}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\usetikzlibrary{matrix,decorations.pathreplacing}
+
+\newcommand{\vy}{\underline{y}}
+\newcommand{\ve}{\underline{\epsilon}}
+\newcommand{\A}[1]{\mathbold{A_{#1}}}
+\newcommand{\D}[1]{\mathbold{D_{#1}}}
+\newcommand{\C}[1]{\mathbold{C_{#1}}}
+\newcommand{\B}[1]{\mathbold{B_{#1}}}
+\newcommand{\R}[1]{\mathbold{R_{#1}}}
+
+%\newtheorem{definition}{Definition}
+\begin{document}
+\title{In which Nick does math of Ben's example}
+\author{N}
+\maketitle
+
+\paragraph{Purpose:} Let's walk through Ben's production line example to see what our ShapirIO method is doing. We have some intuition for what we should find so let's see if we do.
+
+
+\section*{Model Setup:}
+
+There are two sectors $i\in \{u,d\}$ where $u$ stands for upstream and $d$ downstream. Households consume only goods from $d$ so the CPI weights $\{\omega_u,\omega_d\} = \{0,1\}$.
+
+Production is produced with specialized labor (paying wages $W_i$ in each sector) and in the downstream sector also from the production of the upstream sector:
+
+\begin{align*}
+	Y_d &= \left(\frac{L_d}{1-\gamma}\right)^{1-\gamma} \left(\frac{M_{u\rightarrow d}}{\gamma}\right)^\gamma\\
+	Y_u&=L_u
+\end{align*}
+
+Profit maximization gives us:
+
+\begin{align*}
+	P_d &= W_d^{1-\gamma}P_u^\gamma & \text{Output price in downstream}\\
+	P_u&=W_u& \text{Output price in upstream}\\
+	P_uM_{u\rightarrow d}&=\gamma P_d Y_d& \text{Intermediate demand in downstream}\\
+	W_dL_d&=(1-\gamma) P_d Y_d& \text{Factor demand in downstream}
+\end{align*}
+
+In this simple setup, note that there are no demand shocks for the upstream sector (because these come from final consumers and they consume nothing of the upstream sector). 
+
+For the downstream sector there are two kinds of shocks: a demand shock coming from households consuming more and a supply shock from $W_u$ increasing suddenly.\footnote{In this setup because there is one good consumed by households, there is no difference between an aggregate demand shock or a sectoral demand shock. In our general setup, this changes.}
+
+CPI is given by:
+
+\begin{equation}
+	P_{CPI} = P_d = W_d^{1-\gamma}W_u^\gamma\label{eqn:CPI}
+\end{equation}
+
+Let's assume that overall consumption $C$ is given by: $C=\bar{C}\epsilon_{D}$ where $\epsilon_{D}$ is a demand shock.
+
+Finally, lets assume some labor supply curves to close the model:
+
+\[
+	L_i = W_i^\phi\epsilon_{S,i}
+\]
+where $\epsilon_{s,i}$ is a supply shock in sector i. 
+
+Market clearing is:
+
+\begin{align*}
+	C &=Y_d\\
+	M_{u\rightarrow d} &= Y_d
+\end{align*}
+
+\section*{Solving the model:}
+
+Let's equate labor supply and demand:
+
+\begin{align*}
+	(1-\gamma)\frac{P_d Y_d}{W_d}&=W_d^\phi \epsilon_{S,d}\\
+	\Leftrightarrow W_d&=\left(\frac{(1-\gamma)P_{CPI}C}{\epsilon_{S,d}}\right)^{\frac{1}{1+\phi}}\\
+	\frac{P_uY_u}{W_u} &=W_u^\phi \epsilon_{S,u}\\
+	\Leftrightarrow W_u&=\left(\frac{P_uY_u}{\epsilon_{S,u}}\right)^{\frac{1}{1+\phi}}\\
+	\Leftrightarrow W_u&=\left(\frac{\gamma P_{CPI}C}{\epsilon_{S,u}}\right)^{\frac{1}{1+\phi}}\\
+\end{align*}
+
+
+
+If we plug this into our CPI expression we get:
+
+\begin{align*}
+	P_{CPI} &= \left(\frac{(1-\gamma)P_{CPI}C}{\epsilon_{S,d}}\right)^{\frac{1-\gamma}{1+\phi}}\left(\frac{\gamma P_{CPI}C}{\epsilon_{S,u}}\right)^{\frac{\gamma}{1+\phi}}\\
+	\Leftrightarrow P_{CPI}^{1-\frac{1}{1+\phi}}&=C^{\frac{1}{1+\phi}}\left(\frac{(1-\gamma)}{\epsilon_{S,d}}\right)^{\frac{1-\gamma}{1+\phi}}\left(\frac{\gamma}{\epsilon_{S,u}}\right)^{\frac{\gamma}{1+\phi}}\\
+	\Leftrightarrow P_{CPI}&=C^{\frac{1}{\phi}}\left(\frac{(1-\gamma)}{\epsilon_{S,d}}\right)^{\frac{1-\gamma}{\phi}}\left(\frac{\gamma}{\epsilon_{S,u}}\right)^{\frac{\gamma}{\phi}}
+\end{align*}
+
+This equation determines how shocks affect CPI: shocks to aggregate demand ($C$) raise CPI and \emph{positive} supply shocks lower CPI.
+\begin{comment}
+Let's do a normalization where we define shocks as:
+
+\begin{align*}
+	\tilde{\epsilon}_{S,i}\equiv \epsilon_{S,i}^{\frac{1}{\phi}}\\
+	\tilde{\epsilon}_{D}\equiv C^{\frac{1}{\phi}}
+\end{align*}
+
+Now the expression for CPI becomes:
+\[
+ P_{CPI}=\tilde{\epsilon}_D\tilde{\epsilon}_{S,d}^{-(1-\gamma)}\tilde{\epsilon}_{S,u}^{-\gamma}(1-\gamma)^{\frac{1-\gamma}{\phi}}\gamma^{\frac{\gamma}{\phi}}
+\]
+
+And if we use hat algebra to look at changes in CPI holding constant $\gamma$ and $\phi$ we have:
+
+\[
+	\hat{P}_{CPI} = \hat{\tilde{\epsilon}}_D\hat{\tilde{\epsilon}}_{S,d}^{-(1-\gamma)}\hat{\tilde{\epsilon}}_{S,u}^{-\gamma}
+\]
+
+where $\hat{X} = X'/X$ where $X'$ is some new value of $X$.
+
+\end{comment}
+Note that we can write an expression for upstream goods prices in terms of fundamental shocks: % (where I ignore the normalization for now):
+
+\begin{align*}
+	P_u&=\left(\gamma \frac{P_{CPI} C}{\epsilon_{S,u}}\right)^{\frac{1}{1+\phi}}\\
+	&=	\left(\gamma \frac{C^{\frac{1}{\phi}+1}\left(\frac{(1-\gamma)}{\epsilon_{S,d}}\right)^{\frac{1-\gamma}{\phi}}\left(\frac{\gamma}{\epsilon_{S,u}}\right)^{\frac{\gamma}{\phi}}}{\epsilon_{S,u}}\right)^{\frac{1}{1+\phi}}\\
+	&=C^{\frac{1}{\phi}} \epsilon_{S,d}^{-\frac{1-\gamma}{\phi(1+\phi)}}\epsilon_{S,u}^{-\frac{\gamma+\phi}{\phi(1+\phi)}}\gamma^{\frac{\gamma+\phi}{\phi(1+\phi)}}(1-\gamma)^{\frac{1-\gamma}{\phi(1+\phi)}}
+\end{align*}
+
+\paragraph{First Implication: Demand shocks affect upstream sector prices!}
+
+Note that the final expression has a role for demand shocks to affect the upstream sector. This comes from demand from the upstream sector affecting downstream sector demand. This affects costs in the upstream sector because I assumed an upward sloping labor supply -- in order for this sector to expand production, it needs to hire more workers and hiring more workers requires wage rises -- hence higher costs and output prices.
+
+Note also that the impact of (aggregate) demand shocks on prices in each sector is identical in each sector!
+
+This we did not discuss in our example -- if a downstream sector faces a demand shock, then so does the upstream sector!
+
+\paragraph{Upstream prices depend on downstream supply shocks!}
+
+This is also something we didn't discuss in our example but works for the same reason as the demand shock -- higher labor supply in the downstream sector lowers upstream sector demand which then lowers upstream sector production. This means that the upstream sector needs fewer workers which means wages fall (and therefore upstream sector costs fall too).
+
+Again in our simple discussion we ignored the possibility that downstream shocks have some impact on upstream prices.
+
+\paragraph{Third Implication: Relative prices don't depend on demand}
+
+These are given by:
+
+\begin{align*}
+	P_{CPI}/P_d&=\left(\frac{1-\gamma}{\epsilon_{S,d}}\right)^{\frac{1-\gamma}{\phi}-\frac{1-\gamma}{\phi(1+\phi)}}\left(\frac{\gamma}{\epsilon_{S,u}}\right)^{\frac{\gamma}{\phi}-\frac{\gamma+\phi}{\phi(1+\phi)}}\\
+	&=\left(\frac{1-\gamma}{\gamma}\frac{\epsilon_{S,u}}{\epsilon_{S,d}}\right)^{\frac{1-\gamma}{(1+\phi)}}\\
+\end{align*}
+
+Here positive supply shocks in the upstream sector ($\epsilon_{S,u}\uparrow$) \emph{increase} relative prices (technically they lower upstream prices by more than they lower CPI). Positive supply shocks in the downstream sector have the opposite impact -- they lower CPI by more than upstream sector prices.
+
+This is intuitive!
+
+\section*{From actual shocks to ``mostly demand''/``mostly supply'' shocks}
+
+In our methodology we see value added prices (wages here) and production both move together, then we say that sector received mostly a demand shock and mostly a supply shock if they move in different directions. 
+
+Let's look at this through the context of the toy example here.
+
+First we need to write wages in both sectors in terms of the fundamental shocks. Also I want to focus on \emph{changes} so let me start by using some hat algebra.
+
+First let a new value of a variable $x$ be denoted by $x'$ (so that we would say $x$ changed from $x$ to $x'$). Next let's define the gross change (the ``hat'') of $x$ as: $\hat{x}\equiv x'/x$.
+
+Now we can write CPI and relative prices in hats as:
+
+\begin{align*}
+	\hat{P}_{CPI} &= \hat{C}^{\frac{1}{\phi}}\hat{\epsilon}_{S,d}^{-\frac{1-\gamma}{\phi}}\hat{\epsilon}_{S,u}^{-\frac{\gamma+\phi}{\phi}}\\
+	\hat{P}_u&=\hat{C}^{\frac{1}{\phi}}\hat{\epsilon}_{S,d}^{-\frac{1-\gamma}{\phi(1+\phi)}}\hat{\epsilon}_{S,u}^{-\frac{\gamma}{\phi(1+\phi)}}\\
+	\hat{P}_{CPI}/\hat{P}_u&=\left(\frac{\hat{\epsilon}_{S,u}}{\hat{\epsilon}_{S,d}}\right)^{\frac{1-\gamma}{1+\phi}}
+\end{align*}
+
+To do our classification, we also need to know the prices of ``value added'' (here wages). These are given by:
+
+\begin{align*}
+	\hat{W}_u &= \hat{P}_{u} = \hat{C}^{\frac{1}{\phi}}\hat{\epsilon}_{S,d}^{-\frac{1-\gamma}{\phi(1+\phi)}}\hat{\epsilon}_{S,u}^{-\frac{\gamma+\phi}{\phi(1+\phi)}}\\
+	\hat{W}_d &=\left(\frac{\hat{P}_{CPI}\hat{C}}{\hat{\epsilon}_{S,d}}\right)^{\frac{1}{1+\phi}} = \hat{C}^{\frac{1}{\phi}} \hat{\epsilon}_{S,d}^{-\frac{1-\gamma+\phi}{\phi(1+\phi)}}\hat{\epsilon}_{S,u}^{-\frac{\gamma}{\phi(1+\phi)}}
+\end{align*}
+
+Finally we need quantities:
+
+\begin{align*}
+	\hat{Y}_d &= \hat{C}\\
+	\hat{Y}_u &= \hat{L}_u = \hat{W}_u^\phi\hat{\epsilon}_{S,u}\\
+	&=\hat{C} \left(\frac{\hat{\epsilon}_{S,u}}{\hat{\epsilon}_{S,d}}\right)^{\frac{1+\phi-\gamma}{(1+\phi)}}
+\end{align*}
+
+Small comment: I decided to make $C$ exogenous when I could have chosen to make nominal demand $P_{CPI}\cdot C$ exogenous. This isn't a big deal either way but one consequence is that in the downstream sector, if there are no demand shocks, then quantity does not move at all. I will ignore this small issue here but if it bothers you, let me know and I will re-derive with $PC$ exogenous instead and all will work out ok.
+
+\begin{definition}
+\begin{enumerate}
+	\item A sector has a ``Shapiro demand shock'' iff output $Y_i$ and output prices $P_i$ both move in the same direction (both $\hat{P}_i< 1$ and $\hat{Y}_i\leq 1$ or both $\hat{P}_i>1$ and $\hat{Y}_i\geq 1$). Otherwise it has a ``Shapiro supply shock''.
+	\item A sector has a ``ShapirIO demand shock'' iff output $Y_i$ and Value added prices $W_i$ both move in the same direction (both $\hat{W}_i< 1$ and $\hat{Y}_i\leq 1$ or both $\hat{W}_i>1$ and $\hat{Y}_i\geq 1$). Otherwise it has a ``ShapirIO supply shock''
+\end{enumerate}
+\end{definition}
+
+The condition for supply or demand shocks in each sector is therefore:
+
+\begin{itemize}
+	\item \textcolor{bluenice}{Sector $d$ is Shapiro demand shocked if $\hat{C}\geq \hat{\epsilon}_{S,d}^{1-\gamma}\hat{\epsilon}_{S,u}^{\gamma}$ and $\hat{C} \geq 1$; or $\hat{C}\leq \hat{\epsilon}_{S,d}^{1-\gamma}\hat{\epsilon}_{S,u}^{\gamma}$ and $\hat{C} \leq 1$.}
+	\item \textcolor{bluenice}{Sector $u$ is Shapiro demand shocked if $\hat{C}\geq \hat{\epsilon}_{S,d}^{\frac{1-\gamma}{1+\phi}}\hat{\epsilon}_{S,u}^{\frac{\gamma}{1+\phi}}$ and $\hat{C}\hat{\epsilon}_{S,u}^{\frac{1+\phi-\gamma}{1+\phi}}\geq \hat{\epsilon}_{S,d}^{\frac{1+\phi-\gamma}{1+\phi}}$; or  $\hat{C}\leq \hat{\epsilon}_{S,d}^{\frac{1-\gamma}{1+\phi}}\hat{\epsilon}_{S,u}^{\frac{\gamma}{1+\phi}}$ and $\hat{C}\hat{\epsilon}_{S,u}^{\frac{1+\phi-\gamma}{1+\phi}}\leq \hat{\epsilon}_{S,d}^{\frac{1+\phi-\gamma}{1+\phi}}$.}
+	\item \textcolor{orangenice}{Sector $d$ is ShapirIO demand shocked if $\hat{C}\geq \hat{\epsilon}_{S,d}^{\frac{1-\gamma+\phi}{1+\phi}}\hat{\epsilon}_{S,u}^{\frac{\gamma}{1+\phi}}$ and $\hat{C} \geq 1$; or $\hat{C}\leq \hat{\epsilon}_{S,d}^{\frac{1-\gamma+\phi}{1+\phi}}\hat{\epsilon}_{S,u}^{\frac{\gamma}{\phi}}$ and $\hat{C} \leq 1$.}
+	\item \textcolor{orangenice}{Sector $u$ is ShapirIO demand shocked if $\hat{C}\geq \hat{\epsilon}_{S,d}^{\frac{1-\gamma}{1+\phi}}\hat{\epsilon}_{S,u}^{\frac{\gamma+\phi}{1+\phi}}$ and $\hat{C}\hat{\epsilon}_{S,u}^{\frac{1+\phi-\gamma}{1+\phi}}\geq \hat{\epsilon}_{S,d}^{\frac{1+\phi-\gamma}{1+\phi}}$; or $\hat{C}\leq \hat{\epsilon}_{S,d}^{\frac{1-\gamma}{1+\phi}}\hat{\epsilon}_{S,u}^{\frac{\gamma+\phi}{1+\phi}}$ and $\hat{C}\hat{\epsilon}_{S,u}^{\frac{1+\phi-\gamma}{1+\phi}}\leq \hat{\epsilon}_{S,d}^{\frac{1+\phi-\gamma}{1+\phi}}$.}
+\end{itemize}
+
+\section*{Differences between Shapiro and ShapirIO}
+
+There are two ways Shapiro and ShapirIO may differ: on \emph{classification} of shocks and on \emph{influence} of shocks because Shapiro does not account for input-output linkages at all.
+
+\paragraph{Classification:}
+
+Let's focus on the example Ben gave and ignore any supply shocks in sector $d$: $\hat{\epsilon}_{S,d}=1$. Let's also assume that $\phi>1$ (labor is quite elastically supplied). 
+
+Then we will classify shocks differently in the following situations:
+
+\begin{enumerate}
+	\item Sector $d$ quantity rise: whenever $\hat{C}>1$ but $ 1< \textcolor{bluenice}{\hat{C}^{\frac{1}{\gamma}}}\leq \hat{\epsilon}_{S,u}<\textcolor{orangenice}{\hat{C}^{\frac{\phi}{\gamma}}}$ Shapiro will classify sector $d$ as having a  \textcolor{bluenice}{(positive) supply shock} but ShapirIO will classify sector $d$ as having a  \textcolor{orangenice}{demand shock}.
+	\item Sector $d$ quantity fall: whenever $0<\hat{C}<1$ but $\textcolor{orangenice}{\hat{C}^{\frac{\phi}{\gamma}}}\leq \hat{\epsilon}_{S,u}< \textcolor{bluenice}{\hat{C}^{\frac{1}{\gamma}}}<1$ Shapiro will classify sector $d$ as having a  \textcolor{bluenice}{(negative) supply shock} but ShapirIO will classify sector $d$ as having a \textcolor{orangenice}{(negative) demand shock}.
+	\item Sector $u$ quantity rise: whenever $\hat{C}^{1+\phi} \hat{\epsilon}_{S,u}^{1+\phi-\gamma}>1$ with $\hat{\epsilon}_{S,u}^{1+\phi-\gamma}>1$ but $\textcolor{bluenice}{\hat{\epsilon}_{S,u}^\gamma}\leq \hat{C}^{1+\phi}\leq \textcolor{orangenice}{\hat{\epsilon}_{S,u}^{\gamma+\phi}}$, then Shapiro will classify sector $u$ as having a \textcolor{bluenice}{(positive) demand shock} but ShapirIO will classify sector $u$ as having a \textcolor{orangenice}{(positive) supply shock}.
+	
+	Whenever $\hat{C}^{1+\phi} \hat{\epsilon}_{S,u}^{1+\phi-\gamma}>1$ with $\hat{C}^{1+\phi}\geq 1 > \hat{\epsilon}_{S,u}^{1+\phi-\gamma}$ but $\textcolor{orangenice}{\hat{\epsilon}_{S,u}^{\gamma+\phi}} \leq \hat{C}^{1+\phi}\leq \textcolor{bluenice}{\hat{\epsilon}_{S,u}^\gamma}$, then Shapiro will classify sector $u$ as having a \textcolor{bluenice}{(positive) supply shock}  and ShapirIO will classify sector $u$ as having a \textcolor{orangenice}{(positive) demand shock} 
+	
+		\item Sector $u$ quantity fall: whenever $\hat{C}^{1+\phi} \hat{\epsilon}_{S,u}^{1+\phi-\gamma}<1$ with $\hat{\epsilon}_{S,u}^{1+\phi-\gamma}>1$ then  $\hat{C}^{1+\phi}<\textcolor{bluenice}{\hat{\epsilon}_{S,u}^\gamma}\leq  \textcolor{orangenice}{\hat{\epsilon}_{S,u}^{\gamma+\phi}}$, and both versions will classify this as a demand fall.
+		
+	Whenever $\hat{C}^{1+\phi} \hat{\epsilon}_{S,u}^{1+\phi-\gamma}<1$ with $\hat{C}^{1+\phi} >1$ then  $\textcolor{bluenice}{\hat{\epsilon}_{S,u}^\gamma}\leq  \textcolor{orangenice}{\hat{\epsilon}_{S,u}^{\gamma+\phi}}<\hat{C}^{1+\phi}$, and both versions will classify this as a supply fall.
+	
+	Whenever $\hat{C}^{1+\phi}<1,\;\; \hat{\epsilon}_{S,u}^{1+\phi-\gamma}<1$  but $\textcolor{orangenice}{\hat{\epsilon}_{S,u}^{\gamma+\phi}} \leq \hat{C}^{1+\phi}\leq \textcolor{bluenice}{\hat{\epsilon}_{S,u}^\gamma}$, then Shapiro will classify sector $u$ as having a \textcolor{bluenice}{(negative) demand shock}  and ShapirIO will classify sector $u$ as having a \textcolor{orangenice}{(negative) supply shock}.
+\end{enumerate}
+
+
+\paragraph{Interlude: Constructing an example with identical classification}
+I said earlier that we have two differences between Shapiro and ShapirIO. So far we have looked at classification differences, let's now turn to influence. To do this I first need an example where both versions classify the two sectors in the same way. If they do that but get different answers overall, the reason is not classification.
+
+For this, let's imagine the following:
+
+\begin{itemize}
+	\item Quantity in sector $u$ falls but quantity in sector $d$ rises: $\hat{C}>1$ but $\hat{C}^{1+\phi}\hat{\epsilon}_{S,u}^{1+\phi-\gamma} < 1$. This requires $\hat{\epsilon}_{S,u}<1$.
+	\item Value-added prices (wages) in sector $d$ rise $\hat{C}>\hat{\epsilon}_{S,u}^{\frac{\gamma}{1+\phi}}$.
+\end{itemize}
+
+From this we can conclude:
+
+\begin{itemize}
+	\item Sector $d$ is ShapirIO demand shocked \emph{and} Shapiro demand shocked because if $\hat{C}>\hat{\epsilon}_{S,u}^{\frac{\gamma}{1+\phi}}$, then $\hat{C}>\hat{\epsilon}_{S,u}^{\gamma}$ (because $\hat{\epsilon}_{S,u}<1$) which means output prices in sector $d$ rise.
+	\item Output prices rise in sector $u$ because $\hat{C}>\hat{\epsilon}_{S,u}^{\frac{\gamma}{1+\phi}}$.
+	\item Because $\hat{\epsilon}_{S,u}<1$, we know that sector $d$ value added rising from $\hat{C}>\hat{\epsilon}^{\frac{\gamma}{1+\phi}}$ also implies that $\hat{C}>\hat{\epsilon}^{\frac{\gamma}{1+\phi}}>\hat{\epsilon}^{\frac{\gamma+\phi}{1+\phi}}$ which implies that the price of value added in sector $u$ also goes up.
+	\item Therefore both Shapiro and ShapirIO classify sector $d$ and having a demand shock and sector $u$ as having a supply shock.
+\end{itemize}
+
+We can now proceed to influence differences.
+
+\paragraph{Influence in Ben's thought experiment}
+
+Now let's compare how we would calculate influence of these sectors.
+
+In Shapiro we only use the CPI expenditure weights which are 100\% on sector $d$. This means that Shapiro would classify CPI as \textcolor{blue}{100\% demand driven.}
+
+In ShapirIO we would utilize the fact that sector $d$ shocks affect sector $u$ and CPI prices. 
+
+To calculate the influence we would use Equation \ref{eqn:CPI} which defines CPI in terms of the value added price (wage) and the intermediate price. The reason we don't use the equations expressing the prices in terms of true shocks is (a) because we don't know them and (b) neither the Shapiro nor ShapirIO methods attempt to recover them (merely which of the two supply shocks or one demand shock are having the largest impact on sectors $d$ and $u$). 
+
+Therefore we would calculate:
+
+\[
+\pi_{CPI} \approx \log(\hat{P}_{CPI}) = (1-\gamma)\log(\hat{W}_d) + \gamma \log(W_u)
+\]
+where $\pi_{CPI}$ is inflation.
+
+From here we can see that we would ascribe that CPI was $1-\gamma$ demand driven and $\gamma$ supply driven.
+
+If we set $\gamma=0.49$, then we have confirmed Ben's thought experiment. ShapirIO calculates influence in such a manner that it can be \underline{very} different to Shapiro.
+
+Why then isn't it different in our application? 
+
+\section*{What did I ask to be coded up?}
+
+I asked for the following relationship to be coded up:
+
+\[
+share_{CPI,demand}= \underline{E}_t' (I-diag(\underline{\gamma})\mathbf{\Omega})^{-1} diag(1-\gamma) \underline{D}_t
+\]
+
+where $\underline{E}_t$ are the CPI expenditure weights, $\underline{\gamma}$ are similar to the parameters here: they are the share of intermediates in production for each sector, $\mathbf{\Omega}$ is the IO matrix and $\underline{D}_t$ is an indicator for whether sector $i$ was classified as mostly demand.
+
+Let me verify this equation here:
+
+\begin{align*}
+	share_{CPI,demand}&=\begin{pmatrix}
+		1 & 0
+	\end{pmatrix}\left(I - \begin{bmatrix}
+		\gamma &0\\0&0
+	\end{bmatrix}\begin{bmatrix}
+		0 &1\\0&0
+	\end{bmatrix}\right)^{-1} \begin{bmatrix}
+		1-\gamma &0\\0&1
+	\end{bmatrix}\begin{bmatrix}
+		1\\0
+	\end{bmatrix}\\
+	&=\begin{pmatrix}
+		1 & 0
+	\end{pmatrix}\begin{pmatrix}
+		1 & -\gamma\\
+		0 &1
+	\end{pmatrix}^{-1}\begin{pmatrix}
+		1-\gamma\\
+		0
+	\end{pmatrix}\\
+	&=1-\gamma
+\end{align*}
+
+which is the same demand shock weight as our approach.
+
+More formally we calculate CPI as driven by demand by assuming that 100\% of the value added price movement in sector $d$ is from demand shocks. This gives us the following calculation:
+
+\[
+	\log(P_{CPI,demand}) = (1-\gamma) \log(P_{VA,d})
+\]
+
+which I think is what we want to calculate.
+
+
+\paragraph{The irrelevance of influence}
+There is a theorem in I-O called Hulten's theorem which says that the influence of a productivity shock in a sector is equal to $\frac{P_iY_i}{GDP} \times shock$ under certain assumptions including Cobb-Douglas and perfect competition. Since these weights are just the sector's sales over GDP and do not depend on the shape of the network, it is often said that there is a network irrelevance when there is Cobb-Douglas production. In the case of this example these influence weights are $\{1,\gamma\}$. They sum to more than 1 because sector $d$'s sales is equal to GDP and sector $u$'s sales are equal to $\gamma\cdot GDP$. 
+
+However, the influence calculation here is a little different to this theorem. Firstly, the theorem is about the reaction of a quantity (real GDP) to a productivity shock and the reaction of prices to a productivity or other shock should be different. I will work on looking at this.... 
+
+\paragraph{Summary:}
+
+So to summarize: I am not sure what is going on with the more general method -- we should be finding non-trivial differences in influence vs. expenditure shares. Let's discuss Wednesday how to proceed!
+
+
+
+\end{document}

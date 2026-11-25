@@ -1,0 +1,213 @@
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\geometry{verbose,tmargin=1.5in,bmargin=1.5in,lmargin=1.5in,rmargin=1.5in}
+\usepackage{bm}
+\usepackage{amstext}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks = true,
+     citecolor = navy,
+     linkcolor = navy,
+     urlcolor=navy
+}
+\usepackage{adjustbox}
+\usepackage[space]{grffile}
+\usepackage{setspace}
+\usepackage[normalem]{ulem}
+\usepackage{nicematrix}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{arydshln}
+\usepackage{dsfont}
+\usepackage{refstyle}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage{setspace}
+\usepackage{bbm}
+\usepackage[tableposition=t]{caption} % ensures caption of longtables is normalsized.
+\usepackage{mathpazo} % add Palatino font
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[margin=1in]{geometry} % to set margins
+\usepackage{scalefnt}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{graphics}
+
+%\usepackage{subfigure}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{bibunits}
+\usepackage{fix-cm}
+\usepackage{float}
+\floatplacement{table}{H}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{refstyle}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\raggedleft\arraybackslash}p{#1}}%
+\newcolumntype{d}[1]{>{\centering\arraybackslash}p{#1}}%
+\newcolumntype{y}[1]{>{\raggedright\arraybackslash}p{#1}}%
+\usepackage{verbatim}
+%\epstopdfsetup{suffix=}
+\setcounter{MaxMatrixCols}{10}
+\usepackage[longnamesfirst,authoryear]{natbib}
+\newenvironment{proof}[1][Proof]{\noindent \textbf{#1.}}{\rule{0.5em}{0.5em}}
+\setlength{\topmargin}{-0.80in} \setlength{\textheight}{9.50in}
+\setlength{\evensidemargin}{.0in} \setlength{\oddsidemargin}{.0in}
+\setlength{\textwidth}{6.85in}
+\setlength{\voffset}{0.4cm}
+\setlength{\hoffset}{-0.5cm}
+\usepackage{setspace}
+\usepackage{afterpage}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tabulary}
+%\usepackage[titletoc,title]{appendix}
+\usepackage[bottom]{footmisc}
+\usepackage{color}
+	\definecolor{maroon}{RGB}{128,0,0}
+	\definecolor{navy}{RGB}{0,0,165}
+	\definecolor{lb}{RGB}{150,165,190}
+	\definecolor{bluenice}{rgb}{0.25,0.51,0.76}
+	\definecolor{rednice}{rgb}{0.85,0.26,0}
+	\definecolor{orangenice}{HTML}{EB811B}
+	\definecolor{greennice}{HTML}{14B03D}
+\usepackage{colortbl}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{nicefrac}
+%\usepackage{chngcntr}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\usetikzlibrary{matrix,decorations.pathreplacing,arrows.meta,positioning}
+
+\newcommand{\vy}{\underline{y}}
+\newcommand{\ve}{\underline{\epsilon}}
+\newcommand{\A}[1]{\mathbold{A_{#1}}}
+\newcommand{\D}[1]{\mathbold{D_{#1}}}
+\newcommand{\C}[1]{\mathbold{C_{#1}}}
+\newcommand{\B}[1]{\mathbold{B_{#1}}}
+\newcommand{\R}[1]{\mathbold{R_{#1}}}
+
+%\newtheorem{definition}{Definition}
+\begin{document}
+\title{A quick note on inflation calculation}
+\author{N}
+\maketitle
+
+Ben's recent note has a different calculation of inflation to the one I understood to be done in Shaprio. Under his new formula, I think the inflation decomposition into value added inflation becomes exact. First I will confirm this, then contrast with what I understood to be Shapiro's method.
+
+\section{What we have:}
+
+Let's stick with Ben's notation where we have $\mathcal{I}$ products. 
+\begin{enumerate}
+\item We have a set of PCE weights that are time-varying: $\{\omega_{i,t}^{PCE}\}_{i,t}$. 
+\item Define the set $\mathcal{P}$ by $\omega_{i,t}^{PCE}>0$ -- these are the final goods we have price data for.
+\item We hope to have a set of prices for goods where $\omega_{i,t}^{PCE}=0$. For now assume we do (even if we are making them up).
+\item We have I-O data that gives us a set of expenditure shares that each product $i$ spends on product $j$ in production. Call this $s_{j\rightarrow i,t}$ (my notation used $\mathbf{\Omega}diag(\underline{\gamma})$). Note that the $s_{i,j,t}$ is only time-varying to the extent that some products are not defined earlier in the sample (e.g. Software is not a product in 1960). So we have:
+
+\[
+	s_{j\rightarrow i,t} = s_{j\rightarrow i,t-1},\text{ or } s_{j\rightarrow i,t}=0
+\]
+
+\item Note that these are expenditure shares \emph{as a percent of i's sales} such that $\sum_j s_{i,j,t}<1$. The difference we define as the value added share of sales:
+\[
+	s_{i,t}^{VA} = 1-\sum_j s_{j\rightarrow i,t}
+\]
+\item With Cobb-Douglas production we get the result that:
+\[
+	\log(P)_{i,t} = \sum_j s_{j\rightarrow i,t} \log(P_{j,t-1}) + s_{i,t}^{VA} \log(P_{i,t}^{VA}) 
+\]
+\item Since $\log(P_{i,t}^{VA})$ is unobservable, we can infer it by re-arranging the equation:
+\[
+	\log(P_{i,t}^{VA}) = \frac{\log(P)_{i,t}  - \sum_j s_{j\rightarrow i,t} \log(P_{j,t-1})}{s_{i,t}^{VA}}
+\]
+\item If we define the vector $\underline{V}_t \equiv \{s_{i,t}^{VA}\}_i$ and the matrix\footnote{Note that this is the transpose of how I defined $\mathbold{\Omega}$!} $\mathbold{A}_t\equiv \{s_{j\rightarrow i,t}\}_{j,i}$ we can define the matrix:
+
+\[
+	\mathbold{B}_t \equiv\underbrace{diag(\underline{V}_t)}_{\equiv \mathbold{V}_t}(I-\mathbold{A}_t)^{-1} = \mathbold{V}_t (I-\mathbold{A}_t)^{-1}
+\]
+\end{enumerate}
+
+\section{Ben's inflation definition}
+
+Ben then makes the following four definitions:
+
+\begin{enumerate}
+	\item {\bf [CPI inflation:]} $\pi_t^{CPI}\equiv \sum_i \omega_{i,t-1}^{PCE} (\log(P_{i,t} - \log(P_{i,t-1}))$
+	\item {\bf [Sectoral Output Price Inflation:} $\pi_{i,t}\equiv \log(P_{i,t}) - \log(P_{i,t-1})$
+	\item {\bf [Value Added Contribution:]} $\pi_{i,t}^{VA(C)}\equiv \pi_{i,t} - \sum_j s_{i,j,t}\pi_{i,t}$
+		\item {\bf [Value Added Inflation:]} $\pi_{i,t}^{VA}\equiv \frac{\pi_{i,t}^{VA(C)}}{s_{i,t}^{VA}}$
+\end{enumerate}
+
+Note that under these definitions we can write in matrix/vector form:
+
+\begin{align*}
+	\underline{P}_{t} &=  \mathbold{A}_t' \log(\underline{P}_{t})+\mathbold{V}_t\log(\underline{P}_{t}^{VA})\\
+	\Leftrightarrow (I-\mathbold{A}_t')\log(\underline{P}_{t}) &=\mathbold{V}_t\log(\underline{P}_{t}^{VA})\\
+	\Leftrightarrow \log(\underline{P}_{t}) &=(I-\mathbold{A}_t')^{-1}\mathbold{V}_t\log(\underline{P}_{t}^{VA})\\
+	&=((I-\mathbold{A}_t)')^{-1}\mathbold{V}_t\log(\underline{P}_{t}^{VA})\\
+	&=((I-\mathbold{A}_t)^{-1})'\mathbold{V}_t\log(\underline{P}_{t}^{VA})\\
+	\Leftrightarrow \log(\underline{P}_{t}) &=\underbrace{\mathbold{V}_t(I-\mathbold{A}_t)^{-1}}_{=\mathbold{B}_t}\underline{\pi}_{t}^{VA} = \mathbold{B}_t\log(\underline{P}_{t}^{VA})\\
+\end{align*}
+where the last line follows from the fact that $\mathbold{V}_t = \mathbold{V}_t'$.
+
+Using the definition of sectoral output price inflation we have:
+\[
+	\underline{\pi}_{i,t} \equiv \log(P_{i,t}) - \log(P_{i,t-1}) = \mathbold{B}_t\log(\underline{P}_{t}^{VA}) - \mathbold{B}_{t-1}\log(\underline{P}_{t-1}^{VA})
+\]
+
+\paragraph{First Approximation:} We can approximate this with the following assumption $\mathbold{B}_t \approx \mathbold{B}_{t-1}$:
+\[
+	\underline{\pi}_{i,t} \approx \mathbold{B}_t(\log(\underline{P}_{t}^{VA}) - \log(\underline{P}_{t-1}^{VA})) = \mathbold{B}_t \underline{\pi}_t^{VA}
+\]
+
+Next CPI is given by:
+\begin{align*}
+	\pi_t^{CPI} &\sum_i \omega_{i,t-1}^{PCE} \pi_{i,t}\\
+		&= (\underline{\omega}_{t-1}^{PCE})' \left[\mathbold{B}_t\log(\underline{P}_{t}^{VA}) - \mathbold{B}_{t-1}\log(\underline{P}_{t-1}^{VA})\right] \\
+		&=(\underline{\omega}_{t-1}^{PCE})' \left[\mathbold{B}_t \underline{\pi}_{t}^{VA} +\underbrace{(\mathbold{B}_t - \mathbold{B}_{t-1})}_{\approx 0}\log(\underline{P}_{t-1}^{VA})\right]\\
+		&\approx (\underline{\omega}_{t-1}^{PCE})'\mathbold{B}_t \underline{\pi}_{t}^{VA}
+\end{align*}
+where this should hold exactly in periods where the set of products do not change (because in these periods $\mathbold{B}_t = \mathbold{B}_{t-1}$).
+
+Finally to follow Ben's procedure: we define $\underline{\Omega}_t\equiv (\underline{\omega}_{t-1}^{PCE})'\mathbold{B}_t$ and we should have the decomposition:
+
+\[
+	\pi_{t}^{CPI} \approx \sum_j \Omega_j \underline{\pi}_{t}^{VA}
+\]
+with equality whenever $\mathbold{B}_t = \mathbold{B}_{t-1}$.
+
+\paragraph{Key message:} We should have a \underline{very} good approximation if we define inflation this way!!!
+
+\section{Nick's inflation definition}
+
+I wanted to use the same inflation definition as Shapiro which is:
+
+\[
+	\pi_{t}^{CPI,(Nick)}\equiv \frac{P_{t}^{CPI}}{P_{t-1}^{CPI}}\approx 1+ \pi_t^{CPI}
+\]
+
+and:
+
+\[
+	\pi_{i,t}^{VA,(Nick)}\equiv \frac{P_{i,t}^{VA} - P_{i,t-1}^{VA}}{P_{i,t-1}^{VA}}\approx 1+ \pi_t^{VA}
+\]
+
+These are approximately equal to Ben's definition but not exactly equal and I believe this approximation (not the product set $\mathbold{B}_t\approx \mathbold{B}_{t-1}$) is the main cause of our approximation errors. 
+
+
+\end{document}
